@@ -194,7 +194,23 @@ const CBWestWebsite: React.FC = () => {
     role: 'Head of Risk Management',
     description: 'Mathematics and finance focus specializing in quantitative risk assessment and modeling.',
     year: 'Senior'
-  }];
+  }, {
+    name: 'Shreyas Raju',
+    role: 'Chief Technology Officer',
+    description: 'Finance and technology focused student with experience in software and web development.',
+    year: 'Senior'
+  }, {
+    name: 'Abhi Mehdi',
+    role: 'Head of Macro',
+    description: 'Finance focused student with macroeconomics interest.',
+    year: 'Junior'
+  } , {
+    name: 'Position Available',
+    role: 'Head of Equity',
+    description: 'Apply Now!',
+    year: 'TBD+'
+  }
+];
   const portfolioCompanies = [{
     name: 'TBD',
     sector: 'Technology',
@@ -406,7 +422,7 @@ const CBWestWebsite: React.FC = () => {
           }, {
             icon: Users,
             title: 'Collaborative Growth',
-            description: 'Checks & Balances. All investment decisions follow a documented approval process that requires multiple sign-offs, ensuring proper risk management and educational value.'
+            description: 'Checks & Balances. All investment decisions follow a documented approval process that requires multiple sign-offs, ensuring proper risk management and educational value. This means that at CB West SMIF, where your money goes is documented every step of the way, ensuring trust between all parties.'
           }].map((feature, index) => <Card key={index} className="p-8 bg-black text-white border-primary/20 shadow-bold hover:shadow-large transition-all duration-300 text-center rounded-2xl">
                 <div className="inline-flex items-center justify-center w-16 h-16 bg-primary rounded-2xl mb-6">
                   <feature.icon className="h-8 w-8 text-primary-foreground" />
@@ -661,9 +677,9 @@ const CBWestWebsite: React.FC = () => {
           <div className="fade-in-trigger text-center">
             <div className="bg-black/5 border border-black/10 rounded-3xl p-8 max-w-4xl mx-auto">
               <h3 className="text-2xl font-bold text-black mb-4">Faculty Advisor</h3>
-              <div className="text-lg font-semibold text-primary mb-2"> ADVISOR TBD</div>
+              <div className="text-lg font-semibold text-primary mb-2"> Martin Meo</div>
               <p className="text-foreground/80">
-                EXPERIENCE TBD
+                Accounting Teacher at CB West. Oversees all operations and ensures that SMIF maintains its standard of quality investments.
               </p>
             </div>
           </div>
