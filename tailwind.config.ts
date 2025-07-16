@@ -19,7 +19,6 @@ export default {
 		},
 		extend: {
 			colors: {
-				cusforestgreen: "#164F2C",
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',

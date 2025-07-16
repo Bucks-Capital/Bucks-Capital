@@ -763,14 +763,15 @@ const CBWestWebsite: React.FC = () => {
       <footer className="py-12 bg-primary text-primary-foreground">
         <div className="container mx-auto px-6">
           <div className="text-center">
-            <div className="text-3xl font-display font-black mb-4">
+            {/* <div className="text-3xl font-display font-black mb-4">
               CB West <span className="text-primary">SMIF</span>
-            </div>
+            </div> */}
+            <img src="/deernobg.png" alt="Crest Icon" className="h-40 w-40 content-center block mx-auto mb-10 object-contain" />
             <p className="text-primary-foreground/80 mb-6">
-              Empowering the next generation of financial leaders
+              Empowering the next generation of financial leaders.
             </p>
             <div className="text-sm text-primary-foreground/60">
-              © 2024 CB West Student Managed Investment Fund. All rights reserved.
+              © 2025 CB West Student Managed Investment Fund. All rights reserved.
             </div>
           </div>
         </div>
