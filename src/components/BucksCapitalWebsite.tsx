@@ -242,7 +242,8 @@ const CBWestWebsite: React.FC = () => {
             onClick={scrollToTop}
             className="flex items-center space-x-3 text-white hover:scale-105 transition-transform duration-300"
           >
-            <Crown className="h-8 w-8 text-white" />
+            {/*<Crown className="h-8 w-8 text-white" /> */}
+            <img src="/crest.png" alt="Crest Icon" className="h-8 w-8 object-contain" />
             <span className="text-xl font-display font-black">Bucks Capital</span>
           </button>
 
@@ -274,7 +275,7 @@ const CBWestWebsite: React.FC = () => {
             </button>
             <Button
               onClick={() => smoothScrollTo('donate')}
-              className="bg-white/10 hover:bg-white hover:text-black text-white font-semibold px-6 py-2 border border-white/20 hover:border-white transition-all duration-300"
+              className="bg-white/10 hover:bg-white hover:text-black text-white font-semibold px-6 py-2 border uppercase border-white/20 hover:border-white transition-all duration-300"
             >
               Donate Now
             </Button>
@@ -309,7 +310,7 @@ const CBWestWebsite: React.FC = () => {
         }} />
             <div className="absolute w-12 h-12 border border-gold/30 rounded-full animate-float" style={{
           top: '40%',
-          right: '25%',
+          right: '25.7%',
           animationDelay: '6s',
           transform: `translate(${mousePosition.x * -0.04}px, ${mousePosition.y * 0.02}px)`
         }} />
@@ -320,7 +321,7 @@ const CBWestWebsite: React.FC = () => {
           <p className="text-xl md:text-2xl text-white/60 mb-9 leading-relaxed max-w-4xl mx-auto font-medium">
             Real Capital. Real Analysis. Real Impact.
           </p>
-          <img src="/buckscapitallogonobgFINAL.png" alt="Bucks Capital Banner" className="w-full h-auto object-contain mb-14"/>
+          <img src="/buckscapitalhorizontalnobgwhite.png" alt="Bucks Capital Banner" className="w-full h-auto object-contain mb-12"/>
           {/*<h1 className="text-display text-5xl md:text-8xl font-black mb-8 leading-tight">
             Bucks
             <span className="block text-primary">Capital</span>
