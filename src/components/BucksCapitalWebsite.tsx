@@ -17,6 +17,10 @@ const CBWestWebsite: React.FC = () => {
     donations: 0
   });
 
+  {/*useEffect(() => {
+    document.documentElement.classList.add('dark');
+  }, []); */}
+
   // Handle mouse movement for interactive hero
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
