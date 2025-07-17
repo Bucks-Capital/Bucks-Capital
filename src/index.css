@@ -101,10 +101,99 @@ All colors MUST be HSL.
   }
 
   .dark {
+
+    /* Bucks Capital Color Palette - Updated */
     --background: 0 0% 100%; /* #FFFFFF */
-    --foreground: 0 0% 0%;
+    --foreground: 0 0% 0%;   /* #000000 */
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 0%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 0%;
+
+    /* Green Primary (#164F2C) */
+    --primary: 140 54% 20%;
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 140 54% 30%;
+    --primary-dark: 140 54% 15%;
+
+    /* Pure Black (#000000) */
+    --black: 0 0% 0%;
+    --black-soft: 0 0% 5%;
+    --black-light: 0 0% 10%;
+
+    /* Moss Green (#928C6F) */
+    --moss: 50 15% 55%;
+    --moss-light: 50 15% 65%;
+    --moss-dark: 50 15% 45%;
+
+    /* Gray (#757780) */
+    --accent: 240 8% 47%;
+    --accent-foreground: 0 0% 100%;
+    --accent-light: 240 8% 57%;
+    --accent-dark: 240 8% 37%;
+
+    /* Secondary remains moss green */
+    --secondary: 50 15% 55%;
+    --secondary-foreground: 0 0% 0%;
+    --secondary-light: 50 15% 65%;
+    --secondary-dark: 50 15% 45%;
+
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 40%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 85%;
+    --input: 0 0% 95%;
+    --ring: 140 54% 20%;
+
+    /* Custom Design Tokens */
+    --dark-green: 140 54% 20%;
+    --dark-green-light: 140 54% 30%;
+    --dark-green-dark: 140 54% 15%;
+    --moss-green: 50 15% 55%;
+    --moss-green-light: 50 15% 65%;
+    --moss-green-dark: 50 15% 45%;
+    --gray: 240 8% 47%;
+    --gray-light: 240 8% 57%;
+    --gray-dark: 240 8% 37%;
+
+    /* Bold Professional Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--dark-green)), hsl(var(--dark-green-light)));
+    --gradient-secondary: linear-gradient(135deg, hsl(var(--sage)), hsl(var(--sage-light)));
+    --gradient-accent: linear-gradient(135deg, hsl(var(--bronze)), hsl(var(--bronze-light)));
+    --gradient-hero: linear-gradient(135deg, hsl(var(--black)), hsl(var(--dark-green-dark)), hsl(var(--dark-green)));
+    --gradient-black: linear-gradient(135deg, hsl(var(--black)), hsl(var(--black-light)));
+
+    /* Premium Shadows */
+    --shadow-soft: 0 2px 12px hsla(var(--black), 0.06);
+    --shadow-medium: 0 4px 20px hsla(var(--black), 0.1);
+    --shadow-large: 0 8px 40px hsla(var(--black), 0.15);
+    --shadow-bold: 0 6px 30px hsla(var(--black), 0.2);
+    --shadow-bronze: 0 2px 12px hsla(var(--bronze), 0.25);
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
     /* --background: 0 0% 6%;
-    --foreground: 0 0% 98%; */
+    --foreground: 0 0% 98%; 
 
     --card: 0 0% 8%;
     --card-foreground: 0 0% 98%;
@@ -137,7 +226,7 @@ All colors MUST be HSL.
     --sidebar-accent: 240 3.7% 15.9%;
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-ring: 217.2 91.2% 59.8%; */
   }
 }
 
