@@ -101,8 +101,10 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 0 0% 6%;
-    --foreground: 0 0% 98%;
+    --background: 0 0% 100%; /* #FFFFFF */
+    --foreground: 0 0% 0%;
+    /* --background: 0 0% 6%;
+    --foreground: 0 0% 98%; */
 
     --card: 0 0% 8%;
     --card-foreground: 0 0% 98%;
