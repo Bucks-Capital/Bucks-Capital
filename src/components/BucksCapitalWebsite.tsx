@@ -334,16 +334,13 @@ const CBWestWebsite: React.FC = () => {
         
         
         <div className="relative z-10 text-center px-6 max-w-6xl mx-auto text-white">
-          <p className="text-xl md:text-2xl text-white/60 mb-9 leading-relaxed max-w-4xl mx-auto font-medium">
-            Real Capital. Real Analysis. Real Impact.
-          </p>
-          <img src="/buckscapitalhorizontalnobgwhite.png" alt="Bucks Capital Banner" className="w-full h-auto object-contain mb-12"/>
+          <img src="/buckscapitalhorizontalnobgwhite.png" alt="Bucks Capital Banner" className="w-full h-auto object-contain mb-2"/>
           {/*<h1 className="text-display text-5xl md:text-8xl font-black mb-8 leading-tight">
             Bucks
             <span className="block text-primary">Capital</span>
           </h1> */}
-          <p className="text-xl md:text-2xl text-white/90 mb-10 leading-relaxed max-w-4xl mx-auto font-medium">
-            Run by students and guided by faculty and alumni mentors, Bucks Capital operates with the same discipline as a professional fund: research-driven investing, risk controls, performance reporting, and ethical oversight. Our goal is to bridge the gap between classroom theory and real-world financial responsibility.
+          <p className="text-xl md:text-2xl text-white/90 mb-14 leading-relaxed max-w-4xl mx-auto font-medium">
+            Real Capital. Real Analysis. Real Impact.
           </p>
           <div className="flex flex-col sm:flex-row gap-6 justify-center">
             <Button size="lg" className="bg-primary hover:bg-primary-dark text-primary-foreground font-bold text-lg px-10 py-5 shadow-bold transition-all duration-300 rounded-full">
@@ -396,17 +393,12 @@ const CBWestWebsite: React.FC = () => {
         </div>
         <div className="container mx-auto px-6 relative z-10 pt-16">
           <div className="fade-in-trigger max-w-5xl mx-auto text-center mb-16">
-            <h2 className="text-display text-4xl md:text-6xl font-black text-black mb-8">
+            <h2 className="text-display text-4xl md:text-6xl font-black text-black mb-12">
               Who We Are
             </h2>
-            <p className="text-xl text-foreground/80 leading-relaxed mb-8">
+            <p className="text-2xl text-foreground/80 leading-relaxed mb-8">
               Bucks Capital is more than just a club—we're a comprehensive 
               financial education program that gives students real-world investment experience with actual capital.
-            </p>
-            <p className="text-lg text-muted-foreground leading-relaxed">
-              Our members learn by doing, managing a diversified portfolio while gaining invaluable skills 
-              in financial analysis, risk management, and market research that prepare them for careers 
-              in finance, business, and beyond.
             </p>
           </div>
           
@@ -414,15 +406,15 @@ const CBWestWebsite: React.FC = () => {
             {[{
             icon: GraduationCap,
             title: 'Educational Excellence',
-            description: 'There is a financial literacy gap that leaves students underprepared. "Young people lack the necessary knowledge to make fundamental economic decisions (McInerney, 2005)." The SMIF directly addresses this by teaching personal finance through real experience – a living classroom where students learn budgeting, investing, and compound growth by doing it. '
+            description: 'There is a financial literacy gap that leaves students underprepared. "Young people lack the necessary knowledge to make fundamental economic decisions (McInerney, 2005)."'
           }, {
             icon: Target,
             title: 'Real Impact',
-            description: 'Real Capital > Paper Portfolios. High school students often learn personal finance through games, simulations, or "paper portfolios." While these tools are a good introduction, they rarely produce lasting learning or meaningful responsibility. A real-money investment fund changes that.'
+            description: 'Real Capital > Paper Portfolios. High school students often learn personal finance through games, simulations, or "paper portfolios."'
           }, {
             icon: Users,
             title: 'Collaborative Growth',
-            description: 'Checks & Balances. All investment decisions follow a documented approval process that requires multiple sign-offs, ensuring proper risk management and educational value. This means that at CB West SMIF, where your money goes is documented every step of the way, ensuring trust between all parties.'
+            description: 'Checks & Balances. All investment decisions follow a documented approval process that requires multiple sign-offs, ensuring proper risk management and educational value.'
           }].map((feature, index) => <Card key={index} className="p-8 bg-black text-white border-primary/20 shadow-bold hover:shadow-large transition-all duration-300 text-center rounded-2xl">
                 <div className="inline-flex items-center justify-center w-16 h-16 bg-primary rounded-2xl mb-6">
                   <feature.icon className="h-8 w-8 text-primary-foreground" />
