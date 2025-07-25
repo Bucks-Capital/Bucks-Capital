@@ -344,7 +344,7 @@ const CBWestWebsite: React.FC = () => {
             <span className="block text-primary">Capital</span>
           </h1> */}
           <p className="text-xl md:text-2xl text-white/90 mb-14 leading-relaxed max-w-4xl mx-auto font-medium">
-            Real Capital. Real Analysis. Real Impact. TEST!
+            Real Capital. Real Analysis. Real Impact.
           </p>
           <div className="flex flex-col sm:flex-row gap-6 justify-center">
             <Button onClick={() => smoothScrollTo('portfolio')} size="lg" className="bg-primary hover:bg-primary-dark text-primary-foreground font-bold text-lg px-10 py-5 shadow-bold transition-all duration-300 rounded-full">
