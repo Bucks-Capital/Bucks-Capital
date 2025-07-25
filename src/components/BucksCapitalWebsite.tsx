@@ -190,13 +190,13 @@ const CBWestWebsite: React.FC = () => {
     year: 'Senior'
   }, {
     name: 'Harrison Cornwell',
-    role: 'Head of Investor Relations',
+    role: 'Chief Financial Officer',
     description: 'Business focused student with prior experience in public relations.',
     year: 'Senior'
   }, {
     name: 'Aadi Anantuni',
-    role: 'Head of Risk Management',
-    description: 'Mathematics and finance focus specializing in quantitative risk assessment and modeling.',
+    role: 'Chief Operations Officer',
+    description: 'Finance focused student interested in equity research and financial modeling.',
     year: 'Senior'
   }, {
     name: 'Shreyas Raju',
@@ -204,7 +204,7 @@ const CBWestWebsite: React.FC = () => {
     description: 'Finance and technology focused student with experience in software and web development.',
     year: 'Senior'
   }, {
-    name: 'Abhi Mehdi',
+    name: 'Abhi Medi',
     role: 'Head of Macro',
     description: 'Finance focused student with macroeconomics interest.',
     year: 'Junior'
