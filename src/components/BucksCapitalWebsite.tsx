@@ -748,9 +748,11 @@ const CBWestWebsite: React.FC = () => {
                 Apply Now
               </Button>
               </a>
+              <a href="mailto:bucks.capital1@gmail.com">
               <Button size="lg" variant="outline" className="border-2 border-primary hover:border-gray text-primary hover:bg-gray hover:text-primary-foreground text-lg px-10 py-5 transition-all duration-300 rounded-full font-semibold">
-                Learn More
+                Contact Us
               </Button>
+              </a>
             </div>
           </div>
         </div>
