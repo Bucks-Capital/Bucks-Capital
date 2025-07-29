@@ -2,7 +2,10 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ArrowRight, TrendingUp, Users, Target, Award, GraduationCap, BookOpen, DollarSign, PieChart, BarChart3, LineChart, Briefcase, Crown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { Link } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 const CBWestWebsite: React.FC = () => {
+  const navigate = useNavigate();
   const heroRef = useRef<HTMLDivElement>(null);
   const [mousePosition, setMousePosition] = useState({
     x: 0,
@@ -246,6 +249,9 @@ const CBWestWebsite: React.FC = () => {
     value: '$TBD',
     return: '+0.0%'
   }];
+
+  
+
   return <div className="min-h-screen bg-background overflow-x-hidden">
       {/* Navigation */}
       <nav className={` top-0 left-0 right-0 z-50 h-[72px] w-full transition-all duration-[600ms] ${
@@ -270,11 +276,19 @@ const CBWestWebsite: React.FC = () => {
           {/* Center: Navigation Links */}
           <div className="hidden md:flex items-center space-x-12">
             <button
-              onClick={() => smoothScrollTo('about')}
+              onClick={() => navigate('/')}
               className="text-white hover:text-white/70 transition-all duration-300 text-sm font-medium uppercase tracking-wide"
             >
-              Who We Are
+              Home
             </button>
+
+            <button
+              onClick={() => navigate('/about')}
+              className="text-white hover:text-white/70 transition-all duration-300 text-sm font-medium uppercase tracking-wide"
+            >
+              About Us
+            </button>
+            
             <button
               onClick={() => smoothScrollTo('portfolio')}
               className="text-white hover:text-white/70 transition-all duration-300 text-sm font-medium uppercase tracking-wide"
@@ -302,10 +316,9 @@ const CBWestWebsite: React.FC = () => {
           </div>
         </div>
       </nav>
-
-      
+   
       {/* Hero Section */}
-      <section ref={heroRef} className="relative h-screen flex items-center justify-center overflow-hidden bg-gradient-hero" style={{
+      <section ref={heroRef} className="relative h-screen flex items-center justify-center overflow-hidden bg-black" style={{
       transform: !window.matchMedia('(prefers-reduced-motion: reduce)').matches ? `translateY(${scrollY * 0.2}px)` : undefined
     }}>
         {/* Interactive geometric elements */}
@@ -373,7 +386,7 @@ const CBWestWebsite: React.FC = () => {
           >
             <path 
               d="M0,0 C150,60 350,0 600,40 C850,80 1050,20 1200,60 L1200,120 L0,120 Z" 
-              fill="white"
+              fill="black"
             />
           </svg>
         </div>
@@ -568,14 +581,14 @@ const CBWestWebsite: React.FC = () => {
           >
             <path 
               d="M0,40 C150,80 350,20 600,60 C850,100 1050,40 1200,80 L1200,120 L0,120 Z" 
-              fill="#164F2C"
+              fill="white"
             />
           </svg>
         </div>
       </section>
 
       {/* Performance Metrics */}
-      <section id="performance" className="py-24 bg-primary text-primary-foreground relative overflow-hidden">
+      <section id="performance" className="py-24 bg-white text-primary relative overflow-hidden">
         {/* Top curve from portfolio section */}
         <div className="absolute top-0 left-0 right-0 overflow-hidden">
           <svg 
@@ -586,7 +599,7 @@ const CBWestWebsite: React.FC = () => {
           >
             <path 
               d="M0,40 C150,80 350,20 600,60 C850,100 1050,40 1200,80 L1200,120 L0,120 Z" 
-              fill="#164F2C"
+              fill="white"
             />
           </svg>
         </div>
@@ -606,7 +619,7 @@ const CBWestWebsite: React.FC = () => {
             <h2 className="text-display text-4xl md:text-6xl font-black mb-8">
               Performance & Impact
             </h2>
-            <p className="text-xl text-primary-foreground/80 max-w-4xl mx-auto leading-relaxed">
+            <p className="text-xl text-primary/80 max-w-4xl mx-auto leading-relaxed">
               Our track record demonstrates the power of combining student enthusiasm with professional 
               investment principles and experienced mentorship.
             </p>
@@ -615,12 +628,12 @@ const CBWestWebsite: React.FC = () => {
           <div className="fade-in-trigger grid grid-cols-2 md:grid-cols-4 gap-8">
             {impactMetrics.map((metric, index) => <div key={index} className="text-center">
                 <div className="inline-flex items-center justify-center w-20 h-20 bg-accent/20 rounded-2xl mb-6">
-                    <metric.icon className="h-10 w-10 text-white" />
+                    <metric.icon className="h-10 w-10 text-primary" />
                 </div>
-                <div className="text-4xl md:text-5xl font-black text-white mb-3">
+                <div className="text-4xl md:text-5xl font-black text-primary mb-3">
                   {metric.value}
                 </div>
-                <div className="text-primary-foreground/90 font-semibold text-lg">
+                <div className="text-primary/90 font-semibold text-lg">
                   {metric.label}
                 </div>
               </div>)}
