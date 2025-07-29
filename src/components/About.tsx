@@ -111,7 +111,7 @@ const About: React.FC = () => {
               </div>
             </nav>
 
-      <section id="about" className="py-24 bg-background relative">
+      <section id="about" className="py-24 bg-white relative">
         {/* Top curve to match counters section */}
         <div className="absolute top-0 left-0 right-0 overflow-hidden">
           <svg 
@@ -127,35 +127,41 @@ const About: React.FC = () => {
           </svg>
         </div>
         <div className="container mx-auto px-6 relative z-10 pt-16">
-          <div className="fade-in-trigger max-w-5xl mx-auto text-center mb-16">
-            <h2 className="text-display text-4xl md:text-6xl font-black text-black mb-12">
-              Who We Are
+          <div className="fade-in-trigger max-w-5xl mx-auto text-center -mt-14 mb-16">
+            <h2 className="text-display text-4xl md:text-6xl font-black text-primary-background mb-12">
+              About
             </h2>
-            <p className="text-2xl text-foreground/80 leading-relaxed mb-8">
-              Bucks Capital is more than just a club—we're a comprehensive 
-              financial education program that gives students real-world investment experience with actual capital.
+            <p className="text-2xl text-black leading-relaxed mb-8">
+              <strong>Bucks Capital is a student managed index fund built and ran out of Doylestown, PA.</strong> Founded in 2025 by student leaders Aadi Anantuni, Harrison Cornwell, and Zahin Mulji, Bucks Capital is a nonprofit that enables high school students to manage real capital while making informed, research driven investment decisions.
             </p>
+            <p className="text-2xl text-black leading-relaxed mb-8">
+              Operating under the mentorship of faculty and alumni, Bucks Capital mirrors the structure and discipline of a professional investment fund. Students are responsible for conducting due diligence, applying risk controls, generating performance reports, and upholding strict ethical standards.
+            </p>
+            <p className="text-2xl text-black leading-relaxed mb-8">
+              Bucks Capital has a clear mission: <strong>bridge the gap between classroom theory and real-world financial responsibility.</strong> We provide a learning environment where the use of real money encourages deeper analytical thinking and accountability.
+            </p>
+
           </div>
           
           <div className="fade-in-trigger grid md:grid-cols-3 gap-8">
             {[{
             icon: GraduationCap,
-            title: 'Educational Excellence',
-            description: 'There is a financial literacy gap that leaves students underprepared. "Young people lack the necessary knowledge to make fundamental economic decisions (McInerney, 2005)."'
+            title: 'Hands-On Learning',
+            description: 'Move beyond simulations and paper portfolios by engaging students in genuine market participation, where every decision has tangible outcomes.'
           }, {
             icon: Target,
-            title: 'Real Impact',
-            description: 'Real Capital > Paper Portfolios. High school students often learn personal finance through games, simulations, or "paper portfolios."'
+            title: 'Financial Literacy',
+            description: 'Foster a collaborative team culture in which students lead research initiatives, strategy discussions, and portfolio management.'
           }, {
             icon: Users,
-            title: 'Collaborative Growth',
-            description: 'Checks & Balances. All investment decisions follow a documented approval process that requires multiple sign-offs, ensuring proper risk management and educational value.'
-          }].map((feature, index) => <Card key={index} className="p-8 bg-black text-white border-primary/20 shadow-bold hover:shadow-large transition-all duration-300 text-center rounded-2xl">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-primary rounded-2xl mb-6">
-                  <feature.icon className="h-8 w-8 text-primary-foreground" />
+            title: 'Professional Standards',
+            description: 'Emulate institutional investment practices, including performance tracking, ethical oversight, and risk governance.'
+          }].map((feature, index) => <Card key={index} className="p-8 bg-black/10 text-white border-primary/20 shadow-bold hover:shadow-large transition-all duration-300 text-center rounded-2xl">
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-white rounded-2xl mb-6">
+                  <feature.icon className="h-8 w-8 text-black" />
                 </div>
-                <h3 className="text-xl font-bold text-primary mb-4">{feature.title}</h3>
-                <p className="text-white/80">{feature.description}</p>
+                <h3 className="text-xl font-bold text-black mb-4">{feature.title}</h3>
+                <p className="text-black/80">{feature.description}</p>
               </Card>)}
           </div>
         </div>

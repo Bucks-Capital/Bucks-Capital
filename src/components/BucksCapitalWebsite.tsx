@@ -441,8 +441,10 @@ const CBWestWebsite: React.FC = () => {
               </Card>)}
           </div>
         </div>
+      </section>
 
-        {/* Bottom curve transition to portfolio */}
+        {/*  
+        //Bottom curve transition to portfolio//
         <div className="absolute bottom-0 left-0 right-0 overflow-hidden">
           <svg 
             viewBox="0 0 1200 120" 
@@ -451,12 +453,12 @@ const CBWestWebsite: React.FC = () => {
           >
             <path 
               d="M0,60 C150,0 350,80 600,40 C850,0 1050,60 1200,20 L1200,120 L0,120 Z" 
-              fill="#000000"
+              fill="#FFFFFF"
             />
           </svg>
-        </div>
-      </section>
-
+        </div>   
+        */}
+        
       {/* Animated Counters Section */}
       <section id="counters" className="h-screen bg-white flex items-center justify-center relative">
         {/* Transparent Gold Band */}
