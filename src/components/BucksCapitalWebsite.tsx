@@ -170,19 +170,19 @@ const CBWestWebsite: React.FC = () => {
   };
 
   const impactMetrics = [{
-    value: '$TBD',
+    value: '$N/A',
     label: 'Portfolio Value',
     icon: DollarSign
   }, {
-    value: 'TBD',
+    value: 'N/A',
     label: 'Active Investments',
     icon: PieChart
   }, {
-    value: 'TBD',
+    value: 'N/A',
     label: 'Annual Returns',
     icon: TrendingUp
   }, {
-    value: 'TBD',
+    value: '12',
     label: 'Student Members',
     icon: Users
   }];
@@ -458,10 +458,11 @@ const CBWestWebsite: React.FC = () => {
           </svg>
         </div>   
         */}
-        
-      {/* Animated Counters Section */}
+
+      {/*
+      // Animated Counters Section 
       <section id="counters" className="h-screen bg-white flex items-center justify-center relative">
-        {/* Transparent Gold Band */}
+        // Transparent Gold Band 
         <div 
           className="absolute inset-x-0 bg-gold/20 backdrop-blur-sm"
           style={{
@@ -472,30 +473,30 @@ const CBWestWebsite: React.FC = () => {
           <div className="container mx-auto px-6 h-full flex items-center justify-center">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-16 text-center w-full max-w-6xl">
               
-              {/* AUM Counter */}
+              // AUM Counter 
               <div className="flex flex-col items-center">
                 <div className="text-6xl md:text-7xl font-black text-black mb-4" style={{ fontSize: '4rem' }}>
-                  TBD {/* USE THIS WHEN CURRENCY IS AVALIABLE: {formatCurrency(counterValues.aum)}  */}
+                  TBD // USE THIS WHEN CURRENCY IS AVALIABLE: {formatCurrency(counterValues.aum)}  
                 </div>
                 <div className="text-xl font-semibold text-primary uppercase tracking-wide">
                   Assets Under Management
                 </div>
               </div>
 
-              {/* Students Counter */}
+              // Students Counter 
               <div className="flex flex-col items-center">
                 <div className="text-6xl md:text-7xl font-black text-black mb-4" style={{ fontSize: '4rem' }}>
-                   TBD  {/* USE FOR LATER:   {counterValues.students.toLocaleString()}+ */} 
+                   TBD  // USE FOR LATER:   {counterValues.students.toLocaleString()}+  
                 </div>
                 <div className="text-xl font-semibold text-primary uppercase tracking-wide">
                   Students Trained
                 </div>
               </div>
 
-              {/* Donations Counter */}
+              // Donations Counter 
               <div className="flex flex-col items-center">
                 <div className="text-6xl md:text-7xl font-black text-black mb-4" style={{ fontSize: '4rem' }}>
-                  TBD {/* USE FOR LATER:    {formatCurrency(counterValues.donations)} */ }
+                  TBD {/* USE FOR LATER:    {formatCurrency(counterValues.donations)} 
                 </div>
                 <div className="text-xl font-semibold text-primary uppercase tracking-wide">
                   Community Donations
@@ -505,8 +506,8 @@ const CBWestWebsite: React.FC = () => {
             </div>
           </div>
         </div>
-
-        {/* Bottom curve transition */}
+        
+        // Bottom curve transition 
         <div className="absolute bottom-0 left-0 right-0 overflow-hidden">
           <svg 
             viewBox="0 0 1200 120" 
@@ -519,11 +520,12 @@ const CBWestWebsite: React.FC = () => {
             />
           </svg>
         </div>
-      </section>
+      </section> */}
 
-      {/* Portfolio Section */}
+      {/* 
+      // Portfolio Section 
       <section id="portfolio" className="py-24 bg-black text-white relative">
-        {/* Top curve from about section */}
+        // Top curve from about section 
         <div className="absolute top-0 left-0 right-0 overflow-hidden">
           <svg 
             viewBox="0 0 1200 120" 
@@ -574,7 +576,7 @@ const CBWestWebsite: React.FC = () => {
           </div>
         </div>
 
-        {/* Bottom curve transition to performance */}
+        //Bottom curve transition to performance 
         <div className="absolute bottom-0 left-0 right-0 overflow-hidden">
           <svg 
             viewBox="0 0 1200 120" 
@@ -588,10 +590,12 @@ const CBWestWebsite: React.FC = () => {
           </svg>
         </div>
       </section>
+      */}
 
-      {/* Performance Metrics */}
+      {/* 
+      //Performance Metrics 
       <section id="performance" className="py-24 bg-white text-primary relative overflow-hidden">
-        {/* Top curve from portfolio section */}
+        // Top curve from portfolio section 
         <div className="absolute top-0 left-0 right-0 overflow-hidden">
           <svg 
             viewBox="0 0 1200 120" 
@@ -642,7 +646,7 @@ const CBWestWebsite: React.FC = () => {
           </div>
         </div>
       </section>
-
+        */}
       {/* Team Section */}
       <section id="team" className="py-24 bg-background relative">
         {/* Top curve from performance section */}
@@ -739,7 +743,7 @@ const CBWestWebsite: React.FC = () => {
                 <ul className="text-left space-y-2 text-muted-foreground">
                   <li className="flex items-center">
                     <div className="w-2 h-2 bg-primary rounded-full mr-3"></div>
-                    Current CB West student
+                    Current Central Bucks student
                   </li>
                   <li className="flex items-center">
                     <div className="w-2 h-2 bg-primary rounded-full mr-3"></div>
@@ -805,7 +809,7 @@ const CBWestWebsite: React.FC = () => {
               Empowering the next generation of financial leaders.
             </p>
             <div className="text-sm text-primary-foreground/60">
-              © 2025 CB West Student Managed Investment Fund. All rights reserved.
+              © 2025 Bucks Capital. All rights reserved.
             </div>
           </div>
         </div>
