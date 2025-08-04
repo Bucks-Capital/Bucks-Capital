@@ -783,9 +783,12 @@ const CBWestWebsite: React.FC = () => {
             <p className="text-xl text-white/80 max-w-4xl mx-auto leading-relaxed mb-10">
               Help us provide more students with real-world investment experience and financial education.
             </p>
-            <Button className="bg-primary hover:bg-primary-dark text-primary-foreground font-bold text-lg px-10 py-5">
+            <a href="https://donate.stripe.com/fZueVe4B0bm37NPaZ55wI00">
+              <Button className="bg-primary hover:bg-primary-dark text-primary-foreground font-bold text-lg px-10 py-5">
               Make a Donation
-            </Button>
+              </Button>
+            </a>
+            
           </div>
         </div>
       </section>
