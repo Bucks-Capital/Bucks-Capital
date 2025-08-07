@@ -318,7 +318,7 @@ const CBWestWebsite: React.FC = () => {
       </nav>
    
       {/* Hero Section */}
-      <section ref={heroRef} className="relative h-screen flex items-center justify-center overflow-hidden bg-black" style={{
+      <section ref={heroRef} className="relative h-screen flex items-center justify-center overflow-hidden bg-black " style={{
       transform: !window.matchMedia('(prefers-reduced-motion: reduce)').matches ? `translateY(${scrollY * 0.2}px)` : undefined
     }}>
         {/* Interactive geometric elements */}
@@ -360,8 +360,8 @@ const CBWestWebsite: React.FC = () => {
             Real Capital. Real Analysis. Real Impact.
           </p>
           <div className="flex flex-col sm:flex-row gap-6 justify-center">
-            <Button onClick={() => smoothScrollTo('portfolio')} size="lg" className="bg-primary hover:bg-primary-dark text-primary-foreground font-bold text-lg px-10 py-5 shadow-bold transition-all duration-300 rounded-full">
-              View Our Portfolio <BarChart3 className="ml-2 h-5 w-5" />
+            <Button onClick={() => smoothScrollTo('donate')} size="lg" className="bg-primary hover:bg-primary-dark text-primary-foreground font-bold text-lg px-10 py-5 shadow-bold transition-all duration-300 rounded-full">
+              Donate <BarChart3 className="ml-2 h-5 w-5" />
             </Button>
             <Button onClick={() => smoothScrollTo('team')} size="lg" className="bg-black/20 border-2 border-white text-white hover:bg-white hover:text-black text-lg px-10 py-5 transition-all duration-300 rounded-full font-semibold backdrop-blur-sm">
               View Our Team <ArrowRight className="ml-2 h-5 w-5" />
