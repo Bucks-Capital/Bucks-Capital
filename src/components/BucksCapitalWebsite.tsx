@@ -290,11 +290,12 @@ const CBWestWebsite: React.FC = () => {
             </button>
             
             <button
-              onClick={() => smoothScrollTo('portfolio')}
+              onClick={() => navigate('/whatwedo')}
               className="text-white hover:text-white/70 transition-all duration-300 text-sm font-medium uppercase tracking-wide"
             >
               What We Do
             </button>
+
             <button
               onClick={() => smoothScrollTo('performance')}
               className="text-white hover:text-white/70 transition-all duration-300 text-sm font-medium uppercase tracking-wide"
@@ -351,7 +352,7 @@ const CBWestWebsite: React.FC = () => {
         
         
         <div className="relative z-10 text-center px-6 max-w-6xl mx-auto text-white">
-          <img src="/buckscapitalhorizontalnobgwhite.png" alt="Bucks Capital Banner" className="w-full h-auto object-contain mb-2"/>
+          <img src="/buckscapitalhorizontalnobgwhite.png" alt="Bucks Capital Banner" className="w-full h-auto object-contain -mb-20"/>
           {/*<h1 className="text-display text-5xl md:text-8xl font-black mb-8 leading-tight">
             Bucks
             <span className="block text-primary">Capital</span>
@@ -359,7 +360,7 @@ const CBWestWebsite: React.FC = () => {
           <p className="text-xl md:text-2xl text-white/90 mb-14 leading-relaxed max-w-4xl mx-auto font-medium">
             Real Capital. Real Analysis. Real Impact.
           </p>
-          <div className="flex flex-col sm:flex-row gap-6 justify-center">
+          <div className="flex flex-col sm:flex-row gap-6 justify-center mb-4">
             <Button onClick={() => smoothScrollTo('donate')} size="lg" className="bg-primary hover:bg-primary-dark text-primary-foreground font-bold text-lg px-10 py-5 shadow-bold transition-all duration-300 rounded-full">
               Donate <BarChart3 className="ml-2 h-5 w-5" />
             </Button>
