@@ -722,7 +722,7 @@ const CBWestWebsite: React.FC = () => {
               <h3 className="text-2xl font-bold text-black mb-4">Faculty Advisor</h3>
               <div className="text-lg font-semibold text-primary mb-2"> Martin Meo</div>
               <p className="text-foreground/80">
-                Accounting Teacher at CB West. Oversees all operations and ensures that SMIF maintains its standard of quality investments.
+                Accounting Teacher at CB West. Oversees all operations and ensures that Bucks Capital maintains its standard of quality investments.
               </p>
             </div>
           </div>
@@ -737,7 +737,7 @@ const CBWestWebsite: React.FC = () => {
               Ready to Start Your Finance Journey?
             </h2>
             <p className="text-xl text-muted-foreground mb-10 leading-relaxed">
-              Join CB West SMIF and gain hands-on experience managing real investments while building 
+              Join Bucks Capital and gain hands-on experience managing real investments while building 
               the skills and network that will launch your career in finance.
             </p>
             
