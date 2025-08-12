@@ -84,29 +84,31 @@ const WhatWeDo: React.FC = () => {
                   </button>
                   
                   <button
-                    onClick={() => smoothScrollTo('portfolio')}
+                    onClick={() => navigate('/whatwedo')}
                     className="text-white hover:text-white/70 transition-all duration-300 text-sm font-medium uppercase tracking-wide"
                   >
                     What We Do
                   </button>
+      
                   <button
-                    onClick={() => smoothScrollTo('performance')}
+                    onClick={() => navigate('/impact')}
                     className="text-white hover:text-white/70 transition-all duration-300 text-sm font-medium uppercase tracking-wide"
                   >
                     Impact
+                    
                   </button>
+                  <Link to={{ pathname: "/", hash: "#join-us" }}>
                   <button
-                    onClick={() => smoothScrollTo('join-us')}
                     className="text-white hover:text-white/70 transition-all duration-300 text-sm font-medium uppercase tracking-wide"
                   >
                     Join Us
                   </button>
-                  <Button
-                    onClick={() => smoothScrollTo('donate')}
-                    className="bg-white/10 hover:bg-white hover:text-black text-white font-semibold px-6 py-2 border uppercase border-white/20 hover:border-white transition-all duration-300"
-                  >
-                    Donate Now
-                  </Button>
+                  </Link>
+                  <Link to={{ pathname: "/", hash: "#donate" }}>
+                    <Button className="bg-white/10 hover:bg-white hover:text-black text-white font-semibold px-6 py-2 border uppercase border-white/20 hover:border-white transition-all duration-300">
+                      Donate Now
+                    </Button>
+                  </Link>
                 </div>
               </div>
             </nav>

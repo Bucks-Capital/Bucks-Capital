@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
+import { useLocation } from "react-router-dom";
 const CBWestWebsite: React.FC = () => {
   const navigate = useNavigate();
   const heroRef = useRef<HTMLDivElement>(null);
@@ -47,6 +48,31 @@ const CBWestWebsite: React.FC = () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
+
+  // Scrolls to Donate Section From Any Page
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.hash === "#donate") {
+      // Delay until after DOM render so positions are correct
+      setTimeout(() => {
+      smoothScrollTo("donate");
+      }, 50);
+    }
+  }, [location]);
+
+    // Scrolls to Join Us Section From Any Page
+  const location2 = useLocation();
+
+  useEffect(() => {
+    if (location.hash === "#join-us") {
+      // Delay until after DOM render so positions are correct
+      setTimeout(() => {
+      smoothScrollTo("join-us");
+      }, 50);
+    }
+  }, [location]);
+
 
   // Intersection Observer for animations
   useEffect(() => {
@@ -297,23 +323,24 @@ const CBWestWebsite: React.FC = () => {
             </button>
 
             <button
-              onClick={() => smoothScrollTo('performance')}
+              onClick={() => navigate('/impact')}
               className="text-white hover:text-white/70 transition-all duration-300 text-sm font-medium uppercase tracking-wide"
             >
               Impact
+              
             </button>
+            <Link to={{ pathname: "/", hash: "#join-us" }}>
             <button
-              onClick={() => smoothScrollTo('join-us')}
               className="text-white hover:text-white/70 transition-all duration-300 text-sm font-medium uppercase tracking-wide"
             >
               Join Us
             </button>
-            <Button
-              onClick={() => smoothScrollTo('donate')}
-              className="bg-white/10 hover:bg-white hover:text-black text-white font-semibold px-6 py-2 border uppercase border-white/20 hover:border-white transition-all duration-300"
-            >
-              Donate Now
-            </Button>
+            </Link>
+            <Link to={{ pathname: "/", hash: "#donate" }}>
+              <Button className="bg-white/10 hover:bg-white hover:text-black text-white font-semibold px-6 py-2 border uppercase border-white/20 hover:border-white transition-all duration-300">
+                Donate Now
+              </Button>
+            </Link>
           </div>
         </div>
       </nav>
