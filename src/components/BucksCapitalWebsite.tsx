@@ -346,8 +346,8 @@ const CBWestWebsite: React.FC = () => {
       </nav>
    
       {/* Hero Section */}
-      <section ref={heroRef} className="relative h-screen flex items-center justify-center overflow-hidden bg-contain bg-[url(/mountain_hero.jpg)] " style={{
-      transform: !window.matchMedia('(prefers-reduced-motion: reduce)').matches ? `translateY(${scrollY * 0.2}px)` : undefined
+      <section ref={heroRef} className="h-screen bg-cover bg-center bg-no-repeat " style={{
+      backgroundImage: "url('/mountain_hero.jpg')", transform: !window.matchMedia('(prefers-reduced-motion: reduce)').matches ? `translateY(${scrollY * 0.2}px)` : undefined
     }}>
         {/* Interactive geometric elements */}
         {!window.matchMedia('(prefers-reduced-motion: reduce)').matches && <div className="absolute inset-0 pointer-events-none">
@@ -378,8 +378,8 @@ const CBWestWebsite: React.FC = () => {
           </div>}
         
         
-        <div className="relative z-10 text-center px-6 max-w-6xl mx-auto text-white">
-          <img src="/buckscapitalhorizontalnobgwhite.png" alt="Bucks Capital Banner" className="w-full h-auto object-contain backdrop-blur-[0.3px] -mb-20"/>
+        <div className=" relative z-10 text-center px-6 max-w-6xl mx-auto text-white">
+          <img src="/buckscapitalhorizontalnobgwhite.png" alt="Bucks Capital Banner" className="w-64 sm:w-80 md:w-full h-auto object-contain backdrop-blur-[0.3px] mb-4 md:-mb-20 mx-auto"/>
           
           <p className="text-xl md:text-2xl text-white/90 mb-14 leading-relaxed max-w-4xl mx-auto font-medium">
             Real Capital. Real Analysis. Real Impact.
