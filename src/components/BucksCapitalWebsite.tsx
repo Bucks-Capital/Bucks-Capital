@@ -381,7 +381,7 @@ const CBWestWebsite: React.FC = () => {
         <div className=" relative z-10 text-center px-6 max-w-6xl mx-auto text-white">
           <img src="/buckscapitalhorizontalnobgwhite.png" alt="Bucks Capital Banner" className="w-64 sm:w-80 md:w-full h-auto object-contain backdrop-blur-[0.3px] mb-4 md:-mb-20 mx-auto"/>
           
-          <p className="text-xl md:text-2xl text-white/90 mb-14 leading-relaxed max-w-4xl mx-auto font-medium">
+          <p className="text-xl md:text-2xl text-white/90 mt-34 mb-14 leading-relaxed max-w-4xl mx-auto font-medium">
             Real Capital. Real Analysis. Real Impact.
           </p>
           <div className="flex flex-col sm:flex-row gap-6 justify-center mb-4">
@@ -401,20 +401,7 @@ const CBWestWebsite: React.FC = () => {
             </div>
           </div>}
 
-        {/* Rolling Hills SVG Transition */}
-        <div className="absolute bottom-0 left-0 right-0 overflow-hidden">
-          <svg 
-            viewBox="0 0 1200 120" 
-            preserveAspectRatio="none" 
-            className="relative block w-full h-16 md:h-20 lg:h-24"
-            style={{ transform: 'rotate(180deg)' }}
-          >
-            <path 
-              d="M0,0 C150,60 350,0 600,40 C850,80 1050,20 1200,60 L1200,120 L0,120 Z" 
-              fill="black"
-            />
-          </svg>
-        </div>
+        
       </section>
 
       {/* About Section */}
