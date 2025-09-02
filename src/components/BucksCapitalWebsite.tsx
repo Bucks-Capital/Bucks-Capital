@@ -381,7 +381,7 @@ const CBWestWebsite: React.FC = () => {
         <div className=" relative z-10 text-center px-6 max-w-6xl mx-auto text-white">
           <img src="/buckscapitalhorizontalnobgwhite.png" alt="Bucks Capital Banner" className="w-64 sm:w-80 md:w-full h-auto object-contain backdrop-blur-[0.3px] mb-4 md:-mb-20 mx-auto"/>
           
-          <p className="text-xl md:text-2xl text-white/90 mt-34 mb-14 leading-relaxed max-w-4xl mx-auto font-medium">
+          <p className="text-xl md:text-2xl text-white/90 mt-34 mb-14 leading-relaxed max-w-4xl mx-auto font-semibold">
             Real Capital. Real Analysis. Real Impact.
           </p>
           <div className="flex flex-col sm:flex-row gap-6 justify-center mb-4">
