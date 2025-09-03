@@ -233,6 +233,11 @@ const CBWestWebsite: React.FC = () => {
     description: 'Finance and technology focused student with experience in software and web development.',
     year: 'Senior'
   }, {
+    name: 'Priyansh Patel',
+    role: 'Chief Marketing Officer',
+    description: 'Background in fundamental analysis wit skills in portfolio strategy, marketing, and digital creation.',
+    year: 'Senior'
+  } , {
     name: 'Abhi Medi',
     role: 'Head of Macro',
     description: 'Finance focused student with macroeconomics interest.',
@@ -242,7 +247,43 @@ const CBWestWebsite: React.FC = () => {
     role: 'Head of Equity',
     description: 'Apply Now!',
     year: 'TBD+'
+  } , {
+    name: 'Macro Analayst Team',
+    role: 'Macro Analyst',
+    description: 'Apply Now!',
+    year: 'Mixed'
+  } , {
+    name: 'Equity Analayst Team',
+    role: 'Equity Analyst',
+    description: 'Apply Now!',
+    year: 'Mixed'
   }
+];
+const advisoryBoard = [{
+  name: 'Nicholas Allgyer',
+  role: 'Economics Teacher @ CB West',
+} , {
+  name: 'Brian Pultro',
+  role: 'Pultro Financial Management',
+} , {
+  name: 'Imaan Mulji',
+  role: 'Custodian @ Bucks Capital',
+} , {
+  name: 'Martin Meo',
+  role: 'Business Teacher @ CB West',
+} , {
+  name: 'Dan Pfieffer',
+  role: 'Financial Services Representative/Advisor ',
+} , {
+  name: 'Frank Pustay',
+  role: 'House Principal @ CB West',
+} , {
+  name: 'Trevor Fennimore',
+  role: 'Custodian @ Bucks Capital',
+} , {
+  name: 'Chris Meister',
+  role: 'Senior VP @ Univest',
+} , 
 ];
   const portfolioCompanies = [{
     name: 'TBD',
@@ -336,6 +377,13 @@ const CBWestWebsite: React.FC = () => {
               Join Us
             </button>
             </Link>
+            <button
+              onClick={() => navigate('/donors')}
+              className="text-white hover:text-white/70 transition-all duration-300 text-sm font-medium uppercase tracking-wide"
+            >
+              Donors
+              
+            </button>
             <Link to={{ pathname: "/", hash: "#donate" }}>
               <Button className="bg-white/10 hover:bg-white hover:text-black text-white font-semibold px-6 py-2 border uppercase border-white/20 hover:border-white transition-all duration-300">
                 Donate Now
@@ -659,59 +707,7 @@ const CBWestWebsite: React.FC = () => {
         </div>
       </section>
         */}
-      {/* Team Section */}
-      <section id="team" className="py-24 bg-background relative">
-        {/* Top curve from performance section */}
-        <div className="absolute top-0 left-0 right-0 overflow-hidden">
-          <svg 
-            viewBox="0 0 1200 120" 
-            preserveAspectRatio="none" 
-            className="relative block w-full h-16 md:h-20 lg:h-24"
-            style={{ transform: 'rotate(180deg)' }}
-          >
-            <path 
-              d="M0,80 C150,20 350,100 600,60 C850,20 1050,80 1200,40 L1200,120 L0,120 Z" 
-              fill="white"
-            />
-          </svg>
-        </div>
-
-        <div className="container mx-auto px-6 relative z-10 pt-16">
-          <div className="fade-in-trigger text-center mb-16">
-            <h2 className="text-display text-4xl md:text-6xl font-black text-primary mb-8">
-              Our Team
-            </h2>
-            <p className="text-xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
-              Led by passionate students with diverse academic backgrounds and guided by experienced 
-              faculty advisors and industry professionals.
-            </p>
-          </div>
-
-          <div className="fade-in-trigger grid md:grid-cols-3 gap-8 mb-16">
-            {teamMembers.map((member, index) => <Card key={index} className="p-8 bg-black border-primary/20 shadow-bold hover:shadow-large transition-all duration-300 text-center rounded-2xl">
-                <div className="w-24 h-24 bg-primary rounded-2xl mx-auto mb-6 flex items-center justify-center">
-                  <span className="text-2xl font-black text-primary-foreground">
-                    {member.name.split(' ').map(n => n[0]).join('')}
-                  </span>
-                </div>
-                <h3 className="text-xl font-bold text-white mb-2">{member.name}</h3>
-                <div className="text-primary font-bold mb-1">{member.role}</div>
-                <div className="text-sm text-white/60 font-medium mb-4">{member.year}</div>
-                <p className="text-white/80">{member.description}</p>
-              </Card>)}
-          </div>
-
-          <div className="fade-in-trigger text-center">
-            <div className="bg-black/5 border border-black/10 rounded-3xl p-8 max-w-4xl mx-auto">
-              <h3 className="text-2xl font-bold text-black mb-4">Faculty Advisor</h3>
-              <div className="text-lg font-semibold text-primary mb-2"> Martin Meo</div>
-              <p className="text-foreground/80">
-                Accounting Teacher at CB West. Oversees all operations and ensures that Bucks Capital maintains its standard of quality investments.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+      
 
       {/* Join Us */}
       <section id="join-us" className="py-24 bg-muted/30">

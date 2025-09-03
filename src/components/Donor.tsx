@@ -5,7 +5,7 @@ import { Card } from '@/components/ui/card';
 import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
 
-const Impact: React.FC = () => {
+const About: React.FC = () => {
   const [navScrolled, setNavScrolled] = useState(false);
   const navigate = useNavigate();
 
@@ -120,7 +120,7 @@ const Impact: React.FC = () => {
               </div>
             </nav>
 
-      <section id="impact" className="py-24 bg-white relative">
+      <section id="donors" className="py-24 bg-white relative">
         {/* Top curve to match counters section */}
         <div className="absolute top-0 left-0 right-0 overflow-hidden">
           <svg 
@@ -138,25 +138,20 @@ const Impact: React.FC = () => {
         <div className="container mx-auto px-6 relative z-10 pt-16">
           <div className="fade-in-trigger max-w-5xl mx-auto text-center -mt-14 mb-16">
             <h2 className="text-display text-4xl md:text-6xl font-black text-primary-background mb-12">
-              Impact
+              Donors
             </h2>
             <p className="text-2xl text-black leading-relaxed mb-8">
-              <strong>Bucks Capital</strong> strives to not just foster knowledge, but also community. Bucks Capital directly benefits our surrounding community due to our rule of donating all profits made to surrounding non-profits and local initiatives. Bucks Capital exists solely to serve the community and we thank you for your faith in our organization.
+              <strong>Bucks Capital</strong> wants to thank each and every one of our donors for their support. Without donations, we would not be able to continue our mission.
             </p>
-            <p className="text-2xl text-black leading-relaxed mb-8">
-              Our program cultivates financial liateracy, critical thinking, and professional skills that extend far beyond the trading floor. As we grow, we aim to expand access to this hands-on learning model, reinvesting knowledge and resources back into local schools and organizations to empower the next generation of financially capable leaders.
-            </p>
-            <p className="text-2xl text-black leading-relaxed mb-8">
-              At Bucks Capital, our impact is measured in more than returns — it’s seen in the confidence, skills, and opportunities our members carry forward. We equip students with the tools to navigate real markets, fostering a mindset of responsibility and long-term thinking. As our fund grows, so will our ability to mentor, educate, and invest back into the community, creating a cycle of learning and leadership that benefits far beyond our own members.
-            </p>
-          </div>          
+            <p className="text-4xl text-black font-bold leading-relaxed mt-20 mb-8">
+              List of Donors
+            </p>    
+          </div>
         </div>
-
-        
       </section>
       </div>
 };
 
 
 
-export default Impact;
+export default About;

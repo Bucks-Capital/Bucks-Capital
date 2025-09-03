@@ -104,6 +104,13 @@ const WhatWeDo: React.FC = () => {
                     Join Us
                   </button>
                   </Link>
+                  <button
+              onClick={() => navigate('/donors')}
+              className="text-white hover:text-white/70 transition-all duration-300 text-sm font-medium uppercase tracking-wide"
+            >
+              Donors
+              
+            </button>
                   <Link to={{ pathname: "/", hash: "#donate" }}>
                     <Button className="bg-white/10 hover:bg-white hover:text-black text-white font-semibold px-6 py-2 border uppercase border-white/20 hover:border-white transition-all duration-300">
                       Donate Now
@@ -151,19 +158,7 @@ const WhatWeDo: React.FC = () => {
           </div>          
         </div>
 
-        {/* Bottom curve transition to portfolio */}
-        <div className="absolute bottom-0 left-0 right-0 overflow-hidden">
-          <svg 
-            viewBox="0 0 1200 120" 
-            preserveAspectRatio="none" 
-            className="relative block w-full h-16 md:h-20 lg:h-24"
-          >
-            <path 
-              d="M0,60 C150,0 350,80 600,40 C850,0 1050,60 1200,20 L1200,120 L0,120 Z" 
-              fill="#000000"
-            />
-          </svg>
-        </div>
+        
       </section>
       </div>
 };

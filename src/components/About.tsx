@@ -45,6 +45,80 @@ const About: React.FC = () => {
       behavior: 'smooth'
     });
   };
+  
+  const teamMembers = [{
+    name: 'Zahin Mulji',
+    role: 'Chief Investment Officer',
+    description: 'Finance focused student with expertise in equity analysis and portfolio optimization.',
+    year: 'Senior'
+  }, {
+    name: 'Harrison Cornwell',
+    role: 'Chief Financial Officer',
+    description: 'Business focused student with prior experience in public relations.',
+    year: 'Senior'
+  }, {
+    name: 'Aadi Anantuni',
+    role: 'Chief Operations Officer',
+    description: 'Finance focused student interested in equity research and financial modeling.',
+    year: 'Senior'
+  }, {
+    name: 'Shreyas Raju',
+    role: 'Chief Technology Officer',
+    description: 'Finance and technology focused student with experience in software and web development.',
+    year: 'Senior'
+  }, {
+    name: 'Priyansh Patel',
+    role: 'Chief Marketing Officer',
+    description: 'Background in fundamental analysis wit skills in portfolio strategy, marketing, and digital creation.',
+    year: 'Senior'
+  } , {
+    name: 'Abhi Medi',
+    role: 'Head of Macro',
+    description: 'Finance focused student with macroeconomics interest.',
+    year: 'Junior'
+  } , {
+    name: 'Position Available',
+    role: 'Head of Equity',
+    description: 'Apply Now!',
+    year: 'TBD+'
+  } , {
+    name: 'Macro Analayst Team',
+    role: 'Macro Analyst',
+    description: 'Apply Now!',
+    year: 'Mixed'
+  } , {
+    name: 'Equity Analayst Team',
+    role: 'Equity Analyst',
+    description: 'Apply Now!',
+    year: 'Mixed'
+  }
+];
+const advisoryBoard = [{
+  name: 'Nicholas Allgyer',
+  role: 'Economics Teacher @ CB West',
+} , {
+  name: 'Brian Pultro',
+  role: 'Pultro Financial Management',
+} , {
+  name: 'Imaan Mulji',
+  role: 'Custodian @ Bucks Capital',
+} , {
+  name: 'Martin Meo',
+  role: 'Business Teacher @ CB West',
+} , {
+  name: 'Dan Pfieffer',
+  role: 'Financial Services Representative/Advisor ',
+} , {
+  name: 'Frank Pustay',
+  role: 'House Principal @ CB West',
+} , {
+  name: 'Trevor Fennimore',
+  role: 'Custodian @ Bucks Capital',
+} , {
+  name: 'Chris Meister',
+  role: 'Senior VP @ Univest',
+} , 
+];
 
       return <div className="min-h-screen bg-background overflow-x-hidden">
             {/* Navigation */}
@@ -104,6 +178,13 @@ const About: React.FC = () => {
                     Join Us
                   </button>
                   </Link>
+                  <button
+              onClick={() => navigate('/donors')}
+              className="text-white hover:text-white/70 transition-all duration-300 text-sm font-medium uppercase tracking-wide"
+            >
+              Donors
+              
+            </button>
                   <Link to={{ pathname: "/", hash: "#donate" }}>
                     <Button className="bg-white/10 hover:bg-white hover:text-black text-white font-semibold px-6 py-2 border uppercase border-white/20 hover:border-white transition-all duration-300">
                       Donate Now
@@ -130,7 +211,7 @@ const About: React.FC = () => {
         </div>
         <div className="container mx-auto px-6 relative z-10 pt-16">
           <div className="fade-in-trigger max-w-5xl mx-auto text-center -mt-14 mb-16">
-            <h2 className="text-display text-4xl md:text-6xl font-black text-primary-background mb-12">
+            <h2 className="text-display text-4xl md:text-6xl font-black text-primary mb-12">
               About
             </h2>
             <p className="text-2xl text-black leading-relaxed mb-8">
@@ -168,6 +249,68 @@ const About: React.FC = () => {
           </div>
         </div>
 
+        {/* Team Section */}
+      <section id="team" className="py-24 bg-background relative">
+        {/* Top curve from performance section */}
+        <div className="absolute top-0 left-0 right-0 overflow-hidden">
+          <svg 
+            viewBox="0 0 1200 120" 
+            preserveAspectRatio="none" 
+            className="relative block w-full h-16 md:h-20 lg:h-24"
+            style={{ transform: 'rotate(180deg)' }}
+          >
+            <path 
+              d="M0,80 C150,20 350,100 600,60 C850,20 1050,80 1200,40 L1200,120 L0,120 Z" 
+              fill="white"
+            />
+          </svg>
+        </div>
+
+        <div className="container mx-auto px-6 relative z-10 pt-16">
+          <div className="fade-in-trigger text-center mb-16">
+            <h2 className="text-display text-4xl md:text-6xl font-black text-primary mb-8">
+              Our Team
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
+              Led by passionate students with diverse academic backgrounds and guided by experienced 
+              faculty advisors and industry professionals.
+            </p>
+          </div>
+
+          {/* Combined Team Section */}
+          <div className="fade-in-trigger grid md:grid-cols-3 gap-12 mb-16 max-w-7xl mx-auto">
+            {teamMembers.map((member, index) => <Card key={index} className="p-8 bg-black border-primary/20 shadow-bold hover:shadow-large transition-all duration-300 text-center rounded-2xl">
+                <div className="w-24 h-24 bg-primary rounded-2xl mx-auto mb-6 flex items-center justify-center">
+                  <span className="text-2xl font-black text-primary-foreground">
+                    {member.name.split(' ').map(n => n[0]).join('')}
+                  </span>
+                </div>
+                <h3 className="text-xl font-bold text-white mb-2">{member.name}</h3>
+                <div className="text-primary font-bold mb-1">{member.role}</div>
+                <div className="text-sm text-white/60 font-medium mb-4">{member.year}</div>
+                <p className="text-white/80">{member.description}</p>
+              </Card>)}
+          </div>
+
+
+          <div className="fade-in-trigger text-center">
+            <div className="bg-black/5 border border-black/10 rounded-3xl p-8 max-w-4xl mb-20 mx-auto">
+              <h3 className="text-4xl font-bold text-black mb-4">Advisory Board</h3>
+              <div className="text-lg font-semibold text-primary -mb-2"> Bucks Capital</div>
+            </div>
+          </div>
+        </div>
+
+          <div className="fade-in-trigger grid md:grid-cols-4 gap-4 mb-16">
+            {advisoryBoard.map((member, index) => <Card key={`compact-${index}`} className="p-4 bg-gray-100 border-gray-200 shadow-soft hover:shadow-medium transition-all duration-300 text-center rounded-xl">
+                <h3 className="text-2xl font-bold text-gray-800 mb-1">{member.name}</h3>
+                <div className="text-primary font-semibold text-lg mb-1">{member.role}</div>
+              </Card>)}
+          </div>
+
+          
+      </section>
+
         {/* Bottom curve transition to portfolio */}
         <div className="absolute bottom-0 left-0 right-0 overflow-hidden">
           <svg 
@@ -183,6 +326,8 @@ const About: React.FC = () => {
         </div>
       </section>
       </div>
+
+      
 };
 
 
