@@ -532,7 +532,7 @@ const advisoryBoard = [{
       </section>
 
       {/* Transition Section */}
-      <div className="bg-white h-32 relative z-10"></div>
+      <div className="bg-white h-48 relative z-20"></div>
 
       {/*
       // Animated Counters Section 
