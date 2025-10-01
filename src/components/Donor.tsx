@@ -221,8 +221,22 @@ const About: React.FC = () => {
               <strong>Bucks Capital</strong> wants to thank each and every one of our donors for their support. Without donations, we would not be able to continue our mission.
             </p>
             <p className="text-4xl text-black font-bold leading-relaxed mt-20 mb-8">
+              Educational Partners
+            </p>    
+            <p className="text-2xl text-black leading-relaxed mb-8">
+                <img src="/Trendspider_black_Logo.jpg" alt="Trendspider Logo" className="h-80 w-auto mx-auto block" />
+            </p>
+            <div className="fade-in-trigger max-w-5xl mx-auto text-center -mt-14 mb-16"></div>
+            <p className="text-4xl text-black font-bold leading-relaxed mt-20 mb-8">
               List of Donors
             </p>    
+            <p className="text-2xl text-black leading-relaxed mb-8">
+                Sarah Cornwell Jewlery <br></br>
+                McCusker Family <br></br>
+                Mulji Family <br></br>
+                Cornwell Family <br></br>
+                Medi Family <br></br>
+            </p>
           </div>
         </div>
       </section>
