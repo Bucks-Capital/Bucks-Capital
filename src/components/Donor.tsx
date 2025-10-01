@@ -140,10 +140,10 @@ const About: React.FC = () => {
                 </div>
 
                 {/* Mobile menu */}
-                <div className={`md:hidden transition-all duration-300 ease-in-out overflow-hidden ${
+                <div className={`md:hidden transition-all duration-300 ease-in-out overflow-hidden relative z-50 ${
                   mobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
                 }`}>
-                  <div className="py-4 space-y-1">
+                  <div className="py-4 space-y-1 bg-white border-t border-gray-200">
                     <button
                       onClick={() => {
                         navigate('/');
