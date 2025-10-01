@@ -1,20 +1,24 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ArrowRight, TrendingUp, Users, Target, Award, GraduationCap, BookOpen, DollarSign, PieChart, BarChart3, LineChart, Briefcase, Crown } from 'lucide-react';
+import { ArrowRight, TrendingUp, Users, Target, Award, GraduationCap, BookOpen, DollarSign, PieChart, BarChart3, LineChart, Briefcase, Crown, Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from "react-router-dom";
+
 const CBWestWebsite: React.FC = () => {
   const navigate = useNavigate();
   const heroRef = useRef<HTMLDivElement>(null);
+  const footerRef = useRef<HTMLDivElement>(null);
   const [mousePosition, setMousePosition] = useState({
     x: 0,
     y: 0
   });
   const [scrollY, setScrollY] = useState(0);
   const [navScrolled, setNavScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [countersVisible, setCountersVisible] = useState(false);
+  const [visibleElements, setVisibleElements] = useState<Set<string>>(new Set());
   const [counterValues, setCounterValues] = useState({
     aum: 0,
     students: 0,
@@ -49,17 +53,49 @@ const CBWestWebsite: React.FC = () => {
     };
   }, []);
 
-  // Scrolls to Donate Section From Any Page
-  const location = useLocation();
-
+  // Intersection Observer for scroll animations
   useEffect(() => {
-    if (location.hash === "#donate") {
-      // Delay until after DOM render so positions are correct
-      setTimeout(() => {
-      smoothScrollTo("donate");
-      }, 50);
-    }
-  }, [location]);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            console.log('Element entered viewport:', entry.target.id);
+            setVisibleElements(prev => new Set(prev).add(entry.target.id));
+          }
+        });
+      },
+      {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+      }
+    );
+
+    const elements = [
+      footerRef.current
+    ].filter(Boolean);
+
+    console.log('Observing elements:', elements.map(el => el?.id));
+
+    elements.forEach((element) => {
+      if (element) {
+        observer.observe(element);
+        console.log('Started observing:', element.id);
+      }
+    });
+
+    return () => {
+      elements.forEach((element) => {
+        if (element) observer.unobserve(element);
+      });
+    };
+  }, []);
+
+  // Debug visible elements
+  useEffect(() => {
+    console.log('Visible elements updated:', Array.from(visibleElements));
+  }, [visibleElements]);
+
+
 
     // Scrolls to Join Us Section From Any Page
   const location2 = useLocation();
@@ -319,205 +355,184 @@ const advisoryBoard = [{
 
   
 
-  return <div className="min-h-screen bg-background overflow-x-hidden">
+  return (
+    <div className="min-h-screen bg-background overflow-x-hidden">
       {/* Navigation */}
-      <nav className={` top-0 left-0 right-0 z-50 h-[72px] w-full transition-all duration-[600ms] ${
+      <nav className={`fixed top-0 left-0 right-0 z-50 h-20 w-full transition-all duration-500 ${
         navScrolled 
-          ? 'bg-black shadow-lg' 
-          : 'bg-black/90 backdrop-blur-lg'
+          ? 'bg-white/95 shadow-lg border-b border-gray-200' 
+          : 'bg-white/90 backdrop-blur-lg border-b border-gray-100'
       }`}
       style={{
         backdropFilter: navScrolled ? 'none' : 'blur(20px)',
       }}>
-        <div className="h-full px-6 flex items-center justify-between max-w-screen-2xl mx-auto">
-          {/* Left: Crest Icon */}
+        <div className="h-full px-8 flex items-center justify-between max-w-screen-2xl mx-auto">
+          {/* Left: Logo */}
           <button
             onClick={scrollToTop}
-            className="flex items-center space-x-3 text-white hover:scale-105 transition-transform duration-300"
+            className="flex items-center space-x-4 text-foreground hover:text-primary transition-colors duration-300"
           >
-            {/*<Crown className="h-8 w-8 text-white" /> */}
-            <img src="/crest.png" alt="Crest Icon" className="h-8 w-8 object-contain" />
-            <span className="text-xl font-display font-black">Bucks Capital</span>
+            <img src="/crest.png" alt="Crest Icon" className="h-10 w-10 object-contain" />
+            <span className="text-xl font-bold text-foreground">Bucks Capital</span>
           </button>
 
           {/* Center: Navigation Links */}
-          <div className="hidden md:flex items-center space-x-12">
+          <div className="hidden md:flex items-center space-x-10">
             <button
-              onClick={() => navigate('/')}
-              className="text-white hover:text-white/70 transition-all duration-300 text-sm font-medium uppercase tracking-wide"
+              onClick={() => {
+                navigate('/');
+                setTimeout(() => {
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }, 100);
+              }}
+              className="text-foreground hover:text-primary transition-colors duration-300 text-base font-semibold uppercase tracking-wide relative group"
             >
               Home
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
             </button>
 
             <button
               onClick={() => navigate('/about')}
-              className="text-white hover:text-white/70 transition-all duration-300 text-sm font-medium uppercase tracking-wide"
+              className="text-foreground hover:text-primary transition-colors duration-300 text-base font-semibold uppercase tracking-wide relative group"
             >
-              About Us
+              About
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
             </button>
             
             <button
-              onClick={() => navigate('/whatwedo')}
-              className="text-white hover:text-white/70 transition-all duration-300 text-sm font-medium uppercase tracking-wide"
-            >
-              What We Do
-            </button>
-
-            <button
-              onClick={() => navigate('/impact')}
-              className="text-white hover:text-white/70 transition-all duration-300 text-sm font-medium uppercase tracking-wide"
-            >
-              Impact
-              
-            </button>
-            <Link to={{ pathname: "/", hash: "#join-us" }}>
-            <button
-              className="text-white hover:text-white/70 transition-all duration-300 text-sm font-medium uppercase tracking-wide"
+              onClick={() => navigate('/about')}
+              className="text-foreground hover:text-primary transition-colors duration-300 text-base font-semibold uppercase tracking-wide relative group"
             >
               Join Us
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
             </button>
-            </Link>
             <button
               onClick={() => navigate('/donors')}
-              className="text-white hover:text-white/70 transition-all duration-300 text-sm font-medium uppercase tracking-wide"
+              className="text-foreground hover:text-primary transition-colors duration-300 text-base font-semibold uppercase tracking-wide relative group"
             >
               Donors
-              
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
             </button>
-            <Link to={{ pathname: "/", hash: "#donate" }}>
-              <Button className="bg-white/10 hover:bg-white hover:text-black text-white font-semibold px-6 py-2 border uppercase border-white/20 hover:border-white transition-all duration-300">
-                Donate Now
-              </Button>
-            </Link>
+            <Button 
+              onClick={() => navigate('/donation')}
+              className="bg-primary hover:bg-primary-dark text-primary-foreground font-bold px-8 py-3 rounded-full transition-all duration-300 hover:shadow-lg text-base"
+            >
+              Donate
+            </Button>
+          </div>
+
+          {/* Mobile menu button */}
+          <div className="md:hidden">
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="text-foreground hover:text-primary transition-colors duration-300"
+            >
+              {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile menu */}
+        <div className={`md:hidden bg-white border-t border-gray-200 transition-all duration-300 ease-in-out overflow-hidden ${
+          mobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+        }`}>
+          <div className="px-6 py-4 space-y-1">
+              <button
+                onClick={() => {
+                  navigate('/');
+                  setMobileMenuOpen(false);
+                  setTimeout(() => {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }, 100);
+                }}
+                className="block w-full text-left text-foreground hover:text-primary transition-colors duration-300 text-sm font-semibold py-3"
+              >
+                Home
+              </button>
+              <button
+                onClick={() => {
+                  navigate('/about');
+                  setMobileMenuOpen(false);
+                }}
+                className="block w-full text-left text-foreground hover:text-primary transition-colors duration-300 text-sm font-semibold py-3"
+              >
+                About
+              </button>
+              <button
+                onClick={() => {
+                  navigate('/about');
+                  setMobileMenuOpen(false);
+                }}
+                className="block w-full text-left text-foreground hover:text-primary transition-colors duration-300 text-sm font-semibold py-3"
+              >
+                Join Us
+              </button>
+              <button
+                onClick={() => {
+                  navigate('/donors');
+                  setMobileMenuOpen(false);
+                }}
+                className="block w-full text-left text-foreground hover:text-primary transition-colors duration-300 text-sm font-semibold py-3"
+              >
+                Donors
+              </button>
+              <button
+                onClick={() => {
+                  navigate('/donation');
+                  setMobileMenuOpen(false);
+                }}
+                className="w-full bg-primary text-primary-foreground font-semibold px-4 py-3 transition-all duration-300 text-center text-sm mt-4 rounded-full"
+              >
+                Donate
+              </button>
           </div>
         </div>
       </nav>
    
       {/* Hero Section */}
-      <section ref={heroRef} className="h-screen bg-cover bg-center bg-no-repeat " style={{
-      backgroundImage: "url('/mountain_hero.jpg')", transform: !window.matchMedia('(prefers-reduced-motion: reduce)').matches ? `translateY(${scrollY * 0.2}px)` : undefined
+      <section ref={heroRef} className="h-screen bg-cover bg-center bg-no-repeat flex items-center justify-center relative overflow-hidden" style={{
+      backgroundImage: "url('/mountain_hero.jpg')", 
+      transform: !window.matchMedia('(prefers-reduced-motion: reduce)').matches ? `translateY(${scrollY * 0.2}px)` : undefined
     }}>
-        {/* Interactive geometric elements */}
-        {!window.matchMedia('(prefers-reduced-motion: reduce)').matches && <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute w-24 h-24 border-2 border-accent/30 rounded-lg animate-float opacity-60" style={{
-          top: '15%',
-          left: '10%',
-          animationDelay: '0s',
-          transform: `translate(${mousePosition.x * 0.03}px, ${mousePosition.y * 0.03}px)`
-        }} />
-            <div className="absolute w-20 h-20 border-2 border-gold/40 rounded-full animate-float opacity-40" style={{
-          top: '70%',
-          right: '15%',
-          animationDelay: '2s',
-          transform: `translate(${mousePosition.x * -0.02}px, ${mousePosition.y * 0.04}px)`
-        }} />
-            <div className="absolute w-16 h-16 bg-accent/10 rounded-lg animate-float" style={{
-          bottom: '25%',
-          left: '20%',
-          animationDelay: '4s',
-          transform: `translate(${mousePosition.x * 0.05}px, ${mousePosition.y * -0.03}px)`
-        }} />
-            <div className="absolute w-12 h-12 border border-gold/30 rounded-full animate-float" style={{
-          top: '40%',
-          right: '25.7%',
-          animationDelay: '6s',
-          transform: `translate(${mousePosition.x * -0.04}px, ${mousePosition.y * 0.02}px)`
-        }} />
-          </div>}
+        {/* Professional gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-black/60 via-black/40 to-black/50"></div>
         
-        
-        <div className=" relative z-10 text-center px-6 max-w-6xl mx-auto text-white">
-          <img src="/buckscapitalhorizontalnobgwhite.png" alt="Bucks Capital Banner" className="w-64 sm:w-80 md:w-full h-auto object-contain backdrop-blur-[0.3px] mb-4 md:-mb-20 mx-auto"/>
-          
-          <p className="text-xl md:text-2xl text-white/90 mt-34 mb-14 leading-relaxed max-w-4xl mx-auto font-semibold">
-            Real Capital. Real Analysis. Real Impact.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-6 justify-center mb-4">
-            <Button onClick={() => smoothScrollTo('donate')} size="lg" className="bg-primary hover:bg-primary-dark text-primary-foreground font-bold text-lg px-10 py-5 shadow-bold transition-all duration-300 rounded-full">
-              Donate <BarChart3 className="ml-2 h-5 w-5" />
-            </Button>
-            <Button onClick={() => smoothScrollTo('team')} size="lg" className="bg-black/20 border-2 border-white text-white hover:bg-white hover:text-black text-lg px-10 py-5 transition-all duration-300 rounded-full font-semibold backdrop-blur-sm">
-              View Our Team <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-          </div>
-        </div>
-
-        {/* Scroll indicator */}
-        {!window.matchMedia('(prefers-reduced-motion: reduce)').matches && <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-            <div className="w-6 h-10 border-2 border-white/60 rounded-full flex justify-center">
-              <div className="w-1 h-3 bg-white/60 rounded-full mt-2 animate-pulse"></div>
+          <div className="relative z-20 text-center px-6 max-w-6xl mx-auto pt-20 md:pt-0">
+            <div className="mb-12 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+              <img src="/buckscapitalhorizontalnobgwhite.png" alt="Bucks Capital" className="w-80 sm:w-96 md:w-full h-auto object-contain mx-auto mb-4 md:mb-8 drop-shadow-2xl"/>
             </div>
-          </div>}
-
-        
-      </section>
-
-      {/* About Section */}
-      <section id="about" className="py-24 bg-background relative">
-        {/* Top curve to match counters section */}
-        <div className="absolute top-0 left-0 right-0 overflow-hidden">
-          <svg 
-            viewBox="0 0 1200 120" 
-            preserveAspectRatio="none" 
-            className="relative block w-full h-16 md:h-20 lg:h-24"
-            style={{ transform: 'rotate(180deg)' }}
-          >
-            <path 
-              d="M0,0 C150,60 350,0 600,40 C850,80 1050,20 1200,60 L1200,120 L0,120 Z" 
-              fill="white"
-            />
-          </svg>
-        </div>
-        <div className="container mx-auto px-6 relative z-10 pt-16">
-          <div className="fade-in-trigger max-w-5xl mx-auto text-center mb-16">
-            <h2 className="text-display text-4xl md:text-6xl font-black text-black mb-12">
-              Who We Are
-            </h2>
-            <p className="text-2xl text-foreground/80 leading-relaxed mb-8">
-              Bucks Capital is more than just a club—we're a comprehensive 
-              financial education program that gives students real-world investment experience with actual capital.
-            </p>
+            
+            <div className="max-w-4xl mx-auto mb-16 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+              <h1 className="text-xl md:text-2xl font-bold text-white -mb-8 leading-tight">
+                Real Capital. Real Analysis. Real Impact.
+              </h1>
+            </div>
+            
+            <div className="flex flex-col sm:flex-row gap-6 justify-center animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
+              <Button 
+                onClick={() => navigate('/about')} 
+                className="bg-primary hover:bg-primary-dark text-primary-foreground font-semibold px-10 py-4 rounded-full transition-all duration-300 hover:shadow-xl text-lg"
+              >
+                About Us
+              </Button>
+              <Button 
+                onClick={() => navigate('/donation')} 
+                variant="outline"
+                className="border-2 border-white text-white hover:bg-white hover:text-slate-800 font-semibold px-10 py-4 rounded-full transition-all duration-300 text-lg bg-white/10 backdrop-blur-sm"
+              >
+                Donate
+              </Button>
+            </div>
           </div>
-          
-          <div className="fade-in-trigger grid md:grid-cols-3 gap-8">
-            {[{
-            icon: GraduationCap,
-            title: 'Educational Excellence',
-            description: 'There is a financial literacy gap that leaves students underprepared. "Young people lack the necessary knowledge to make fundamental economic decisions (McInerney, 2005)."'
-          }, {
-            icon: Target,
-            title: 'Real Impact',
-            description: 'Real Capital > Paper Portfolios. High school students often learn personal finance through games, simulations, or "paper portfolios."'
-          }, {
-            icon: Users,
-            title: 'Collaborative Growth',
-            description: 'Checks & Balances. All investment decisions follow a documented approval process that requires multiple sign-offs, ensuring proper risk management and educational value.'
-          }].map((feature, index) => <Card key={index} className="p-8 bg-black text-white border-primary/20 shadow-bold hover:shadow-large transition-all duration-300 text-center rounded-2xl">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-primary rounded-2xl mb-6">
-                  <feature.icon className="h-8 w-8 text-primary-foreground" />
-                </div>
-                <h3 className="text-xl font-bold text-primary mb-4">{feature.title}</h3>
-                <p className="text-white/80">{feature.description}</p>
-              </Card>)}
-          </div>
+
+        {/* Professional scroll indicator */}
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
+          <div className="w-px h-20 bg-gradient-to-b from-white/80 to-transparent"></div>
         </div>
       </section>
 
-        {/*  
-        //Bottom curve transition to portfolio//
-        <div className="absolute bottom-0 left-0 right-0 overflow-hidden">
-          <svg 
-            viewBox="0 0 1200 120" 
-            preserveAspectRatio="none" 
-            className="relative block w-full h-16 md:h-20 lg:h-24"
-          >
-            <path 
-              d="M0,60 C150,0 350,80 600,40 C850,0 1050,60 1200,20 L1200,120 L0,120 Z" 
-              fill="#FFFFFF"
-            />
-          </svg>
-        </div>   
-        */}
+      {/* Transition Section */}
+      <div className="bg-white h-32 relative z-10"></div>
 
       {/*
       // Animated Counters Section 
@@ -709,119 +724,104 @@ const advisoryBoard = [{
         */}
       
 
-      {/* Join Us */}
-      <section id="join-us" className="py-24 bg-muted/30">
-        <div className="container mx-auto px-6">
-          <div className="fade-in-trigger max-w-5xl mx-auto text-center">
-            <h2 className="text-display text-4xl md:text-6xl font-black text-primary mb-8">
-              Ready to Start Your Finance Journey?
-            </h2>
-            <p className="text-xl text-muted-foreground mb-10 leading-relaxed">
-              Join Bucks Capital and gain hands-on experience managing real investments while building 
-              the skills and network that will launch your career in finance.
-            </p>
-            
-            <div className="grid md:grid-cols-2 gap-8 mb-12">
-              <Card className="p-8 bg-card border-border shadow-soft">
-                <BookOpen className="h-12 w-12 text-primary mb-4 mx-auto" />
-                <h3 className="text-xl font-bold text-white mb-4">What You'll Learn</h3>
-                <ul className="text-left space-y-2 text-muted-foreground">
-                  <li className="flex items-center">
-                    <div className="w-2 h-2 bg-primary rounded-full mr-3"></div>
-                    Financial modeling & valuation
-                  </li>
-                  <li className="flex items-center">
-                    <div className="w-2 h-2 bg-primary rounded-full mr-3"></div>
-                    Portfolio management strategies
-                  </li>
-                  <li className="flex items-center">
-                    <div className="w-2 h-2 bg-primary rounded-full mr-3"></div>
-                    Market research & analysis
-                  </li>
-                  <li className="flex items-center">
-                    <div className="w-2 h-2 bg-primary rounded-full mr-3"></div>
-                    Risk assessment techniques
-                  </li>
-                </ul>
-              </Card>
-              
-              <Card className="p-8 bg-card border-border shadow-soft">
-                <Briefcase className="h-12 w-12 text-primary mb-4 mx-auto" />
-                <h3 className="text-xl font-bold text-white mb-4">Requirements</h3>
-                <ul className="text-left space-y-2 text-muted-foreground">
-                  <li className="flex items-center">
-                    <div className="w-2 h-2 bg-primary rounded-full mr-3"></div>
-                    Current Central Bucks student
-                  </li>
-                  <li className="flex items-center">
-                    <div className="w-2 h-2 bg-primary rounded-full mr-3"></div>
-                    3.0+ GPA requirement
-                  </li>
-                  <li className="flex items-center">
-                    <div className="w-2 h-2 bg-primary rounded-full mr-3"></div>
-                    Interest in finance/business
-                  </li>
-                  <li className="flex items-center">
-                    <div className="w-2 h-2 bg-primary rounded-full mr-3"></div>
-                    Commitment to weekly meetings
-                  </li>
-                </ul>
-              </Card>
-            </div>
 
-            <div className="flex flex-col sm:flex-row gap-6 justify-center">
-              <a href="https://forms.gle/WLXY5CheUyqNJLYL9" target="_blank" rel="noopener noreferrer">
-              <Button size="lg"  className="bg-gradient-primary text-primary-foreground font-bold text-lg px-10 py-5 shadow-primary hover:shadow-primary/70 transition-all duration-300 rounded-full border-2 border-grey-500 hover:border-primary">
-                Apply Now
-              </Button>
-              </a>
-              <a href="mailto:bucks.capital1@gmail.com">
-              <Button size="lg" variant="outline" className="border-2 border-primary hover:border-gray text-primary hover:bg-gray hover:text-primary-foreground text-lg px-10 py-5 transition-all duration-300 rounded-full font-semibold">
-                Contact Us
-              </Button>
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Donate Section */}
-      <section id="donate" className="py-24 bg-black text-white">
+      {/* Market Performance Section */}
+      <section className="py-32 bg-gray-50">
         <div className="container mx-auto px-6">
-          <div className="fade-in-trigger text-center">
-            <h2 className="text-display text-4xl md:text-6xl font-black text-white mb-8">
-              Support Our Mission
-            </h2>
-            <p className="text-xl text-white/80 max-w-4xl mx-auto leading-relaxed mb-10">
-              Help us provide more students with real-world investment experience and financial education.
-            </p>
-            <a href="https://donate.stripe.com/fZueVe4B0bm37NPaZ55wI00">
-              <Button className="bg-primary hover:bg-primary-dark text-primary-foreground font-bold text-lg px-10 py-5">
-              Make a Donation
-              </Button>
-            </a>
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="text-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-foreground mb-8">
+                Market Performance
+              </h2>
+              <div className="w-24 h-1 bg-primary mx-auto mb-8"></div>
+              <p className="text-base sm:text-lg md:text-xl text-foreground/80 leading-relaxed max-w-4xl mx-auto font-medium px-4">
+                Track real-time market performance and understand the financial landscape 
+                that shapes our investment decisions.
+              </p>
+            </div>
             
+            <div className="animate-fade-in-up">
+              <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+                <div className="w-full h-96">
+                  <iframe
+                    src="https://www.tradingview.com/embed-widget/hotlists/?locale=en#%7B%22colorTheme%22%3A%22light%22%2C%22dateRange%22%3A%2212M%22%2C%22exchange%22%3A%22US%22%2C%22showChart%22%3Atrue%2C%22width%22%3A%22100%25%22%2C%22height%22%3A%22400%22%2C%22isTransparent%22%3Afalse%2C%22showSymbolLogo%22%3Afalse%2C%22showFloatingTooltip%22%3Afalse%2C%22plotLineColorGrowing%22%3A%22rgba(26%2C%2077%2C%2046%2C%201)%22%2C%22plotLineColorFalling%22%3A%22rgba(26%2C%2077%2C%2046%2C%201)%22%2C%22gridLineColor%22%3A%22rgba(240%2C%20243%2C%20250%2C%200)%22%2C%22scaleFontColor%22%3A%22%230F0F0F%22%2C%22belowLineFillColorGrowing%22%3A%22rgba(26%2C%2077%2C%2046%2C%200.12)%22%2C%22belowLineFillColorFalling%22%3A%22rgba(26%2C%2077%2C%2046%2C%200.12)%22%2C%22belowLineFillColorGrowingBottom%22%3A%22rgba(41%2C%2098%2C%20255%2C%200)%22%2C%22belowLineFillColorFallingBottom%22%3A%22rgba(41%2C%2098%2C%20255%2C%200)%22%2C%22symbolActiveColor%22%3A%22rgba(26%2C%2077%2C%2046%2C%200.12)%22%7D"
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      border: 'none',
+                      borderRadius: '8px'
+                    }}
+                    title="TradingView Market Data"
+                  />
+                </div>
+                <div className="mt-4 text-center text-sm text-gray-500">
+                  <a href="https://www.tradingview.com/markets/stocks-usa/" rel="noopener nofollow" target="_blank" className="text-primary hover:text-primary-dark">
+                    Stocks today
+                  </a>
+                  <span> by TradingView</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="py-12 bg-primary text-primary-foreground">
+      <footer id="footer" ref={footerRef} className="py-20 bg-white text-gray-900">
         <div className="container mx-auto px-6">
-          <div className="text-center">
-            {/* <div className="text-3xl font-display font-black mb-4">
-              CB West <span className="text-primary">SMIF</span>
-            </div> */}
-            <img src="/deernobg.png" alt="Crest Icon" className="h-40 w-40 content-center block mx-auto mb-10 object-contain" />
-            <p className="text-primary-foreground/80 mb-6">
-              Empowering the next generation of financial leaders.
-            </p>
-            <div className="text-sm text-primary-foreground/60">
-              © 2025 Bucks Capital. All rights reserved.
+          <div className="max-w-7xl mx-auto">
+            <div className={`grid lg:grid-cols-4 gap-12 mb-16 transition-all duration-1000 ${visibleElements.has('footer') ? 'animate-fade-in-up' : 'opacity-0 translate-y-8'}`}>
+              <div className="lg:col-span-2">
+                <div className="flex items-center mb-6">
+                  <img src="/crest.png" alt="Bucks Capital" className="h-10 w-10 object-contain mr-4" />
+                  <span className="text-2xl font-bold text-gray-900">Bucks Capital</span>
+                </div>
+                <p className="text-gray-600 text-lg font-medium mb-6 max-w-md">
+                  Empowering the next generation of financial leaders through hands-on investment experience and professional mentorship.
+                </p>
+                <div className="w-16 h-1 bg-primary"></div>
+              </div>
+              
+              <div className={`transition-all duration-1000 ${visibleElements.has('footer') ? 'animate-stagger-fade-in' : 'opacity-0 translate-y-8'}`} style={{ animationDelay: '0.2s' }}>
+                <h3 className="text-lg font-bold text-gray-900 mb-6 uppercase tracking-wide">Contact</h3>
+                <div className="space-y-4">
+                  <p className="text-gray-600 font-medium">
+                    Central Bucks High School West<br />
+                    Doylestown, PA 18901
+                  </p>
+                  <p className="text-gray-600 font-medium">
+                    bucks.capital1@gmail.com
+                  </p>
+                </div>
+              </div>
+              
+              <div className={`transition-all duration-1000 ${visibleElements.has('footer') ? 'animate-stagger-fade-in' : 'opacity-0 translate-y-8'}`} style={{ animationDelay: '0.4s' }}>
+                <h3 className="text-lg font-bold text-gray-900 mb-6 uppercase tracking-wide">Mission</h3>
+                <p className="text-gray-600 font-medium">
+                  Bridging the gap between classroom theory and real-world financial responsibility.
+                </p>
+              </div>
+            </div>
+            
+            <div className={`pt-8 border-t border-gray-200 transition-all duration-1000 ${visibleElements.has('footer') ? 'animate-fade-in-up' : 'opacity-0 translate-y-8'}`} style={{ animationDelay: '0.6s' }}>
+              <div className="flex flex-col md:flex-row justify-between items-center">
+                <p className="text-gray-500 font-medium mb-4 md:mb-0">
+                  © 2025 Bucks Capital. All rights reserved.
+                </p>
+                <div className="flex space-x-6">
+                  <a href="mailto:bucks.capital1@gmail.com" className="text-gray-500 hover:text-gray-900 transition-colors duration-300 font-medium">
+                    Contact
+                  </a>
+                  <a href="https://forms.gle/WLXY5CheUyqNJLYL9" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-gray-900 transition-colors duration-300 font-medium">
+                    Apply
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </footer>
-    </div>;
+    </div>
+  );
 };
 export default CBWestWebsite;

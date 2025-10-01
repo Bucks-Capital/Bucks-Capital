@@ -2,57 +2,139 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Animation keyframes */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes staggerFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Animation utility classes */
+.animate-fade-in-up {
+  animation: fadeInUp 0.8s ease-out forwards;
+  opacity: 0;
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft 0.8s ease-out forwards;
+  opacity: 0;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.8s ease-out forwards;
+  opacity: 0;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.6s ease-out forwards;
+  opacity: 0;
+}
+
+.animate-stagger-fade-in {
+  animation: staggerFadeIn 0.6s ease-out forwards;
+  opacity: 0;
+}
+
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
 All colors MUST be HSL.
 */
 
 @layer base {
   :root {
-    /* Bucks Capital Color Palette - Updated */
-    --background: 0 0% 100%; /* #FFFFFF */
-    --foreground: 0 0% 0%;   /* #000000 */
+    /* Bucks Capital Color Palette - Clean White Theme */
+    --background: 0 0% 100%; /* Pure White */
+    --foreground: 0 0% 15%;   /* Dark Gray instead of black */
 
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 0%;
+    --card-foreground: 0 0% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 0%;
+    --popover-foreground: 0 0% 15%;
 
-    /* Green Primary (#164F2C) */
+    /* Green Primary - Keep the same green */
     --primary: 140 54% 20%;
     --primary-foreground: 0 0% 100%;
     --primary-light: 140 54% 30%;
     --primary-dark: 140 54% 15%;
 
-    /* Pure Black (#000000) */
-    --black: 0 0% 0%;
-    --black-soft: 0 0% 5%;
-    --black-light: 0 0% 10%;
+    /* Soft grays instead of pure black */
+    --black: 0 0% 15%;
+    --black-soft: 0 0% 20%;
+    --black-light: 0 0% 25%;
 
-    /* Moss Green (#928C6F) */
+    /* Moss Green - Keep the same */
     --moss: 50 15% 55%;
     --moss-light: 50 15% 65%;
     --moss-dark: 50 15% 45%;
 
-    /* Gray (#757780) */
-    --accent: 240 8% 47%;
-    --accent-foreground: 0 0% 100%;
-    --accent-light: 240 8% 57%;
-    --accent-dark: 240 8% 37%;
+    /* Light gray accent */
+    --accent: 0 0% 85%;
+    --accent-foreground: 0 0% 15%;
+    --accent-light: 0 0% 90%;
+    --accent-dark: 0 0% 80%;
 
-    /* Secondary remains moss green */
-    --secondary: 50 15% 55%;
-    --secondary-foreground: 0 0% 0%;
-    --secondary-light: 50 15% 65%;
-    --secondary-dark: 50 15% 45%;
+    /* Secondary - light gray */
+    --secondary: 0 0% 95%;
+    --secondary-foreground: 0 0% 15%;
+    --secondary-light: 0 0% 98%;
+    --secondary-dark: 0 0% 92%;
 
     --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 40%;
+    --muted-foreground: 0 0% 45%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 0 0% 85%;
+    --border: 0 0% 90%;
     --input: 0 0% 95%;
     --ring: 140 54% 20%;
 
@@ -101,52 +183,51 @@ All colors MUST be HSL.
   }
 
   .dark {
-
-    /* Bucks Capital Color Palette - Updated */
-    --background: 0 0% 100%; /* #FFFFFF */
-    --foreground: 0 0% 0%;   /* #000000 */
+    /* Bucks Capital Color Palette - Clean White Theme (same as light) */
+    --background: 0 0% 100%; /* Pure White */
+    --foreground: 0 0% 15%;   /* Dark Gray instead of black */
 
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 0%;
+    --card-foreground: 0 0% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 0%;
+    --popover-foreground: 0 0% 15%;
 
-    /* Green Primary (#164F2C) */
+    /* Green Primary - Keep the same green */
     --primary: 140 54% 20%;
     --primary-foreground: 0 0% 100%;
     --primary-light: 140 54% 30%;
     --primary-dark: 140 54% 15%;
 
-    /* Pure Black (#000000) */
-    --black: 0 0% 0%;
-    --black-soft: 0 0% 5%;
-    --black-light: 0 0% 10%;
+    /* Soft grays instead of pure black */
+    --black: 0 0% 15%;
+    --black-soft: 0 0% 20%;
+    --black-light: 0 0% 25%;
 
-    /* Moss Green (#928C6F) */
+    /* Moss Green - Keep the same */
     --moss: 50 15% 55%;
     --moss-light: 50 15% 65%;
     --moss-dark: 50 15% 45%;
 
-    /* Gray (#757780) */
-    --accent: 240 8% 47%;
-    --accent-foreground: 0 0% 100%;
-    --accent-light: 240 8% 57%;
-    --accent-dark: 240 8% 37%;
+    /* Light gray accent */
+    --accent: 0 0% 85%;
+    --accent-foreground: 0 0% 15%;
+    --accent-light: 0 0% 90%;
+    --accent-dark: 0 0% 80%;
 
-    /* Secondary remains moss green */
-    --secondary: 50 15% 55%;
-    --secondary-foreground: 0 0% 0%;
-    --secondary-light: 50 15% 65%;
-    --secondary-dark: 50 15% 45%;
+    /* Secondary - light gray */
+    --secondary: 0 0% 95%;
+    --secondary-foreground: 0 0% 15%;
+    --secondary-light: 0 0% 98%;
+    --secondary-dark: 0 0% 92%;
 
     --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 40%;
+    --muted-foreground: 0 0% 45%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 0 0% 85%;
+    --border: 0 0% 90%;
     --input: 0 0% 95%;
     --ring: 140 54% 20%;
 

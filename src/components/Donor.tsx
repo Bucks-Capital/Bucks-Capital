@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ArrowRight, TrendingUp, Users, Target, Award, GraduationCap, BookOpen, DollarSign, PieChart, BarChart3, LineChart, Briefcase, Crown } from 'lucide-react';
+import { ArrowRight, TrendingUp, Users, Target, Award, GraduationCap, BookOpen, DollarSign, PieChart, BarChart3, LineChart, Briefcase, Crown, Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Link } from "react-router-dom";
@@ -7,7 +7,18 @@ import { useNavigate } from 'react-router-dom';
 
 const About: React.FC = () => {
   const [navScrolled, setNavScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
+
+  // Handle scroll effect for navbar
+  useEffect(() => {
+    const handleScroll = () => {
+      setNavScrolled(window.scrollY > 50);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Smooth scroll function with 600ms timing
   const smoothScrollTo = (elementId: string) => {
@@ -48,74 +59,140 @@ const About: React.FC = () => {
 
       return <div className="min-h-screen bg-background overflow-x-hidden">
             {/* Navigation */}
-            <nav className={` top-0 left-0 right-0 z-50 h-[72px] w-full transition-all duration-[600ms] ${
+            <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
               navScrolled 
-                ? 'bg-black shadow-lg' 
-                : 'bg-black/90 backdrop-blur-lg'
-            }`}
-            style={{
-              backdropFilter: navScrolled ? 'none' : 'blur(20px)',
-            }}>
-              <div className="h-full px-6 flex items-center justify-between max-w-screen-2xl mx-auto">
-                {/* Left: Crest Icon */}
-                <button
-                  onClick={scrollToTop}
-                  className="flex items-center space-x-3 text-white hover:scale-105 transition-transform duration-300"
-                >
-                  {/*<Crown className="h-8 w-8 text-white" /> */}
-                  <img src="/crest.png" alt="Crest Icon" className="h-8 w-8 object-contain" />
-                  <span className="text-xl font-display font-black">Bucks Capital</span>
-                </button>
-      
-                {/* Center: Navigation Links */}
-                <div className="hidden md:flex items-center space-x-12">
-                  <button
-                    onClick={() => navigate('/')}
-                    className="text-white hover:text-white/70 transition-all duration-300 text-sm font-medium uppercase tracking-wide"
-                  >
-                    Home
-                  </button>
-      
-                  <button
-                    onClick={() => navigate('/about')}
-                    className="text-white hover:text-white/70 transition-all duration-300 text-sm font-medium uppercase tracking-wide"
-                  >
-                    About Us
-                  </button>
-                  
-                  <button
-                    onClick={() => navigate('/whatwedo')}
-                    className="text-white hover:text-white/70 transition-all duration-300 text-sm font-medium uppercase tracking-wide"
-                  >
-                    What We Do
-                  </button>
-      
-                  <button
-                    onClick={() => navigate('/impact')}
-                    className="text-white hover:text-white/70 transition-all duration-300 text-sm font-medium uppercase tracking-wide"
-                  >
-                    Impact
+                ? 'bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-200' 
+                : 'bg-transparent'
+            }`}>
+              <div className="container mx-auto px-6">
+                <div className="flex items-center justify-between h-20">
+                  {/* Logo */}
+                  <div className="flex items-center">
+                    <button 
+                      onClick={() => {
+                        navigate('/');
+                        setTimeout(() => {
+                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }, 100);
+                      }}
+                      className="flex items-center"
+                    >
+                      <img src="/crest.png" alt="Bucks Capital" className="h-10 w-10 object-contain mr-4" />
+                      <span className="text-2xl font-bold text-gray-900">Bucks Capital</span>
+                    </button>
+                  </div>
+
+                  {/* Desktop Navigation */}
+                  <div className="hidden md:flex items-center space-x-8">
+                    <button 
+                      onClick={() => {
+                        navigate('/');
+                        setTimeout(() => {
+                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }, 100);
+                      }}
+                      className="text-foreground hover:text-primary transition-colors duration-300 text-base font-semibold uppercase tracking-wide relative group"
+                    >
+                      Home
+                      <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
+                    </button>
                     
-                  </button>
-                  <Link to={{ pathname: "/", hash: "#join-us" }}>
-                  <button
-                    className="text-white hover:text-white/70 transition-all duration-300 text-sm font-medium uppercase tracking-wide"
-                  >
-                    Join Us
-                  </button>
-                  </Link>
-                  <button
-              onClick={() => navigate('/donors')}
-              className="text-white hover:text-white/70 transition-all duration-300 text-sm font-medium uppercase tracking-wide"
-            >
-              Donors
-              
-            </button>
-                  <Link to={{ pathname: "/", hash: "#donate" }}>
-                    <Button className="bg-white/10 hover:bg-white hover:text-black text-white font-semibold px-6 py-2 border uppercase border-white/20 hover:border-white transition-all duration-300">
-                      Donate Now
+                    <button
+                      onClick={() => navigate('/about')}
+                      className="text-foreground hover:text-primary transition-colors duration-300 text-base font-semibold uppercase tracking-wide relative group"
+                    >
+                      About
+                      <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
+                    </button>
+                    
+                    <Link to={{ pathname: "/", hash: "#join-us" }}>
+                      <button className="text-foreground hover:text-primary transition-colors duration-300 text-base font-semibold uppercase tracking-wide relative group">
+                        Join Us
+                        <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
+                      </button>
+                    </Link>
+                    
+                    <button
+                      onClick={() => navigate('/donors')}
+                      className="text-foreground hover:text-primary transition-colors duration-300 text-base font-semibold uppercase tracking-wide relative group"
+                    >
+                      Donors
+                      <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
+                    </button>
+                    
+                    <Button 
+                      onClick={() => navigate('/donation')}
+                      className="bg-primary hover:bg-primary-dark text-primary-foreground font-bold px-8 py-3 rounded-full transition-all duration-300 hover:shadow-lg text-base"
+                    >
+                      Donate
                     </Button>
-                  </Link>
+                  </div>
+
+                  {/* Mobile menu button */}
+                  <div className="md:hidden">
+                    <button
+                      onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                      className="text-foreground hover:text-primary transition-colors duration-300"
+                    >
+                      {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Mobile menu */}
+                <div className={`md:hidden transition-all duration-300 ease-in-out overflow-hidden ${
+                  mobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+                }`}>
+                  <div className="py-4 space-y-1">
+                    <button
+                      onClick={() => {
+                        navigate('/');
+                        setTimeout(() => {
+                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }, 100);
+                        setMobileMenuOpen(false);
+                      }}
+                      className="block w-full text-left text-foreground hover:text-primary transition-colors duration-300 text-sm font-semibold py-3"
+                    >
+                      Home
+                    </button>
+                    <button
+                      onClick={() => {
+                        navigate('/about');
+                        setMobileMenuOpen(false);
+                      }}
+                      className="block w-full text-left text-foreground hover:text-primary transition-colors duration-300 text-sm font-semibold py-3"
+                    >
+                      About
+                    </button>
+                    <button
+                      onClick={() => {
+                        smoothScrollTo('join-us');
+                        setMobileMenuOpen(false);
+                      }}
+                      className="block w-full text-left text-foreground hover:text-primary transition-colors duration-300 text-sm font-semibold py-3"
+                    >
+                      Join Us
+                    </button>
+                    <button
+                      onClick={() => {
+                        navigate('/donors');
+                        setMobileMenuOpen(false);
+                      }}
+                      className="block w-full text-left text-foreground hover:text-primary transition-colors duration-300 text-sm font-semibold py-3"
+                    >
+                      Donors
+                    </button>
+                    <button
+                      onClick={() => {
+                        navigate('/donation');
+                        setMobileMenuOpen(false);
+                      }}
+                      className="w-full bg-primary text-primary-foreground font-semibold px-4 py-3 transition-all duration-300 text-center text-sm mt-4 rounded-full"
+                    >
+                      Donate
+                    </button>
+                  </div>
                 </div>
               </div>
             </nav>
