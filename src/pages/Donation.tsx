@@ -112,7 +112,7 @@ const Donation: React.FC = () => {
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
               </button>
               
-              <Link to={{ pathname: "/", hash: "#join-us" }}>
+              <Link to={{ pathname: "/about", hash: "#join-us" }}>
                 <button className="text-foreground hover:text-primary transition-colors duration-300 text-base font-semibold uppercase tracking-wide relative group">
                   Join Us
                   <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
@@ -169,15 +169,14 @@ const Donation: React.FC = () => {
               >
                 About
               </button>
-              <button
-                onClick={() => {
-                  smoothScrollTo('join-us');
-                  setMobileMenuOpen(false);
-                }}
-                className="block w-full text-left text-foreground hover:text-primary transition-colors duration-300 text-sm font-semibold py-3"
-              >
-                Join Us
-              </button>
+              <Link to={{ pathname: "/about", hash: "#join-us" }}>
+                <button
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block w-full text-left text-foreground hover:text-primary transition-colors duration-300 text-sm font-semibold py-3"
+                >
+                  Join Us
+                </button>
+              </Link>
               <button
                 onClick={() => {
                   navigate('/donors');

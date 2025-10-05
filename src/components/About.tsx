@@ -165,7 +165,7 @@ const advisoryBoard = [{
                     <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
                   </button>
                   
-                  <Link to={{ pathname: "/", hash: "#join-us" }}>
+                  <Link to={{ pathname: "/about", hash: "#join-us" }}>
                   <button
                     className="text-foreground hover:text-primary transition-colors duration-300 text-base font-semibold uppercase tracking-wide relative group"
                   >
@@ -255,7 +255,7 @@ const advisoryBoard = [{
               </div>
             </nav>
 
-      <section id="about" className="py-32 bg-white">
+      <section id="about" className="py-32 bg-gray-50">
         <div className="container mx-auto px-6">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-20">
@@ -298,7 +298,7 @@ const advisoryBoard = [{
               description: 'Work alongside an advisory board of finance professionals who provide guidance and insight into the finance industry.',
               number: '03'
             }].map((feature, index) => <div key={index} className="group relative">
-                <div className="bg-white border border-gray-100 rounded-2xl p-8 hover:shadow-xl transition-all duration-500 hover:-translate-y-2">
+                <div className="bg-gray-50 border border-gray-100 rounded-2xl p-8 hover:shadow-xl transition-all duration-500 hover:-translate-y-2">
                   <div className="flex items-center justify-between mb-6">
                     <div className="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center group-hover:bg-primary/20 transition-colors duration-300">
                       <feature.icon className="h-8 w-8 text-primary" />
@@ -332,7 +332,7 @@ const advisoryBoard = [{
               {/* Team Members */}
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-8 mb-20">
                 {teamMembers.map((member, index) => (
-                  <div key={index} className="bg-white border border-gray-100 rounded-2xl p-4 md:p-8 hover:shadow-xl transition-all duration-500 hover:-translate-y-2 text-center">
+                  <div key={index} className="bg-gray-50 border border-gray-100 rounded-2xl p-4 md:p-8 hover:shadow-xl transition-all duration-500 hover:-translate-y-2 text-center">
                     <div className="w-12 h-12 md:w-20 md:h-20 bg-primary/10 rounded-2xl mx-auto mb-4 md:mb-6 flex items-center justify-center">
                       <span className="text-lg md:text-2xl font-black text-primary">
                         {member.name.split(' ').map(n => n[0]).join('')}
@@ -359,7 +359,7 @@ const advisoryBoard = [{
 
               <div className="grid md:grid-cols-4 gap-6">
                 {advisoryBoard.map((member, index) => (
-                  <div key={`advisory-${index}`} className="bg-white border border-gray-100 rounded-xl p-6 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 text-center">
+                  <div key={`advisory-${index}`} className="bg-gray-50 border border-gray-100 rounded-xl p-6 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 text-center">
                     <h4 className="text-lg font-bold text-foreground mb-2">{member.name}</h4>
                     <div className="text-primary font-semibold text-sm">{member.role}</div>
                   </div>
@@ -385,7 +385,7 @@ const advisoryBoard = [{
               </div>
               
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 mb-20 px-4">
-                <div className="bg-white rounded-2xl p-6 sm:p-8 lg:p-10 shadow-lg border border-gray-100 hover:-translate-y-2 transition-all duration-300 hover:shadow-xl">
+                <div className="bg-gray-50 rounded-2xl p-6 sm:p-8 lg:p-10 shadow-lg border border-gray-100 hover:-translate-y-2 transition-all duration-300 hover:shadow-xl">
                   <div className="flex items-center mb-8">
                     <div className="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center mr-4 sm:mr-6 flex-shrink-0">
                       <BookOpen className="h-8 w-8 text-primary" />
@@ -409,7 +409,7 @@ const advisoryBoard = [{
                   </ul>
                 </div>
                 
-                <div className="bg-white rounded-2xl p-6 sm:p-8 lg:p-10 shadow-lg border border-gray-100 hover:-translate-y-2 transition-all duration-300 hover:shadow-xl">
+                <div className="bg-gray-50 rounded-2xl p-6 sm:p-8 lg:p-10 shadow-lg border border-gray-100 hover:-translate-y-2 transition-all duration-300 hover:shadow-xl">
                   <div className="flex items-center mb-8">
                     <div className="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center mr-4 sm:mr-6 flex-shrink-0">
                       <Briefcase className="h-8 w-8 text-primary" />
@@ -453,7 +453,7 @@ const advisoryBoard = [{
         </section>
 
         {/* Footer */}
-        <footer className="py-20 bg-white text-gray-900">
+        <footer className="py-20 bg-gray-50 text-gray-900">
           <div className="container mx-auto px-6">
             <div className="max-w-7xl mx-auto">
               <div className="grid lg:grid-cols-4 gap-12 mb-16">
