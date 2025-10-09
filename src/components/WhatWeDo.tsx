@@ -97,7 +97,7 @@ const WhatWeDo: React.FC = () => {
                     Impact
                     
                   </button>
-                  <Link to={{ pathname: "/", hash: "#join-us" }}>
+                  <Link to={{ pathname: "/about", hash: "#join-us" }}>
                   <button
                     className="text-white hover:text-white/70 transition-all duration-300 text-sm font-medium uppercase tracking-wide"
                   >
