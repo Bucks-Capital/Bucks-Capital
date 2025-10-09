@@ -491,34 +491,34 @@ const advisoryBoard = [{
    
       {/* Hero Section */}
       <section ref={heroRef} className="h-screen bg-cover bg-center bg-no-repeat flex items-center justify-center relative overflow-hidden" style={{
-      backgroundImage: "url('/mountain_hero.jpg')", 
+      backgroundImage: "url('/forestBG.jpg')", 
       transform: !window.matchMedia('(prefers-reduced-motion: reduce)').matches ? `translateY(${scrollY * 0.2}px)` : undefined
     }}>
         {/* Professional gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-br from-black/60 via-black/40 to-black/50"></div>
         
-          <div className="relative z-20 text-center px-6 max-w-6xl mx-auto pt-20 md:pt-0">
-            <div className="mb-12 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+          <div className="absolute top-1/2 left-0 right-0 z-20 text-center px-6 max-w-6xl mx-auto transform -translate-y-1/2">
+            <div className="mb-12 animate-fade-in-up hidden" style={{ animationDelay: '0.2s' }}>
               <img src="/buckscapitalhorizontalnobgwhite.png" alt="Bucks Capital" className="w-80 sm:w-96 md:w-full h-auto object-contain mx-auto mb-4 md:mb-8 drop-shadow-2xl"/>
             </div>
             
-            <div className="max-w-4xl mx-auto mb-16 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
-              <h1 className="text-xl md:text-2xl font-bold text-white -mb-8 leading-tight">
+            <div className="max-w-4xl mx-auto mb-16 animate-fade-in-up text-center" style={{ animationDelay: '0.4s' }}>
+              <h1 className="text-2xl md:text-3xl font-semibold text-white -mb-8 leading-tight inter-font ml-3">
                 Real Capital. Real Analysis. Real Impact.
               </h1>
             </div>
             
-            <div className="flex flex-col sm:flex-row gap-6 justify-center animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
+            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
               <Button 
                 onClick={() => navigate('/about')} 
-                className="bg-primary hover:bg-primary-dark text-primary-foreground font-semibold px-10 py-4 rounded-full transition-all duration-300 hover:shadow-xl text-lg"
+                className="bg-primary hover:bg-primary-dark text-primary-foreground font-semibold px-12 py-5 rounded-full transition-all duration-300 hover:shadow-xl text-xl"
               >
                 About Us
               </Button>
               <Button 
                 onClick={() => navigate('/donation')} 
                 variant="outline"
-                className="border-2 border-white text-white hover:bg-white hover:text-slate-800 font-semibold px-10 py-4 rounded-full transition-all duration-300 text-lg bg-white/10 backdrop-blur-sm"
+                className="border-2 border-white text-white hover:bg-white hover:text-slate-800 font-semibold px-12 py-5 rounded-full transition-all duration-300 text-xl bg-white/10 backdrop-blur-sm"
               >
                 Donate
               </Button>
@@ -532,7 +532,7 @@ const advisoryBoard = [{
       </section>
 
       {/* Transition Section */}
-      <div className="bg-white h-48 relative z-20"></div>
+      <div className="bg-white h-96 relative z-20"></div>
 
       {/*
       // Animated Counters Section 
