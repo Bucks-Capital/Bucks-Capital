@@ -496,8 +496,8 @@ const advisoryBoard = [{
         <div className="absolute inset-0 bg-gradient-to-br from-black/60 via-black/40 to-black/50"></div>
         
           <div className="absolute top-1/2 left-0 right-0 z-20 text-center px-6 max-w-6xl mx-auto transform -translate-y-1/2">
-            <div className="mb-12 animate-fade-in-up hidden" style={{ animationDelay: '0.2s' }}>
-              <img src="/buckscapitalhorizontalnobgwhite.png" alt="Bucks Capital" className="w-80 sm:w-96 md:w-full h-auto object-contain mx-auto mb-4 md:mb-8 drop-shadow-2xl"/>
+            <div className="mb-12 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+              <img src="/image0.png" alt="Bucks Capital Logo" className="w-96 sm:w-[28rem] md:w-[32rem] lg:w-[36rem] h-auto object-contain mx-auto mb-4 md:mb-8 drop-shadow-2xl"/>
             </div>
             
             <div className="max-w-4xl mx-auto mb-16 animate-fade-in-up text-center" style={{ animationDelay: '0.4s' }}>
