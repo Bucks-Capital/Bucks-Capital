@@ -4,10 +4,12 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
+import ApplicationModal from './ApplicationModal';
 
 const About: React.FC = () => {
   const [navScrolled, setNavScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isApplicationModalOpen, setIsApplicationModalOpen] = useState(false);
   const navigate = useNavigate();
 
   // Smooth scroll function with 600ms timing
@@ -436,11 +438,12 @@ const advisoryBoard = [{
 
               <div className="text-center">
                 <div className="flex flex-col sm:flex-row gap-6 justify-center">
-                  <a href="https://forms.gle/WLXY5CheUyqNJLYL9" target="_blank" rel="noopener noreferrer">
-                    <Button className="bg-primary hover:bg-primary-dark text-primary-foreground font-bold px-12 py-4 rounded-full transition-all duration-300 hover:shadow-xl text-lg">
-                      Apply Now
-                    </Button>
-                  </a>
+                  <Button 
+                    onClick={() => setIsApplicationModalOpen(true)}
+                    className="bg-primary hover:bg-primary-dark text-primary-foreground font-bold px-12 py-4 rounded-full transition-all duration-300 hover:shadow-xl text-lg"
+                  >
+                    Apply Now
+                  </Button>
                   <a href="mailto:bucks.capital1@gmail.com">
                     <Button variant="outline" className="border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground font-semibold px-12 py-4 rounded-full transition-all duration-300 text-lg">
                       Contact Us
@@ -498,15 +501,24 @@ const advisoryBoard = [{
                     <a href="mailto:bucks.capital1@gmail.com" className="text-gray-500 hover:text-gray-900 transition-colors duration-300 font-medium">
                       Contact
                     </a>
-                    <a href="https://forms.gle/WLXY5CheUyqNJLYL9" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-gray-900 transition-colors duration-300 font-medium">
+                    <button 
+                      onClick={() => setIsApplicationModalOpen(true)}
+                      className="text-gray-500 hover:text-gray-900 transition-colors duration-300 font-medium"
+                    >
                       Apply
-                    </a>
+                    </button>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </footer>
+
+        {/* Application Modal */}
+        <ApplicationModal 
+          isOpen={isApplicationModalOpen} 
+          onClose={() => setIsApplicationModalOpen(false)} 
+        />
     </div>
   );
 };

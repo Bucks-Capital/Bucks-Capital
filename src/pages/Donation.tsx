@@ -3,12 +3,14 @@ import { Button } from '@/components/ui/button';
 import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
+import ApplicationModal from '@/components/ApplicationModal';
 
 const Donation: React.FC = () => {
   const navigate = useNavigate();
   const [navScrolled, setNavScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [visibleElements, setVisibleElements] = useState<Set<string>>(new Set());
+  const [isApplicationModalOpen, setIsApplicationModalOpen] = useState(false);
   const donateRef = useRef<HTMLDivElement>(null);
   const footerRef = useRef<HTMLDivElement>(null);
 
@@ -284,9 +286,12 @@ const Donation: React.FC = () => {
                     </a>
                   </li>
                   <li>
-                    <a href="https://forms.gle/WLXY5CheUyqNJLYL9" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-900 transition-colors duration-300 font-medium">
+                    <button 
+                      onClick={() => setIsApplicationModalOpen(true)}
+                      className="text-gray-600 hover:text-gray-900 transition-colors duration-300 font-medium"
+                    >
                       Apply Now
-                    </a>
+                    </button>
                   </li>
                 </ul>
               </div>
@@ -301,15 +306,24 @@ const Donation: React.FC = () => {
                   <a href="mailto:bucks.capital1@gmail.com" className="text-gray-500 hover:text-gray-900 transition-colors duration-300 font-medium">
                     Contact
                   </a>
-                  <a href="https://forms.gle/WLXY5CheUyqNJLYL9" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-gray-900 transition-colors duration-300 font-medium">
+                  <button 
+                    onClick={() => setIsApplicationModalOpen(true)}
+                    className="text-gray-500 hover:text-gray-900 transition-colors duration-300 font-medium"
+                  >
                     Apply
-                  </a>
+                  </button>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </footer>
+
+      {/* Application Modal */}
+      <ApplicationModal 
+        isOpen={isApplicationModalOpen} 
+        onClose={() => setIsApplicationModalOpen(false)} 
+      />
     </div>
   );
 };

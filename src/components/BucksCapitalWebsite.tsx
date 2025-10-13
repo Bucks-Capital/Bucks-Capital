@@ -5,6 +5,7 @@ import { Card } from '@/components/ui/card';
 import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from "react-router-dom";
+import ApplicationModal from './ApplicationModal';
 
 const CBWestWebsite: React.FC = () => {
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ const CBWestWebsite: React.FC = () => {
   const [navScrolled, setNavScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [countersVisible, setCountersVisible] = useState(false);
+  const [isApplicationModalOpen, setIsApplicationModalOpen] = useState(false);
   const [visibleElements, setVisibleElements] = useState<Set<string>>(new Set());
   const [counterValues, setCounterValues] = useState({
     aum: 0,
@@ -810,15 +812,24 @@ const advisoryBoard = [{
                   <a href="mailto:bucks.capital1@gmail.com" className="text-gray-500 hover:text-gray-900 transition-colors duration-300 font-medium">
                     Contact
                   </a>
-                  <a href="https://forms.gle/WLXY5CheUyqNJLYL9" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-gray-900 transition-colors duration-300 font-medium">
+                  <button 
+                    onClick={() => setIsApplicationModalOpen(true)}
+                    className="text-gray-500 hover:text-gray-900 transition-colors duration-300 font-medium"
+                  >
                     Apply
-                  </a>
+                  </button>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </footer>
+
+      {/* Application Modal */}
+      <ApplicationModal 
+        isOpen={isApplicationModalOpen} 
+        onClose={() => setIsApplicationModalOpen(false)} 
+      />
     </div>
   );
 };
