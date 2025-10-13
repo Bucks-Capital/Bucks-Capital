@@ -37,8 +37,8 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onLogin }) => {
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <div className="mx-auto w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
-            <Lock className="h-6 w-6 text-green-600" />
+          <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+            <Lock className="h-6 w-6 text-primary" />
           </div>
           <CardTitle className="text-2xl font-bold text-foreground">Admin Access</CardTitle>
           <CardDescription>
@@ -100,7 +100,7 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onLogin }) => {
 
             <Button
               type="submit"
-              className="w-full bg-green-600 hover:bg-green-700 text-white"
+              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
               disabled={isLoading}
             >
               {isLoading ? 'Signing in...' : 'Sign In'}

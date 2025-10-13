@@ -110,10 +110,10 @@ const DynamicApplicationForm: React.FC<DynamicApplicationFormProps> = ({ onSubmi
                     const file = e.target.files?.[0];
                     formField.onChange(file);
                   }}
-                  className="h-20 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary-dark"
+                  className="h-20 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/90"
                 />
                 {formField.value && (
-                  <span className="text-sm text-green-600 flex items-center gap-1">
+                  <span className="text-sm text-primary flex items-center gap-1">
                     <Upload className="h-4 w-4" />
                     {formField.value.name}
                   </span>
@@ -170,24 +170,24 @@ const DynamicApplicationForm: React.FC<DynamicApplicationFormProps> = ({ onSubmi
       </div>
 
       {/* Position Descriptions Information Box */}
-      <Card className="p-6 mb-8 bg-green-50 border-green-200">
+      <Card className="p-6 mb-8 bg-primary/5 border-primary/20">
         <div className="flex items-start gap-3">
-          <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
-            <Briefcase className="h-5 w-5 text-green-600" />
+          <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+            <Briefcase className="h-5 w-5 text-primary" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-green-900 mb-4">Position Descriptions</h3>
-            <div className="space-y-4 text-sm text-green-800">
+            <h3 className="text-lg font-semibold text-primary mb-4">Position Descriptions</h3>
+            <div className="space-y-4 text-sm text-primary/80">
               <div>
-                <h4 className="font-semibold text-green-900 mb-1">Equity Analyst</h4>
+                <h4 className="font-semibold text-primary mb-1">Equity Analyst</h4>
                 <p>Manages coverage of 1–3 equity positions within the portfolio. Requires a solid understanding of fundamental analysis and familiarity with technical indicators to support idea generation, valuation, and ongoing position monitoring.</p>
               </div>
               <div>
-                <h4 className="font-semibold text-green-900 mb-1">Macro Analyst</h4>
+                <h4 className="font-semibold text-primary mb-1">Macro Analyst</h4>
                 <p>Analyzes macroeconomic trends and their impact on markets, with focus areas including global economic indicators, geopolitical developments, currency markets, and overall market structure. Responsible for generating actionable insights that inform portfolio allocation and risk positioning.</p>
               </div>
               <div>
-                <h4 className="font-semibold text-green-900 mb-1">Quantitative Analyst</h4>
+                <h4 className="font-semibold text-primary mb-1">Quantitative Analyst</h4>
                 <p>Focuses on risk analytics, development of tools and GUIs, and backtesting strategies for both the Macro and Equity teams. Must have proficiency in Python and general coding skills, along with a working knowledge of financial statistics and modeling techniques.</p>
               </div>
             </div>

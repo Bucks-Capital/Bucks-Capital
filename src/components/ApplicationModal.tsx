@@ -115,8 +115,8 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({ isOpen, onClose }) 
             // Success state
             <div className="p-8 text-center">
               <div className="flex items-center justify-center mb-6">
-                <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center">
-                  <CheckCircle className="h-12 w-12 text-green-600" />
+                <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center">
+                  <CheckCircle className="h-12 w-12 text-primary" />
                 </div>
               </div>
               <h2 className="text-3xl font-bold text-foreground mb-4">

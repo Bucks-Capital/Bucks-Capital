@@ -170,7 +170,7 @@ const ApplicationViewer: React.FC<ApplicationViewerProps> = ({ onLogout }) => {
     switch (status) {
       case 'pending': return 'bg-yellow-100 text-yellow-800';
       case 'reviewed': return 'bg-blue-100 text-blue-800';
-      case 'accepted': return 'bg-green-100 text-green-800';
+      case 'accepted': return 'bg-primary/10 text-primary';
       case 'rejected': return 'bg-red-100 text-red-800';
       default: return 'bg-gray-100 text-gray-800';
     }
@@ -204,7 +204,7 @@ const ApplicationViewer: React.FC<ApplicationViewerProps> = ({ onLogout }) => {
             }}
             variant="default"
             size="default"
-            className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white"
+            className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground"
           >
             <Home className="h-4 w-4" />
             Home
@@ -225,7 +225,7 @@ const ApplicationViewer: React.FC<ApplicationViewerProps> = ({ onLogout }) => {
             }}
             variant="default"
             size="default"
-            className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white"
+            className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground"
           >
             <Home className="h-4 w-4" />
             Home
