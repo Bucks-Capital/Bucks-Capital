@@ -48,6 +48,7 @@ const ApplicationViewer: React.FC<ApplicationViewerProps> = ({ onLogout }) => {
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<SortOption>('newest');
 
+
   useEffect(() => {
     loadApplications();
   }, []);
@@ -185,6 +186,19 @@ const ApplicationViewer: React.FC<ApplicationViewerProps> = ({ onLogout }) => {
             <p className="text-foreground/80">
               0 applications submitted
             </p>
+          </div>
+          <div className="flex gap-2">
+            {onLogout && (
+              <Button 
+                onClick={onLogout}
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-2"
+              >
+                <LogOut className="h-4 w-4" />
+                Logout
+              </Button>
+            )}
           </div>
         </div>
         <Card className="p-8 text-center">
