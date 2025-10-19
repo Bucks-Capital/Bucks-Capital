@@ -32,7 +32,7 @@ export const createMockBooking = async (bookingData: MockBookingData): Promise<B
     timezone: bookingData.timezone,
     status: 'confirmed',
     googleEventId: `mock_event_${Date.now()}`,
-    googleMeetLink: `https://meet.google.com/mock-${Math.random().toString(36).substr(2, 9)}`,
+    googleMeetLink: `https://meet.google.com/abc-defg-hij`, // Mock link for development
     notes: bookingData.notes,
     createdAt: new Date().toISOString()
   };

@@ -7,6 +7,7 @@ import BookingForm from './BookingForm';
 import BookingConfirmation from './BookingConfirmation';
 import { teamMembers } from '@/config/teamMembers';
 import { createMockBooking } from '@/utils/mockBooking';
+import { sendMockBookingEmail } from '@/utils/mockEmail';
 
 type BookingStep = 'select-member' | 'select-time' | 'booking-form' | 'confirmation';
 
@@ -83,6 +84,10 @@ export default function BookingFlow() {
       });
 
       setBooking(bookingData);
+      
+      // Send mock emails
+      await sendMockBookingEmail(bookingData, selectedMember.name);
+      
       setCurrentStep('confirmation');
     } catch (error) {
       console.error('Error creating booking:', error);

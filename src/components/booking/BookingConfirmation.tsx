@@ -47,6 +47,11 @@ export default function BookingConfirmation({
         <p className="text-gray-600 mt-2">
           Your meeting has been scheduled successfully
         </p>
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mt-4 max-w-md mx-auto">
+          <p className="text-yellow-800 text-sm">
+            <strong>Development Mode:</strong> This is a test booking. In production, you'll receive real calendar invites and Google Meet links.
+          </p>
+        </div>
       </div>
 
       <Card className="border-green-200 bg-green-50">
