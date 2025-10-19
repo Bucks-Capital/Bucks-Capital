@@ -21,41 +21,41 @@ export const mockLogin = async (email: string, password: string): Promise<LoginR
 
   const validCredentials = [
     {
-      email: 'shreyas@buckscapital.org',
-      password: 'BucksCapital2024!',
+      email: 'shreyasRaju3249@gmail.com',
+      password: 'DDFA8277353XA12shmvs3249!',
       member: {
         id: '1',
         name: 'Shreyas Raju',
-        email: 'shreyas@buckscapital.org',
-        title: 'Founder & CEO',
-        bio: 'Founder of Bucks Capital with extensive experience in investment management and financial planning.',
+        email: 'shreyasRaju3249@gmail.com',
+        title: 'Chief Technology Officer',
+        bio: 'CTO of Bucks Capital with extensive experience in investments and financial technology. Experience in web and software development.',
         timezone: 'America/New_York',
         isActive: true
       }
     },
     {
-      email: 'advisor@buckscapital.org',
-      password: 'Advisor2024!',
+      email: 'muljizahin@gmail.com',
+      password: 'PanPan1!',
       member: {
         id: '2',
-        name: 'Investment Advisor',
-        email: 'advisor@buckscapital.org',
-        title: 'Senior Investment Advisor',
-        bio: 'Specializing in portfolio management and financial planning with over 10 years of experience.',
+        name: 'Zahin Mulji',
+        email: 'muljizahin@gmail.com',
+        title: 'Chief Investment Officer',
+        bio: 'Expert in market analysis and investment strategies for firms and individuals. Experienced in portfolio management and equity analysis.',
         timezone: 'America/New_York',
         isActive: true
       }
     },
     {
-      email: 'analyst@buckscapital.org',
-      password: 'Analyst2024!',
+      email: 'harrisonecornwell@gmail.com',
+      password: 'BucksCapital2024!',
       member: {
         id: '3',
-        name: 'Financial Analyst',
-        email: 'analyst@buckscapital.org',
-        title: 'Senior Financial Analyst',
-        bio: 'Expert in market analysis and investment strategies for high-net-worth individuals.',
-        timezone: 'America/Los_Angeles',
+        name: 'Harrison Cornwell',
+        email: 'harrisonecornwell@gmail.com',
+        title: 'Chief Financial Officer',
+        bio: 'Specializing in comprehensive financial analysis and investment research. Focused on helping clients make informed investment decisions.',
+        timezone: 'America/New_York',
         isActive: true
       }
     }

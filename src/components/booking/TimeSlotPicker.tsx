@@ -39,15 +39,43 @@ export default function TimeSlotPicker({
   const fetchTimeSlots = async (date: Date) => {
     setLoading(true);
     try {
-      // This would call your Vercel API endpoint
-      const response = await fetch(`/api/availability?memberId=${teamMember.id}&date=${date.toISOString()}`);
-      const slots = await response.json();
-      setTimeSlots(slots);
+      // Mock time slots for development
+      const mockSlots = generateMockTimeSlots(date, teamMember.id);
+      setTimeSlots(mockSlots);
     } catch (error) {
       console.error('Error fetching time slots:', error);
     } finally {
       setLoading(false);
     }
+  };
+
+  const generateMockTimeSlots = (date: Date, memberId: string): TimeSlot[] => {
+    const slots: TimeSlot[] = [];
+    const startHour = 9; // 9 AM
+    const endHour = 17; // 5 PM
+    const slotDuration = 30; // 30 minutes
+
+    for (let hour = startHour; hour < endHour; hour++) {
+      for (let minute = 0; minute < 60; minute += slotDuration) {
+        const slotStart = new Date(date);
+        slotStart.setHours(hour, minute, 0, 0);
+        
+        const slotEnd = new Date(slotStart);
+        slotEnd.setMinutes(slotEnd.getMinutes() + slotDuration);
+
+        // Randomly make some slots unavailable (20% chance)
+        const isAvailable = Math.random() > 0.2;
+
+        slots.push({
+          startTime: slotStart.toISOString(),
+          endTime: slotEnd.toISOString(),
+          isAvailable: isAvailable,
+          teamMemberId: memberId
+        });
+      }
+    }
+
+    return slots;
   };
 
   const handleSlotSelect = (slot: TimeSlot) => {
@@ -101,8 +129,12 @@ export default function TimeSlotPicker({
           <CardContent>
             <Calendar
               mode="single"
-              selected={currentDate}
-              onSelect={(date) => date && onDateSelect(date)}
+              selected={selectedDate}
+              onSelect={(date) => {
+                if (date) {
+                  onDateSelect(date);
+                }
+              }}
               disabled={(date) => date < startOfDay(new Date()) || date > maxDate}
               className="rounded-md border"
             />

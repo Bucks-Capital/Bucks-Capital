@@ -5,6 +5,7 @@ import TeamMemberSelector from './TeamMemberSelector';
 import TimeSlotPicker from './TimeSlotPicker';
 import BookingForm from './BookingForm';
 import BookingConfirmation from './BookingConfirmation';
+import { teamMembers } from '@/config/teamMembers';
 
 type BookingStep = 'select-member' | 'select-time' | 'booking-form' | 'confirmation';
 
@@ -13,39 +14,11 @@ export default function BookingFlow() {
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
   const [selectedSlot, setSelectedSlot] = useState<TimeSlot | null>(null);
   const [selectedMeetingType, setSelectedMeetingType] = useState<MeetingType | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [booking, setBooking] = useState<Booking | null>(null);
   const [loading, setLoading] = useState(false);
 
-  // Mock data - in production, this would come from your API
-  const teamMembers: TeamMember[] = [
-    {
-      id: '1',
-      name: 'John Smith',
-      email: 'john@buckscapital.org',
-      title: 'Investment Advisor',
-      bio: 'Specializing in portfolio management and financial planning with over 10 years of experience.',
-      timezone: 'America/New_York',
-      isActive: true
-    },
-    {
-      id: '2',
-      name: 'Sarah Johnson',
-      email: 'sarah@buckscapital.org',
-      title: 'Senior Financial Analyst',
-      bio: 'Expert in market analysis and investment strategies for high-net-worth individuals.',
-      timezone: 'America/New_York',
-      isActive: true
-    },
-    {
-      id: '3',
-      name: 'Michael Chen',
-      email: 'michael@buckscapital.org',
-      title: 'Wealth Manager',
-      bio: 'Focused on comprehensive wealth management and estate planning solutions.',
-      timezone: 'America/Los_Angeles',
-      isActive: true
-    }
-  ];
+  // Team members are now imported from configuration file
 
   const meetingTypes: MeetingType[] = [
     {
@@ -166,9 +139,8 @@ export default function BookingFlow() {
             teamMember={selectedMember}
             meetingTypes={meetingTypes}
             onTimeSelect={handleTimeSelect}
-            onDateSelect={(date) => {
-              // Handle date selection
-            }}
+            onDateSelect={setSelectedDate}
+            selectedDate={selectedDate}
           />
         ) : null;
       

@@ -16,41 +16,41 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Production authentication using environment variables
     const validCredentials = [
       {
-        email: process.env.TEAM_MEMBER_1_EMAIL || 'shreyas@buckscapital.org',
-        password: process.env.TEAM_MEMBER_1_PASSWORD || 'BucksCapital2024!',
+        email: process.env.TEAM_MEMBER_1_EMAIL || 'shreyasRaju3249@gmail.com',
+        password: process.env.TEAM_MEMBER_1_PASSWORD || 'DDFA8277353XA12shmvs3249!',
         member: {
           id: '1',
           name: 'Shreyas Raju',
-          email: process.env.TEAM_MEMBER_1_EMAIL || 'shreyas@buckscapital.org',
-          title: 'Founder & CEO',
-          bio: 'Founder of Bucks Capital with extensive experience in investment management and financial planning.',
+          email: process.env.TEAM_MEMBER_1_EMAIL || 'shreyasRaju3249@gmail.com',
+          title: 'Chief Technology Officer',
+          bio: 'CTO of Bucks Capital with extensive experience in investments and financial technology. Experience in web and software development.',
           timezone: 'America/New_York',
           isActive: true
         }
       },
       {
-        email: process.env.TEAM_MEMBER_2_EMAIL || 'advisor@buckscapital.org',
-        password: process.env.TEAM_MEMBER_2_PASSWORD || 'Advisor2024!',
+        email: process.env.TEAM_MEMBER_2_EMAIL || 'muljizahin@gmail.com',
+        password: process.env.TEAM_MEMBER_2_PASSWORD || 'PanPan1!',
         member: {
           id: '2',
-          name: 'Investment Advisor',
-          email: process.env.TEAM_MEMBER_2_EMAIL || 'advisor@buckscapital.org',
-          title: 'Senior Investment Advisor',
-          bio: 'Specializing in portfolio management and financial planning with over 10 years of experience.',
+          name: 'Zahin Mulji',
+          email: process.env.TEAM_MEMBER_2_EMAIL || 'muljizahin@gmail.com',
+          title: 'Chief Investment Officer',
+          bio: 'Expert in market analysis and investment strategies for firms and individuals. Experienced in portfolio management and equity analysis.',
           timezone: 'America/New_York',
           isActive: true
         }
       },
       {
-        email: process.env.TEAM_MEMBER_3_EMAIL || 'analyst@buckscapital.org',
-        password: process.env.TEAM_MEMBER_3_PASSWORD || 'Analyst2024!',
+        email: process.env.TEAM_MEMBER_3_EMAIL || 'harrisonecornwell@gmail.com',
+        password: process.env.TEAM_MEMBER_3_PASSWORD || 'BucksCapital123!',
         member: {
           id: '3',
-          name: 'Financial Analyst',
-          email: process.env.TEAM_MEMBER_3_EMAIL || 'analyst@buckscapital.org',
-          title: 'Senior Financial Analyst',
-          bio: 'Expert in market analysis and investment strategies for high-net-worth individuals.',
-          timezone: 'America/Los_Angeles',
+          name: 'Harrison Cornwell',
+          email: process.env.TEAM_MEMBER_3_EMAIL || 'harrisonecornwell@gmail.com',
+          title: 'Chief Financial Officer',
+          bio: 'Specializing in comprehensive financial analysis and investment research. Focused on helping clients make informed investment decisions.',
+          timezone: 'America/New_York',
           isActive: true
         }
       }
