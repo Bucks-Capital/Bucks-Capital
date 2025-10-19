@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Eye, EyeOff, Lock, User } from 'lucide-react';
+import AdminNavbar from '@/components/navigation/AdminNavbar';
 
 interface AdminLoginProps {
   onLogin: () => void;
@@ -45,8 +46,10 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onLogin }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen bg-gray-50">
+      <AdminNavbar currentPage="admin-login" />
+      <div className="flex items-center justify-center p-4 pt-16">
+        <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
             <Lock className="h-6 w-6 text-primary" />
@@ -118,7 +121,8 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onLogin }) => {
             </Button>
           </form>
         </CardContent>
-      </Card>
+        </Card>
+      </div>
     </div>
   );
 };

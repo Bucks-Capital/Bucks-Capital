@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { TeamMember } from '@/types/booking';
 import AvailabilityManager from '@/components/booking/AvailabilityManager';
+import AdminNavbar from '@/components/navigation/AdminNavbar';
 import { User, LogIn, LogOut } from 'lucide-react';
 import { authenticateUser } from '@/utils/auth';
 
@@ -48,7 +49,9 @@ export default function TeamAvailability() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="min-h-screen bg-gray-50">
+        <AdminNavbar currentPage="team-login" />
+        <div className="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-md w-full space-y-8">
           <div className="text-center">
             <h2 className="mt-6 text-3xl font-bold text-gray-900">
@@ -103,12 +106,19 @@ export default function TeamAvailability() {
             </CardContent>
           </Card>
         </div>
+        </div>
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <AdminNavbar 
+        currentPage="team-availability" 
+        isAuthenticated={isAuthenticated}
+        teamMemberName={teamMember?.name}
+        onLogout={handleLogout}
+      />
       <div className="bg-white shadow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">

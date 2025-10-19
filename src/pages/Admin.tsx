@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ApplicationViewer from '@/components/ApplicationViewer';
 import AdminLogin from '@/components/AdminLogin';
 import MeetingsCalendar from '@/components/admin/MeetingsCalendar';
+import AdminNavbar from '@/components/navigation/AdminNavbar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Calendar, Users, Settings, ExternalLink } from 'lucide-react';
@@ -36,6 +37,11 @@ const Admin: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <AdminNavbar 
+        currentPage="admin-panel" 
+        isAuthenticated={isAuthenticated}
+        onLogout={handleLogout}
+      />
       <div className="container mx-auto py-8">
         {/* Admin Header */}
         <div className="mb-8">
