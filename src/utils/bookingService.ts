@@ -26,7 +26,7 @@ export const createBooking = async (bookingData: BookingData): Promise<Booking> 
   } else {
     // Use real API for production
     try {
-      const response = await fetch('/api/bookings', {
+      const response = await fetch('/api/bookings-simple', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

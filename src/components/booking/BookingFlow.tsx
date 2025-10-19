@@ -90,7 +90,8 @@ export default function BookingFlow() {
       setCurrentStep('confirmation');
     } catch (error) {
       console.error('Error creating booking:', error);
-      alert('Failed to create booking. Please try again.');
+      const errorMessage = error instanceof Error ? error.message : 'Failed to create booking. Please try again.';
+      alert(`Error: ${errorMessage}`);
     } finally {
       setLoading(false);
     }
