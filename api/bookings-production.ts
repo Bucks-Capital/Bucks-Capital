@@ -81,6 +81,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       booking.googleEventId = googleEvent.id;
       booking.googleMeetLink = googleEvent.hangoutLink;
       console.log('✅ Google Calendar event created:', googleEvent.id);
+      console.log('🔗 Google Meet link:', googleEvent.hangoutLink);
     } else {
       console.log('⚠️ Google Calendar event creation failed or not configured');
     }
@@ -161,11 +162,31 @@ async function createGoogleCalendarEvent(booking: any, teamMember: any) {
       },
     };
 
+    // Create event in service account's calendar
     const response = await calendar.events.insert({
       calendarId: 'primary',
       requestBody: event,
       conferenceDataVersion: 1,
     });
+
+    // Share the event with the team member by making it public
+    if (response.data.id) {
+      try {
+        await calendar.events.patch({
+          calendarId: 'primary',
+          eventId: response.data.id,
+          requestBody: {
+            visibility: 'public',
+            guestsCanInviteOthers: false,
+            guestsCanModify: false,
+            guestsCanSeeOtherGuests: true,
+          },
+        });
+        console.log('📅 Event shared publicly');
+      } catch (shareError) {
+        console.log('⚠️ Could not share event publicly:', shareError);
+      }
+    }
 
     console.log('📅 Google Calendar event created:', response.data.id);
     return response.data;
@@ -208,7 +229,12 @@ async function sendBookingNotifications(booking: any, teamMember: any) {
             <p><strong>With:</strong> ${teamMember.name} (${teamMember.title})</p>
             <p><strong>Date & Time:</strong> ${new Date(booking.startTime).toLocaleString()}</p>
             <p><strong>Duration:</strong> ${booking.duration} minutes</p>
-            ${booking.googleMeetLink ? `<p><strong>Meeting Link:</strong> <a href="${booking.googleMeetLink}" style="color: #2563eb;">Join Meeting</a></p>` : '<p><strong>Meeting Link:</strong> Will be provided in calendar invite</p>'}
+            ${booking.googleMeetLink ? `
+              <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; margin: 15px 0; text-align: center;">
+                <p style="margin: 0; font-weight: bold; color: #1976d2;">🔗 Google Meet Link</p>
+                <a href="${booking.googleMeetLink}" style="color: #1976d2; text-decoration: none; font-size: 16px; font-weight: bold;">${booking.googleMeetLink}</a>
+              </div>
+            ` : '<p><strong>Meeting Link:</strong> Will be provided in calendar invite</p>'}
           </div>
 
           <p>You will receive a calendar invite shortly.</p>
@@ -241,7 +267,12 @@ async function sendBookingNotifications(booking: any, teamMember: any) {
             <p><strong>Date & Time:</strong> ${new Date(booking.startTime).toLocaleString()}</p>
             <p><strong>Duration:</strong> ${booking.duration} minutes</p>
             ${booking.notes ? `<p><strong>Notes:</strong> ${booking.notes}</p>` : ''}
-            ${booking.googleMeetLink ? `<p><strong>Meeting Link:</strong> <a href="${booking.googleMeetLink}" style="color: #2563eb;">Join Meeting</a></p>` : '<p><strong>Meeting Link:</strong> Will be provided in calendar invite</p>'}
+            ${booking.googleMeetLink ? `
+              <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; margin: 15px 0; text-align: center;">
+                <p style="margin: 0; font-weight: bold; color: #1976d2;">🔗 Google Meet Link</p>
+                <a href="${booking.googleMeetLink}" style="color: #1976d2; text-decoration: none; font-size: 16px; font-weight: bold;">${booking.googleMeetLink}</a>
+              </div>
+            ` : '<p><strong>Meeting Link:</strong> Will be provided in calendar invite</p>'}
           </div>
 
           <p>Best regards,<br>Bucks Capital System</p>
