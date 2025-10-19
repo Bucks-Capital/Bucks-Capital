@@ -21,10 +21,21 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onLogin }) => {
     setIsLoading(true);
     setError('');
 
-    // Simulate a brief loading state
-    await new Promise(resolve => setTimeout(resolve, 500));
+    // Check against team member credentials
+    const validCredentials = [
+      { email: 'shreyasRaju3249@gmail.com', password: 'DDFA8277353XA12shmvs3249!' },
+      { email: 'muljizahin@gmail.com', password: 'PanPan1!' },
+      { email: 'harrisonecornwell@gmail.com', password: 'BucksCapital123!' },
+      // Legacy admin credentials
+      { email: 'Bucks_Capital', password: 'BucksCapital123!' }
+    ];
 
-    if (username === 'Bucks_Capital' && password === 'BucksCapital123!') {
+    const isValid = validCredentials.some(cred => 
+      (cred.email === username || cred.email === username.toLowerCase()) && 
+      cred.password === password
+    );
+
+    if (isValid) {
       onLogin();
     } else {
       setError('Invalid username or password');
@@ -42,13 +53,13 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onLogin }) => {
           </div>
           <CardTitle className="text-2xl font-bold text-foreground">Admin Access</CardTitle>
           <CardDescription>
-            Enter your credentials to access the application viewer
+            Enter your team member credentials to access the admin dashboard
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
+              <Label htmlFor="username">Email Address</Label>
               <div className="relative">
                 <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                 <Input
