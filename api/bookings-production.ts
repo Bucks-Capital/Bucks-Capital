@@ -112,10 +112,15 @@ async function createGoogleCalendarEvent(booking: any, teamMember: any) {
   try {
     // Check if Google Calendar is configured
     if (!process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL || !process.env.GOOGLE_PRIVATE_KEY) {
-      console.log('Google Calendar not configured, skipping calendar event creation');
+      console.log('⚠️ Google Calendar not configured, skipping calendar event creation');
+      console.log('Missing:', {
+        serviceAccount: !!process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
+        privateKey: !!process.env.GOOGLE_PRIVATE_KEY
+      });
       return null;
     }
 
+    console.log('🔧 Setting up Google Calendar authentication...');
     const auth = new google.auth.GoogleAuth({
       credentials: {
         client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
@@ -176,10 +181,12 @@ async function sendBookingNotifications(booking: any, teamMember: any) {
   try {
     // Check if SendGrid is configured
     if (!process.env.SENDGRID_API_KEY) {
-      console.log('SendGrid not configured, skipping email notifications');
+      console.log('⚠️ SendGrid not configured, skipping email notifications');
+      console.log('Missing SENDGRID_API_KEY');
       return;
     }
 
+    console.log('📧 Setting up SendGrid...');
     const sgMail = require('@sendgrid/mail');
     sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
@@ -245,10 +252,13 @@ async function sendBookingNotifications(booking: any, teamMember: any) {
     };
 
     // Send emails
+    console.log('📤 Sending client email to:', booking.clientEmail);
     await sgMail.send(clientEmail);
+    
+    console.log('📤 Sending team member email to:', teamMember.email);
     await sgMail.send(teamMemberEmail);
 
-    console.log('📧 Emails sent successfully to:', booking.clientEmail, 'and', teamMember.email);
+    console.log('✅ Emails sent successfully to:', booking.clientEmail, 'and', teamMember.email);
 
   } catch (error) {
     console.error('Error sending booking notifications:', error);
