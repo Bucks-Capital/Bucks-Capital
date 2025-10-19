@@ -6,6 +6,7 @@ import TimeSlotPicker from './TimeSlotPicker';
 import BookingForm from './BookingForm';
 import BookingConfirmation from './BookingConfirmation';
 import { teamMembers } from '@/config/teamMembers';
+import { createMockBooking } from '@/utils/mockBooking';
 
 type BookingStep = 'select-member' | 'select-time' | 'booking-form' | 'confirmation';
 
@@ -67,36 +68,25 @@ export default function BookingFlow() {
 
     setLoading(true);
     try {
-      // This would call your Vercel API endpoint
-      const response = await fetch('/api/bookings', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          teamMemberId: selectedMember.id,
-          clientName: formData.clientName,
-          clientEmail: formData.clientEmail,
-          clientPhone: formData.clientPhone,
-          meetingType: selectedMeetingType.name,
-          duration: selectedMeetingType.duration,
-          startTime: selectedSlot.startTime,
-          endTime: selectedSlot.endTime,
-          timezone: selectedMember.timezone,
-          notes: formData.notes
-        })
+      // Use mock booking for development
+      const bookingData = await createMockBooking({
+        teamMemberId: selectedMember.id,
+        clientName: formData.clientName,
+        clientEmail: formData.clientEmail,
+        clientPhone: formData.clientPhone,
+        meetingType: selectedMeetingType.name,
+        duration: selectedMeetingType.duration,
+        startTime: selectedSlot.startTime,
+        endTime: selectedSlot.endTime,
+        timezone: selectedMember.timezone,
+        notes: formData.notes
       });
 
-      if (response.ok) {
-        const bookingData = await response.json();
-        setBooking(bookingData);
-        setCurrentStep('confirmation');
-      } else {
-        throw new Error('Failed to create booking');
-      }
+      setBooking(bookingData);
+      setCurrentStep('confirmation');
     } catch (error) {
       console.error('Error creating booking:', error);
-      // Handle error - show toast or error message
+      alert('Failed to create booking. Please try again.');
     } finally {
       setLoading(false);
     }
