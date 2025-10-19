@@ -131,7 +131,18 @@ export default function TeamAvailability() {
 
       <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         {teamMember && (
-          <AvailabilityManager teamMemberId={teamMember.id} />
+          <div className="space-y-6">
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <h2 className="text-lg font-semibold text-blue-900 mb-2">
+                Manage Your Availability
+              </h2>
+              <p className="text-blue-700 text-sm">
+                Set your recurring weekly schedule and one-time availability for client meetings.
+              </p>
+            </div>
+            
+            <AvailabilityManager teamMemberId={teamMember.id} />
+          </div>
         )}
       </div>
     </div>

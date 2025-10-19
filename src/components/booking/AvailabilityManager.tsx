@@ -17,7 +17,8 @@ interface AvailabilityManagerProps {
 export default function AvailabilityManager({ teamMemberId }: AvailabilityManagerProps) {
   const [recurringAvailability, setRecurringAvailability] = useState<Availability[]>([]);
   const [oneTimeAvailability, setOneTimeAvailability] = useState<Availability[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const daysOfWeek = [
     'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'
@@ -30,17 +31,35 @@ export default function AvailabilityManager({ teamMemberId }: AvailabilityManage
   const fetchAvailability = async () => {
     setLoading(true);
     try {
+      console.log('📅 Fetching availability for member:', teamMemberId);
+      
       // Fetch recurring availability
-      const recurringResponse = await fetch(`/api/availability/recurring?memberId=${teamMemberId}`);
-      const recurring = await recurringResponse.json();
-      setRecurringAvailability(recurring);
+      const recurringResponse = await fetch(`/api/availability-simple?memberId=${teamMemberId}&type=recurring`);
+      if (recurringResponse.ok) {
+        const recurring = await recurringResponse.json();
+        console.log('✅ Recurring availability loaded:', recurring.length, 'items');
+        setRecurringAvailability(recurring);
+      } else {
+        console.error('❌ Failed to fetch recurring availability');
+        setRecurringAvailability([]);
+      }
 
       // Fetch one-time availability
-      const oneTimeResponse = await fetch(`/api/availability/onetime?memberId=${teamMemberId}`);
-      const oneTime = await oneTimeResponse.json();
-      setOneTimeAvailability(oneTime);
+      const oneTimeResponse = await fetch(`/api/availability-simple?memberId=${teamMemberId}&type=onetime`);
+      if (oneTimeResponse.ok) {
+        const oneTime = await oneTimeResponse.json();
+        console.log('✅ One-time availability loaded:', oneTime.length, 'items');
+        setOneTimeAvailability(oneTime);
+      } else {
+        console.error('❌ Failed to fetch one-time availability');
+        setOneTimeAvailability([]);
+      }
     } catch (error) {
-      console.error('Error fetching availability:', error);
+      console.error('🚨 Error fetching availability:', error);
+      setError('Failed to load availability. Please try again.');
+      // Set empty arrays on error to prevent crashes
+      setRecurringAvailability([]);
+      setOneTimeAvailability([]);
     } finally {
       setLoading(false);
     }
@@ -135,6 +154,39 @@ export default function AvailabilityManager({ teamMemberId }: AvailabilityManage
       hour12: true
     });
   };
+
+  if (loading) {
+    return (
+      <div className="max-w-4xl mx-auto space-y-6">
+        <div className="text-center">
+          <h2 className="text-3xl font-bold text-gray-900">Manage Your Availability</h2>
+          <p className="text-gray-600 mt-2">Set when you're available for client meetings</p>
+        </div>
+        <div className="flex items-center justify-center py-12">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          <span className="ml-2">Loading availability...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="max-w-4xl mx-auto space-y-6">
+        <div className="text-center">
+          <h2 className="text-3xl font-bold text-gray-900">Manage Your Availability</h2>
+          <p className="text-gray-600 mt-2">Set when you're available for client meetings</p>
+        </div>
+        <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
+          <h3 className="text-lg font-semibold text-red-900 mb-2">Error Loading Availability</h3>
+          <p className="text-red-700 mb-4">{error}</p>
+          <Button onClick={fetchAvailability} variant="outline">
+            Try Again
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
