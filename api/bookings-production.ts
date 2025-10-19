@@ -6,6 +6,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
+  console.log('🚀 Production booking API called');
+  console.log('📋 Request body:', req.body);
+
   try {
     const {
       teamMemberId,
@@ -71,14 +74,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     };
 
     // Create Google Calendar event
+    console.log('📅 Creating Google Calendar event...');
     const googleEvent = await createGoogleCalendarEvent(booking, teamMember);
     
     if (googleEvent) {
       booking.googleEventId = googleEvent.id;
       booking.googleMeetLink = googleEvent.hangoutLink;
+      console.log('✅ Google Calendar event created:', googleEvent.id);
+    } else {
+      console.log('⚠️ Google Calendar event creation failed or not configured');
     }
 
     // Send email notifications
+    console.log('📧 Sending email notifications...');
     await sendBookingNotifications(booking, teamMember);
 
     console.log('📅 Booking created successfully:', {

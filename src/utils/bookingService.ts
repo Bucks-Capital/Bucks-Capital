@@ -26,6 +26,8 @@ export const createBooking = async (bookingData: BookingData): Promise<Booking> 
   } else {
     // Use real API for production
     try {
+      console.log('🚀 Creating production booking:', bookingData);
+      
       const response = await fetch('/api/bookings-production', {
         method: 'POST',
         headers: {
@@ -34,11 +36,15 @@ export const createBooking = async (bookingData: BookingData): Promise<Booking> 
         body: JSON.stringify(bookingData)
       });
 
+      console.log('📡 API Response status:', response.status);
+
       if (response.ok) {
         const booking = await response.json();
+        console.log('✅ Booking created successfully:', booking);
         return booking;
       } else {
         const error = await response.json();
+        console.error('❌ API Error:', error);
         throw new Error(error.error || 'Failed to create booking');
       }
     } catch (error) {
