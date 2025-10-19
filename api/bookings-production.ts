@@ -142,10 +142,8 @@ async function createGoogleCalendarEvent(booking: any, teamMember: any) {
         dateTime: booking.endTime,
         timeZone: booking.timezone,
       },
-      attendees: [
-        { email: teamMember.email, displayName: teamMember.name },
-        { email: booking.clientEmail, displayName: booking.clientName },
-      ],
+      // Note: Attendees removed due to service account limitations
+      // Calendar invites will be sent via email instead
       conferenceData: {
         createRequest: {
           requestId: `meet_${booking.id}`,
@@ -187,7 +185,7 @@ async function sendBookingNotifications(booking: any, teamMember: any) {
     }
 
     console.log('📧 Setting up SendGrid...');
-    const sgMail = require('@sendgrid/mail');
+    const { default: sgMail } = await import('@sendgrid/mail');
     sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
     // Client email
@@ -210,7 +208,7 @@ async function sendBookingNotifications(booking: any, teamMember: any) {
             <p><strong>With:</strong> ${teamMember.name} (${teamMember.title})</p>
             <p><strong>Date & Time:</strong> ${new Date(booking.startTime).toLocaleString()}</p>
             <p><strong>Duration:</strong> ${booking.duration} minutes</p>
-            ${booking.googleMeetLink ? `<p><strong>Meeting Link:</strong> <a href="${booking.googleMeetLink}" style="color: #2563eb;">Join Meeting</a></p>` : ''}
+            ${booking.googleMeetLink ? `<p><strong>Meeting Link:</strong> <a href="${booking.googleMeetLink}" style="color: #2563eb;">Join Meeting</a></p>` : '<p><strong>Meeting Link:</strong> Will be provided in calendar invite</p>'}
           </div>
 
           <p>You will receive a calendar invite shortly.</p>
@@ -243,7 +241,7 @@ async function sendBookingNotifications(booking: any, teamMember: any) {
             <p><strong>Date & Time:</strong> ${new Date(booking.startTime).toLocaleString()}</p>
             <p><strong>Duration:</strong> ${booking.duration} minutes</p>
             ${booking.notes ? `<p><strong>Notes:</strong> ${booking.notes}</p>` : ''}
-            ${booking.googleMeetLink ? `<p><strong>Meeting Link:</strong> <a href="${booking.googleMeetLink}" style="color: #2563eb;">Join Meeting</a></p>` : ''}
+            ${booking.googleMeetLink ? `<p><strong>Meeting Link:</strong> <a href="${booking.googleMeetLink}" style="color: #2563eb;">Join Meeting</a></p>` : '<p><strong>Meeting Link:</strong> Will be provided in calendar invite</p>'}
           </div>
 
           <p>Best regards,<br>Bucks Capital System</p>
