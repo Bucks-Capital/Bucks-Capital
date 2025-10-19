@@ -19,6 +19,44 @@ export default function TeamAvailability() {
   });
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    // Check if user is already authenticated (session persists on page refresh)
+    const authStatus = localStorage.getItem('teamAuthenticated');
+    const storedTeamMember = localStorage.getItem('teamMember');
+    const loginTime = localStorage.getItem('teamLoginTime');
+    
+    if (authStatus === 'true' && storedTeamMember) {
+      try {
+        const member = JSON.parse(storedTeamMember);
+        
+        // Check if session has expired (24 hours)
+        if (loginTime) {
+          const loginTimestamp = parseInt(loginTime);
+          const now = Date.now();
+          const hoursSinceLogin = (now - loginTimestamp) / (1000 * 60 * 60);
+          
+          if (hoursSinceLogin > 24) {
+            console.log('⏰ Team member session expired');
+            localStorage.removeItem('teamAuthenticated');
+            localStorage.removeItem('teamMember');
+            localStorage.removeItem('teamLoginTime');
+            return;
+          }
+        }
+        
+        setTeamMember(member);
+        setIsAuthenticated(true);
+        console.log('✅ Team member session restored:', member.name);
+      } catch (error) {
+        console.error('Error parsing stored team member:', error);
+        // Clear invalid data
+        localStorage.removeItem('teamAuthenticated');
+        localStorage.removeItem('teamMember');
+        localStorage.removeItem('teamLoginTime');
+      }
+    }
+  }, []);
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -30,6 +68,13 @@ export default function TeamAvailability() {
       if (result.success && result.member) {
         setTeamMember(result.member);
         setIsAuthenticated(true);
+        
+        // Store authentication status and team member data in localStorage
+        localStorage.setItem('teamAuthenticated', 'true');
+        localStorage.setItem('teamMember', JSON.stringify(result.member));
+        localStorage.setItem('teamLoginTime', Date.now().toString());
+        
+        console.log('✅ Team member logged in and session saved:', result.member.name);
       } else {
         alert(result.error || 'Invalid credentials');
       }
@@ -42,9 +87,16 @@ export default function TeamAvailability() {
   };
 
   const handleLogout = () => {
+    // Clear authentication status from localStorage
+    localStorage.removeItem('teamAuthenticated');
+    localStorage.removeItem('teamMember');
+    localStorage.removeItem('teamLoginTime');
+    
     setIsAuthenticated(false);
     setTeamMember(null);
     setLoginForm({ email: '', password: '' });
+    
+    console.log('✅ Team member logged out and session cleared');
   };
 
   if (!isAuthenticated) {
