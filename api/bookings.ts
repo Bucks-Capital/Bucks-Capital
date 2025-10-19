@@ -189,17 +189,20 @@ async function sendBookingNotifications(booking: any) {
       to: booking.clientEmail,
       subject: `Meeting Confirmed - ${booking.meetingType} with ${teamMember.name}`,
       html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <h2 style="color: #2563eb;">Meeting Confirmed!</h2>
           <p>Hello ${booking.clientName},</p>
           <p>Your meeting has been successfully scheduled:</p>
-          <ul>
-            <li><strong>Meeting:</strong> ${booking.meetingType}</li>
-            <li><strong>With:</strong> ${teamMember.name}</li>
-            <li><strong>Date & Time:</strong> ${new Date(booking.startTime).toLocaleString()}</li>
-            <li><strong>Duration:</strong> ${booking.duration} minutes</li>
-            ${booking.googleMeetLink ? `<li><strong>Meeting Link:</strong> <a href="${booking.googleMeetLink}">Join Meeting</a></li>` : ''}
-          </ul>
+          
+          <div style="background: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <h3 style="margin-top: 0;">Meeting Details</h3>
+            <p><strong>Meeting:</strong> ${booking.meetingType}</p>
+            <p><strong>With:</strong> ${teamMember.name}</p>
+            <p><strong>Date & Time:</strong> ${new Date(booking.startTime).toLocaleString()}</p>
+            <p><strong>Duration:</strong> ${booking.duration} minutes</p>
+            ${booking.googleMeetLink ? `<p><strong>Meeting Link:</strong> <a href="${booking.googleMeetLink}" style="color: #2563eb;">Join Meeting</a></p>` : ''}
+          </div>
+
           <p>You will receive a calendar invite shortly.</p>
           <p>If you need to reschedule or cancel, please contact us at info@buckscapital.org</p>
           <p>Best regards,<br>Bucks Capital Team</p>
@@ -211,35 +214,42 @@ async function sendBookingNotifications(booking: any) {
       to: teamMember.email,
       subject: `New Meeting Scheduled - ${booking.clientName}`,
       html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <h2 style="color: #2563eb;">New Meeting Scheduled</h2>
           <p>Hello ${teamMember.name},</p>
           <p>You have a new meeting scheduled:</p>
-          <ul>
-            <li><strong>Client:</strong> ${booking.clientName}</li>
-            <li><strong>Email:</strong> ${booking.clientEmail}</li>
-            <li><strong>Phone:</strong> ${booking.clientPhone || 'Not provided'}</li>
-            <li><strong>Meeting:</strong> ${booking.meetingType}</li>
-            <li><strong>Date & Time:</strong> ${new Date(booking.startTime).toLocaleString()}</li>
-            <li><strong>Duration:</strong> ${booking.duration} minutes</li>
-            ${booking.notes ? `<li><strong>Notes:</strong> ${booking.notes}</li>` : ''}
-            ${booking.googleMeetLink ? `<li><strong>Meeting Link:</strong> <a href="${booking.googleMeetLink}">Join Meeting</a></li>` : ''}
-          </ul>
+          
+          <div style="background: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <h3 style="margin-top: 0;">Meeting Details</h3>
+            <p><strong>Client:</strong> ${booking.clientName}</p>
+            <p><strong>Email:</strong> ${booking.clientEmail}</p>
+            <p><strong>Phone:</strong> ${booking.clientPhone || 'Not provided'}</p>
+            <p><strong>Meeting:</strong> ${booking.meetingType}</p>
+            <p><strong>Date & Time:</strong> ${new Date(booking.startTime).toLocaleString()}</p>
+            <p><strong>Duration:</strong> ${booking.duration} minutes</p>
+            ${booking.notes ? `<p><strong>Notes:</strong> ${booking.notes}</p>` : ''}
+            ${booking.googleMeetLink ? `<p><strong>Meeting Link:</strong> <a href="${booking.googleMeetLink}" style="color: #2563eb;">Join Meeting</a></p>` : ''}
+          </div>
+
           <p>Best regards,<br>Bucks Capital System</p>
         </div>
       `
     };
 
-    // Send emails using your preferred email service
-    // This is a placeholder - you'll need to implement actual email sending
-    console.log('Sending client email:', clientEmailTemplate);
-    console.log('Sending team member email:', teamMemberEmailTemplate);
+    // Send emails via API endpoint
+    await fetch(`${process.env.VERCEL_URL || 'http://localhost:3000'}/api/email/send`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(clientEmailTemplate)
+    });
 
-    // For now, we'll just log the emails. In production, you'd use:
-    // - SendGrid
-    // - Nodemailer with SMTP
-    // - Vercel's email service
-    // - Or any other email service
+    await fetch(`${process.env.VERCEL_URL || 'http://localhost:3000'}/api/email/send`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(teamMemberEmailTemplate)
+    });
+
+    console.log('📧 Emails sent successfully');
 
   } catch (error) {
     console.error('Error sending booking notifications:', error);

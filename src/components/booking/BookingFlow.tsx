@@ -6,8 +6,7 @@ import TimeSlotPicker from './TimeSlotPicker';
 import BookingForm from './BookingForm';
 import BookingConfirmation from './BookingConfirmation';
 import { teamMembers } from '@/config/teamMembers';
-import { createMockBooking } from '@/utils/mockBooking';
-import { sendMockBookingEmail } from '@/utils/mockEmail';
+import { createBooking, sendBookingEmails } from '@/utils/bookingService';
 
 type BookingStep = 'select-member' | 'select-time' | 'booking-form' | 'confirmation';
 
@@ -69,8 +68,8 @@ export default function BookingFlow() {
 
     setLoading(true);
     try {
-      // Use mock booking for development
-      const bookingData = await createMockBooking({
+      // Use environment-aware booking service
+      const bookingData = await createBooking({
         teamMemberId: selectedMember.id,
         clientName: formData.clientName,
         clientEmail: formData.clientEmail,
@@ -85,8 +84,8 @@ export default function BookingFlow() {
 
       setBooking(bookingData);
       
-      // Send mock emails
-      await sendMockBookingEmail(bookingData, selectedMember.name);
+      // Send emails (mock in dev, real in production)
+      await sendBookingEmails(bookingData, selectedMember.name);
       
       setCurrentStep('confirmation');
     } catch (error) {
