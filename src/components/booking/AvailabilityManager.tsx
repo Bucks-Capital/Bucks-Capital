@@ -19,6 +19,7 @@ export default function AvailabilityManager({ teamMemberId }: AvailabilityManage
   const [oneTimeAvailability, setOneTimeAvailability] = useState<Availability[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [saveSuccess, setSaveSuccess] = useState(false);
 
   const daysOfWeek = [
     'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'
@@ -117,31 +118,54 @@ export default function AvailabilityManager({ teamMemberId }: AvailabilityManage
   const saveAvailability = async () => {
     setLoading(true);
     try {
+      console.log('💾 Saving availability for member:', teamMemberId);
+      console.log('📅 Recurring availability:', recurringAvailability);
+      console.log('📅 One-time availability:', oneTimeAvailability);
+
       // Save recurring availability
-      await fetch('/api/availability/recurring', {
+      const recurringResponse = await fetch('/api/availability-simple', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           teamMemberId,
-          availability: recurringAvailability
+          availability: recurringAvailability,
+          type: 'recurring'
         })
       });
 
+      if (!recurringResponse.ok) {
+        throw new Error('Failed to save recurring availability');
+      }
+
       // Save one-time availability
-      await fetch('/api/availability/onetime', {
+      const oneTimeResponse = await fetch('/api/availability-simple', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           teamMemberId,
-          availability: oneTimeAvailability
+          availability: oneTimeAvailability,
+          type: 'onetime'
         })
+      });
+
+      if (!oneTimeResponse.ok) {
+        throw new Error('Failed to save one-time availability');
+      }
+
+      const recurringResult = await recurringResponse.json();
+      const oneTimeResult = await oneTimeResponse.json();
+
+      console.log('✅ Availability saved successfully:', {
+        recurring: recurringResult,
+        oneTime: oneTimeResult
       });
 
       // Show success message
-      alert('Availability saved successfully!');
+      setSaveSuccess(true);
+      setTimeout(() => setSaveSuccess(false), 3000); // Hide after 3 seconds
     } catch (error) {
-      console.error('Error saving availability:', error);
-      alert('Error saving availability. Please try again.');
+      console.error('🚨 Error saving availability:', error);
+      alert(`Error saving availability: ${error instanceof Error ? error.message : 'Please try again.'}`);
     } finally {
       setLoading(false);
     }
@@ -194,6 +218,18 @@ export default function AvailabilityManager({ teamMemberId }: AvailabilityManage
         <h2 className="text-3xl font-bold text-gray-900">Manage Your Availability</h2>
         <p className="text-gray-600 mt-2">Set when you're available for client meetings</p>
       </div>
+
+      {/* Success Notification */}
+      {saveSuccess && (
+        <div className="bg-green-50 border border-green-200 rounded-lg p-4 text-center">
+          <div className="flex items-center justify-center">
+            <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center mr-2">
+              <span className="text-white text-xs">✓</span>
+            </div>
+            <span className="text-green-800 font-medium">Availability saved successfully!</span>
+          </div>
+        </div>
+      )}
 
       <Tabs defaultValue="recurring" className="w-full">
         <TabsList className="grid w-full grid-cols-2">
@@ -361,8 +397,17 @@ export default function AvailabilityManager({ teamMemberId }: AvailabilityManage
           size="lg"
           className="px-8"
         >
-          <Save className="w-5 h-5 mr-2" />
-          {loading ? 'Saving...' : 'Save Availability'}
+          {loading ? (
+            <>
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+              Saving...
+            </>
+          ) : (
+            <>
+              <Save className="w-5 h-5 mr-2" />
+              Save Availability
+            </>
+          )}
         </Button>
       </div>
     </div>
