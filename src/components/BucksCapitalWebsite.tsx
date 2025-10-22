@@ -790,7 +790,7 @@ const advisoryBoard = [{
                     Doylestown, PA 18901
                   </p>
                   <p className="text-gray-600 font-medium">
-                    bucks.capital1@gmail.com
+                    info@buckscapital.org
                   </p>
                 </div>
               </div>
@@ -809,7 +809,7 @@ const advisoryBoard = [{
                   © 2025 Bucks Capital. All rights reserved.
                 </p>
                 <div className="flex space-x-6">
-                  <a href="mailto:bucks.capital1@gmail.com" className="text-gray-500 hover:text-gray-900 transition-colors duration-300 font-medium">
+                  <a href="mailto:info@buckscapital.org" className="text-gray-500 hover:text-gray-900 transition-colors duration-300 font-medium">
                     Contact
                   </a>
                   <button 

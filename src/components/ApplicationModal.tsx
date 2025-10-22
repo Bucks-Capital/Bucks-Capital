@@ -127,8 +127,8 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({ isOpen, onClose }) 
               </p>
               <p className="text-foreground/60 mb-8">
                 You can expect to hear back from us within 1-2 weeks. If you have any questions, feel free to contact us at{' '}
-                <a href="mailto:bucks.capital1@gmail.com" className="text-primary hover:underline">
-                  bucks.capital1@gmail.com
+                <a href="mailto:info@buckscapital.org" className="text-primary hover:underline">
+                  info@buckscapital.org
                 </a>
               </p>
               <div className="text-sm text-foreground/50">

@@ -281,8 +281,8 @@ const Donation: React.FC = () => {
                 <h3 className="text-lg font-bold text-gray-900 mb-6">Contact</h3>
                 <ul className="space-y-3">
                   <li>
-                    <a href="mailto:bucks.capital1@gmail.com" className="text-gray-600 hover:text-gray-900 transition-colors duration-300 font-medium">
-                      bucks.capital1@gmail.com
+                    <a href="mailto:info@buckscapital.org" className="text-gray-600 hover:text-gray-900 transition-colors duration-300 font-medium">
+                      info@buckscapital.org
                     </a>
                   </li>
                   <li>
@@ -303,7 +303,7 @@ const Donation: React.FC = () => {
                   © 2025 Bucks Capital. All rights reserved.
                 </p>
                 <div className="flex space-x-6">
-                  <a href="mailto:bucks.capital1@gmail.com" className="text-gray-500 hover:text-gray-900 transition-colors duration-300 font-medium">
+                  <a href="mailto:info@buckscapital.org" className="text-gray-500 hover:text-gray-900 transition-colors duration-300 font-medium">
                     Contact
                   </a>
                   <button 
