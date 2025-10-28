@@ -82,12 +82,12 @@ const About: React.FC = () => {
   } , {
     name: 'Jackson Hornick',
     role: 'Head of Equity',
-    description: 'Student with equity analysis and portfolio management experience',
-    year: 'TBD+'
+    description: 'Student with equity analysis and portfolio management experience.',
+    year: 'Junior'
   } , {
     name: 'Macro Analayst Team',
     role: 'Macro Analyst',
-    description: 'Junior',
+    description: 'Apply Now!',
     year: 'Mixed'
   } , {
     name: 'Equity Analayst Team',
@@ -100,9 +100,6 @@ const advisoryBoard = [{
   name: 'Nicholas Allgyer',
   role: 'Economics Teacher @ CB West',
 } , {
-  name: 'Brian Pultro',
-  role: 'Pultro Financial Management',
-} , {
   name: 'Imaan Mulji',
   role: 'Custodian @ Bucks Capital',
 } , {
@@ -112,14 +109,11 @@ const advisoryBoard = [{
   name: 'Dan Pfieffer',
   role: 'Financial Services Representative/Advisor ',
 } , {
-  name: 'Frank Pustay',
-  role: 'House Principal @ CB West',
-} , {
   name: 'Trevor Fennimore',
   role: 'Custodian @ Bucks Capital',
 } , {
   name: 'Chris Meister',
-  role: 'Senior VP @ Univest',
+  role: 'Senior VP @ WSFS',
 } , 
 ];
 
@@ -423,7 +417,7 @@ const equityAnalysts = [
               <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
                 {/* Macro Analysts */}
                 <div>
-                  <h4 className="text-xl font-bold text-foreground mb-6 text-center lg:text-left">Macro Analysis Team</h4>
+                  <h4 className="text-xl font-bold text-foreground mb-6 text-center lg:text-left">Macro Analysts Team</h4>
                   <div className="space-y-4">
                     {macroAnalysts.map((analyst, index) => (
                       <div key={`macro-${index}`} className="bg-gray-50 border border-gray-100 rounded-lg p-4 hover:shadow-md transition-all duration-300 hover:-translate-y-1">
@@ -446,7 +440,7 @@ const equityAnalysts = [
 
                 {/* Equity Analysts */}
                 <div>
-                  <h4 className="text-xl font-bold text-foreground mb-6 text-center lg:text-left">Equity Analysis Team</h4>
+                  <h4 className="text-xl font-bold text-foreground mb-6 text-center lg:text-left">Equity Analysts Team</h4>
                   <div className="space-y-4">
                     {equityAnalysts.map((analyst, index) => (
                       <div key={`equity-${index}`} className="bg-gray-50 border border-gray-100 rounded-lg p-4 hover:shadow-md transition-all duration-300 hover:-translate-y-1">
