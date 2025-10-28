@@ -80,14 +80,14 @@ const About: React.FC = () => {
     description: 'Finance focused student with macroeconomics interest.',
     year: 'Junior'
   } , {
-    name: 'Position Available',
+    name: 'Jackson Hornick',
     role: 'Head of Equity',
-    description: 'Apply Now!',
+    description: 'Student with equity analysis and portfolio management experience',
     year: 'TBD+'
   } , {
     name: 'Macro Analayst Team',
     role: 'Macro Analyst',
-    description: 'Apply Now!',
+    description: 'Junior',
     year: 'Mixed'
   } , {
     name: 'Equity Analayst Team',
@@ -121,6 +121,47 @@ const advisoryBoard = [{
   name: 'Chris Meister',
   role: 'Senior VP @ Univest',
 } , 
+];
+
+const macroAnalysts = [
+  {
+    name: 'Noah Gerstein',
+    role: 'Macro Analyst',
+    year: 'Senior'
+  },
+  {
+    name: 'Michael Reshetnyak',
+    role: 'Macro Analyst',
+    year: 'Senior'
+  },
+  {
+    name: 'Conor Kelly',
+    role: 'Macro Analyst',
+    year: 'Junior'
+  },
+  {
+    name: 'Suhas Kukawada',
+    role: 'Macro Analyst',
+    year: 'Sophomore'
+  }
+];
+
+const equityAnalysts = [
+  {
+    name: 'Yash Rajpathak',
+    role: 'Equity Analyst',
+    year: 'Senior'
+  },
+  {
+    name: 'Atharva Bhargude',
+    role: 'Equity Analyst',
+    year: 'Junior'
+  },
+  {
+    name: 'John Vrettos',
+    role: 'Equity Analyst',
+    year: 'Sophomore'
+  }
 ];
 
   return (
@@ -366,6 +407,65 @@ const advisoryBoard = [{
                     <div className="text-primary font-semibold text-sm">{member.role}</div>
                   </div>
                 ))}
+              </div>
+
+              {/* Analysts Section */}
+              <div className="text-center mb-16 mt-20">
+                <h3 className="text-display text-3xl md:text-4xl font-black text-foreground mb-4">
+                  Analysts
+                </h3>
+                <div className="w-12 h-1 bg-primary mx-auto mb-6"></div>
+                <p className="text-base text-foreground/80 font-medium">
+                  Dedicated analysts supporting our investment research.
+                </p>
+              </div>
+
+              <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
+                {/* Macro Analysts */}
+                <div>
+                  <h4 className="text-xl font-bold text-foreground mb-6 text-center lg:text-left">Macro Analysis Team</h4>
+                  <div className="space-y-4">
+                    {macroAnalysts.map((analyst, index) => (
+                      <div key={`macro-${index}`} className="bg-gray-50 border border-gray-100 rounded-lg p-4 hover:shadow-md transition-all duration-300 hover:-translate-y-1">
+                        <div className="flex items-center">
+                          <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
+                            <span className="text-sm font-bold text-primary">
+                              {analyst.name.split(' ').map(n => n[0]).join('')}
+                            </span>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h5 className="text-base font-bold text-foreground">{analyst.name}</h5>
+                            <div className="text-primary font-semibold text-sm">{analyst.role}</div>
+                            <div className="text-xs text-foreground/60 font-medium">{analyst.year}</div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Equity Analysts */}
+                <div>
+                  <h4 className="text-xl font-bold text-foreground mb-6 text-center lg:text-left">Equity Analysis Team</h4>
+                  <div className="space-y-4">
+                    {equityAnalysts.map((analyst, index) => (
+                      <div key={`equity-${index}`} className="bg-gray-50 border border-gray-100 rounded-lg p-4 hover:shadow-md transition-all duration-300 hover:-translate-y-1">
+                        <div className="flex items-center">
+                          <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
+                            <span className="text-sm font-bold text-primary">
+                              {analyst.name.split(' ').map(n => n[0]).join('')}
+                            </span>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h5 className="text-base font-bold text-foreground">{analyst.name}</h5>
+                            <div className="text-primary font-semibold text-sm">{analyst.role}</div>
+                            <div className="text-xs text-foreground/60 font-medium">{analyst.year}</div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
