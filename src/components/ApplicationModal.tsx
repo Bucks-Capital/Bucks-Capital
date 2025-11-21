@@ -44,16 +44,13 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({ isOpen, onClose }) 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const handleSubmit = async (data: ApplicationData) => {
+  const handleSubmit = async (data: any) => {
     setIsSubmitting(true);
     
     try {
-      // Store the application data in localStorage
-      const applications = JSON.parse(localStorage.getItem('bucksCapitalApplications') || '[]');
-      
-      // Handle file storage - convert File to base64 for localStorage
+      // Handle file storage - convert File to base64
       let resumeData = null;
-      if (data.resume) {
+      if (data.resume && data.resume instanceof File) {
         resumeData = {
           name: data.resume.name,
           type: data.resume.type,
@@ -63,19 +60,36 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({ isOpen, onClose }) 
         };
       }
       
-      const newApplication = {
-        ...data,
+      // Prepare application data for API
+      const applicationPayload = {
+        name: data.name || `${data.firstName || ''} ${data.lastName || ''}`.trim(),
+        email: data.email,
+        grade: data.grade,
+        highSchoolName: data.highSchoolName || data.school,
+        availablePositions: data.availablePositions || data.position,
+        businessFinanceExperience: data.businessFinanceExperience || data.experience,
         resume: resumeData,
-        id: Date.now().toString(),
-        submittedAt: new Date().toISOString(),
+        uniqueQuality: data.uniqueQuality || data.motivation,
+        commitmentAgreement: data.commitmentAgreement || false,
         status: 'pending'
       };
-      
-      applications.push(newApplication);
-      localStorage.setItem('bucksCapitalApplications', JSON.stringify(applications));
-      
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      // Send to API endpoint
+      const response = await fetch('/api/applications', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(applicationPayload)
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to submit application');
+      }
+
+      const submittedApplication = await response.json();
+      console.log('✅ Application submitted successfully:', submittedApplication);
       
       setIsSubmitted(true);
       
@@ -86,7 +100,7 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({ isOpen, onClose }) 
       
     } catch (error) {
       console.error('Error submitting application:', error);
-      alert('There was an error submitting your application. Please try again.');
+      alert(`There was an error submitting your application: ${error instanceof Error ? error.message : 'Please try again.'}`);
     } finally {
       setIsSubmitting(false);
     }
