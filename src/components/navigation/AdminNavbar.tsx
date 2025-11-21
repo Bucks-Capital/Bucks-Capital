@@ -3,27 +3,22 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { 
   Home, 
-  Calendar, 
-  Users, 
   Settings, 
   LogOut, 
   Menu,
-  X,
-  ExternalLink
+  X
 } from 'lucide-react';
 
 interface AdminNavbarProps {
-  currentPage?: 'admin-login' | 'admin-panel' | 'team-login' | 'team-availability';
+  currentPage?: 'admin-login' | 'admin-panel';
   onLogout?: () => void;
   isAuthenticated?: boolean;
-  teamMemberName?: string;
 }
 
 export default function AdminNavbar({ 
   currentPage, 
   onLogout, 
-  isAuthenticated = false,
-  teamMemberName 
+  isAuthenticated = false
 }: AdminNavbarProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -40,20 +35,6 @@ export default function AdminNavbar({
       icon: Settings,
       description: 'Admin dashboard access',
       requiresAuth: false
-    },
-    {
-      name: 'Team Login',
-      href: '/team-availability',
-      icon: Users,
-      description: 'Team member access',
-      requiresAuth: false
-    },
-    {
-      name: 'Booking Page',
-      href: '/booking',
-      icon: Calendar,
-      description: 'Client booking system',
-      external: true
     }
   ];
 
@@ -63,10 +44,6 @@ export default function AdminNavbar({
         return 'Admin Login';
       case 'admin-panel':
         return 'Admin Dashboard';
-      case 'team-login':
-        return 'Team Login';
-      case 'team-availability':
-        return 'Team Availability';
       default:
         return 'Admin System';
     }
@@ -88,7 +65,6 @@ export default function AdminNavbar({
                 </h1>
                 <p className="text-sm text-gray-500">
                   {getCurrentPageName()}
-                  {teamMemberName && ` - ${teamMemberName}`}
                 </p>
               </div>
             </div>
@@ -100,9 +76,7 @@ export default function AdminNavbar({
               const Icon = item.icon;
               const isActive = 
                 (currentPage === 'admin-login' && item.name === 'Admin Login') ||
-                (currentPage === 'admin-panel' && item.name === 'Admin Login') ||
-                (currentPage === 'team-login' && item.name === 'Team Login') ||
-                (currentPage === 'team-availability' && item.name === 'Team Login');
+                (currentPage === 'admin-panel' && item.name === 'Admin Login');
 
               return (
                 <Button
@@ -163,9 +137,7 @@ export default function AdminNavbar({
                 const Icon = item.icon;
                 const isActive = 
                   (currentPage === 'admin-login' && item.name === 'Admin Login') ||
-                  (currentPage === 'admin-panel' && item.name === 'Admin Login') ||
-                  (currentPage === 'team-login' && item.name === 'Team Login') ||
-                  (currentPage === 'team-availability' && item.name === 'Team Login');
+                  (currentPage === 'admin-panel' && item.name === 'Admin Login');
 
                 return (
                   <Button
