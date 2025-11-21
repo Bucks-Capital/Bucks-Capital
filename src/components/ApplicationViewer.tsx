@@ -123,7 +123,13 @@ const ApplicationViewer: React.FC<ApplicationViewerProps> = ({ onLogout }) => {
     setError(null);
     
     try {
-      const response = await fetch('/api/applications');
+      console.log('📥 Loading applications from database...');
+      const response = await fetch('/api/applications', {
+        cache: 'no-store', // Prevent caching
+        headers: {
+          'Cache-Control': 'no-cache',
+        }
+      });
       
       // Check if response is actually JSON
       const contentType = response.headers.get('content-type');
@@ -133,6 +139,8 @@ const ApplicationViewer: React.FC<ApplicationViewerProps> = ({ onLogout }) => {
         if (isJson) {
           try {
             const data = await response.json();
+            console.log(`📥 Loaded ${data?.length || 0} applications from database`);
+            console.log('📋 Application IDs:', data?.map((app: any) => app.id) || []);
             setApplications(data || []);
             
             // If API returns empty but localStorage has data, try to migrate
@@ -252,14 +260,25 @@ const ApplicationViewer: React.FC<ApplicationViewerProps> = ({ onLogout }) => {
       return;
     }
 
-    console.log('🗑️ Attempting to delete application:', applicationToDelete);
+    // Find the application to verify the ID format
+    const appToDelete = applications.find(app => app.id === applicationToDelete);
+    console.log('🗑️ Attempting to delete application:', {
+      id: applicationToDelete,
+      found: !!appToDelete,
+      allIds: applications.map(app => app.id),
+      appDetails: appToDelete ? { id: appToDelete.id, name: appToDelete.name } : null
+    });
 
     try {
-      const response = await fetch(`/api/applications?id=${encodeURIComponent(applicationToDelete)}`, {
+      const deleteUrl = `/api/applications?id=${encodeURIComponent(applicationToDelete)}`;
+      console.log('📡 Delete URL:', deleteUrl);
+      
+      const response = await fetch(deleteUrl, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
-        }
+        },
+        cache: 'no-store' // Prevent caching
       });
 
       console.log('📡 Delete response status:', response.status, response.statusText);
@@ -268,8 +287,13 @@ const ApplicationViewer: React.FC<ApplicationViewerProps> = ({ onLogout }) => {
         const result = await response.json();
         console.log('✅ Delete successful:', result);
         
-        // Reload applications from database to ensure consistency
-        await loadApplications();
+        // Immediately update UI by removing the deleted application from state
+        // This provides instant feedback while we reload from database
+        const beforeCount = applications.length;
+        const updatedApps = applications.filter(app => app.id !== applicationToDelete);
+        const afterCount = updatedApps.length;
+        setApplications(updatedApps);
+        console.log(`🔄 Updated UI: ${beforeCount} -> ${afterCount} applications (removed ${applicationToDelete})`);
         
         // Close modal if the deleted application was selected
         if (selectedApplication?.id === applicationToDelete) {
@@ -279,6 +303,12 @@ const ApplicationViewer: React.FC<ApplicationViewerProps> = ({ onLogout }) => {
         
         setDeleteDialogOpen(false);
         setApplicationToDelete(null);
+        
+        // Small delay before reload to ensure database operation completes
+        setTimeout(async () => {
+          console.log('🔄 Reloading applications from database...');
+          await loadApplications();
+        }, 500);
       } else {
         // Try to parse error response as JSON, but handle non-JSON gracefully
         let errorData;
@@ -387,10 +417,8 @@ const ApplicationViewer: React.FC<ApplicationViewerProps> = ({ onLogout }) => {
         alert(`${successes.length} applications deleted, but ${failures.length} failed to delete. Please refresh and try again.`);
       }
       
-      // Reload from database to ensure consistency
-      await loadApplications();
-      
-      // Clear UI state
+      // Immediately clear UI state
+      setApplications([]);
       setSelectedApplication(null);
       setIsModalOpen(false);
       setIsPdfViewerOpen(false);
@@ -403,6 +431,13 @@ const ApplicationViewer: React.FC<ApplicationViewerProps> = ({ onLogout }) => {
       localStorage.removeItem('bucksCapitalApplications');
       
       setClearAllDialogOpen(false);
+      
+      // Reload from database to ensure consistency (in background)
+      // This ensures we have the latest data, but UI is already cleared
+      loadApplications().catch(error => {
+        console.error('Error reloading applications after clear all:', error);
+        // If reload fails, we already cleared the UI, so it's okay
+      });
     } catch (error) {
       console.error('❌ Error clearing applications:', error);
       alert(`Failed to clear all applications: ${error instanceof Error ? error.message : 'Unknown error'}`);
