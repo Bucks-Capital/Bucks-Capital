@@ -225,6 +225,14 @@ const About: React.FC = () => {
             <p className="text-2xl text-black leading-relaxed mb-8">
                 <img src="/Trendspider_black_Logo.jpg" alt="Trendspider Logo" className="h-80 w-auto mx-auto block" />
             </p>
+            <p className="text-2xl text-black leading-relaxed mb-32">
+                <img src="/WSO_logo.png" alt="WSO Logo" className="h-40 w-auto max-w-full mx-auto block" />
+            </p>
+            <p className="text-2xl text-black leading-relaxed mb-8">
+                <a href="https://linktr.ee/barebone.ai" target="_blank" rel="noopener noreferrer" className="block">
+                    <img src="/barebone-logo.png" alt="Barebone Logo" className="h-80 w-auto max-w-full mx-auto block" />
+                </a>
+            </p>
             <div className="fade-in-trigger max-w-5xl mx-auto text-center -mt-14 mb-16"></div>
             <p className="text-4xl text-black font-bold leading-relaxed mt-20 mb-8">
               List of Donors
