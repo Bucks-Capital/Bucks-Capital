@@ -247,14 +247,27 @@ const ApplicationViewer: React.FC<ApplicationViewerProps> = ({ onLogout }) => {
   };
 
   const deleteApplication = async () => {
-    if (!applicationToDelete) return;
+    if (!applicationToDelete) {
+      console.error('❌ No application ID to delete');
+      return;
+    }
+
+    console.log('🗑️ Attempting to delete application:', applicationToDelete);
 
     try {
-      const response = await fetch(`/api/applications?id=${applicationToDelete}`, {
-        method: 'DELETE'
+      const response = await fetch(`/api/applications?id=${encodeURIComponent(applicationToDelete)}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        }
       });
 
+      console.log('📡 Delete response status:', response.status, response.statusText);
+
       if (response.ok) {
+        const result = await response.json();
+        console.log('✅ Delete successful:', result);
+        
         // Reload applications from database to ensure consistency
         await loadApplications();
         
@@ -275,16 +288,17 @@ const ApplicationViewer: React.FC<ApplicationViewerProps> = ({ onLogout }) => {
             errorData = await response.json();
           } else {
             const text = await response.text();
-            console.error('Delete error response (non-JSON):', text.substring(0, 200));
+            console.error('❌ Delete error response (non-JSON):', text.substring(0, 200));
             errorData = { error: response.statusText || 'Failed to delete application' };
           }
         } catch (e) {
+          console.error('❌ Error parsing delete error response:', e);
           errorData = { error: response.statusText || 'Failed to delete application' };
         }
         throw new Error(errorData.error || 'Failed to delete application');
       }
     } catch (error) {
-      console.error('Error deleting application:', error);
+      console.error('❌ Error deleting application:', error);
       alert(`Failed to delete application: ${error instanceof Error ? error.message : 'Unknown error'}`);
       setDeleteDialogOpen(false);
       setApplicationToDelete(null);
@@ -331,19 +345,46 @@ const ApplicationViewer: React.FC<ApplicationViewerProps> = ({ onLogout }) => {
   };
 
   const clearAllApplications = async () => {
+    console.log('🗑️ Attempting to clear all applications:', applications.length);
+    
     try {
       // Delete each application via API
-      const deletePromises = applications.map(app => 
-        fetch(`/api/applications?id=${app.id}`, { method: 'DELETE' })
-      );
-      const results = await Promise.allSettled(deletePromises);
+      const deletePromises = applications.map(async (app) => {
+        try {
+          console.log('🗑️ Deleting application:', app.id);
+          const response = await fetch(`/api/applications?id=${encodeURIComponent(app.id)}`, { 
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+            }
+          });
+          
+          if (!response.ok) {
+            const errorText = await response.text();
+            console.error(`❌ Failed to delete ${app.id}:`, response.status, errorText);
+            return { success: false, id: app.id, error: response.statusText };
+          }
+          
+          const result = await response.json();
+          console.log('✅ Deleted application:', app.id, result);
+          return { success: true, id: app.id };
+        } catch (error) {
+          console.error(`❌ Error deleting ${app.id}:`, error);
+          return { success: false, id: app.id, error: error instanceof Error ? error.message : 'Unknown error' };
+        }
+      });
+      
+      const results = await Promise.all(deletePromises);
       
       // Check if any deletions failed
-      const failures = results.filter(r => r.status === 'rejected' || 
-        (r.status === 'fulfilled' && !r.value.ok));
+      const failures = results.filter(r => !r.success);
+      const successes = results.filter(r => r.success);
+      
+      console.log(`✅ Deleted ${successes.length} applications, ${failures.length} failed`);
       
       if (failures.length > 0) {
-        console.warn(`${failures.length} applications failed to delete`);
+        console.warn('⚠️ Some applications failed to delete:', failures);
+        alert(`${successes.length} applications deleted, but ${failures.length} failed to delete. Please refresh and try again.`);
       }
       
       // Reload from database to ensure consistency
@@ -363,8 +404,8 @@ const ApplicationViewer: React.FC<ApplicationViewerProps> = ({ onLogout }) => {
       
       setClearAllDialogOpen(false);
     } catch (error) {
-      console.error('Error clearing applications:', error);
-      alert('Failed to clear all applications. Please try again.');
+      console.error('❌ Error clearing applications:', error);
+      alert(`Failed to clear all applications: ${error instanceof Error ? error.message : 'Unknown error'}`);
       setClearAllDialogOpen(false);
     }
   };

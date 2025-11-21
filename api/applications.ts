@@ -110,27 +110,49 @@ async function deleteApplication(req: VercelRequest, res: VercelResponse) {
   try {
     const { id } = req.query;
 
+    console.log('🗑️ Delete request received:', { id, method: req.method, query: req.query });
+
     if (!id || typeof id !== 'string') {
+      console.error('❌ Missing or invalid application ID:', id);
       return res.status(400).json({ error: 'Missing application ID' });
     }
 
     if (kv) {
+      console.log('📦 Using Vercel KV for deletion');
+      
+      // Check if application exists before deleting
+      const existingApp = await kv.get(`application:${id}`);
+      if (!existingApp) {
+        console.warn('⚠️ Application not found in KV:', id);
+        // Still try to remove from list in case it's orphaned
+      } else {
+        console.log('✅ Found application in KV, deleting:', id);
+      }
+      
       // Delete from Vercel KV
       await kv.del(`application:${id}`);
+      console.log('✅ Deleted application key from KV');
       
       // Remove from applications list
       const applicationsList = await kv.get('applications:list') || [];
+      console.log('📋 Current applications list:', applicationsList);
       const updatedList = applicationsList.filter((appId: string) => appId !== id);
+      console.log('📋 Updated applications list:', updatedList);
       await kv.set('applications:list', updatedList);
+      console.log('✅ Updated applications list in KV');
     } else {
+      console.log('💾 Using fallback in-memory storage for deletion');
       // Fallback to in-memory storage
+      const beforeCount = fallbackStorage.length;
       fallbackStorage = fallbackStorage.filter(app => app.id !== id);
+      const afterCount = fallbackStorage.length;
+      console.log(`✅ Deleted from fallback storage: ${beforeCount} -> ${afterCount} applications`);
     }
 
-    console.log('✅ Application deleted:', id);
-    res.status(200).json({ success: true, id });
+    console.log('✅ Application deleted successfully:', id);
+    res.status(200).json({ success: true, id, message: 'Application deleted successfully' });
   } catch (error) {
-    console.error('Error deleting application:', error);
+    console.error('❌ Error deleting application:', error);
     res.status(500).json({ 
       error: 'Internal server error',
       details: error instanceof Error ? error.message : 'Unknown error'
