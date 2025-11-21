@@ -137,7 +137,19 @@ const macroAnalysts = [
     name: 'Suhas Kukawada',
     role: 'Macro Analyst',
     year: 'Sophomore'
+  },
+  {
+    name: 'Dan Richmond',
+    role: 'Macro Analyst',
+    year: 'Junior'
+  },
+  {
+    name: 'John Lopit',
+    role: 'Macro Analyst',
+    year: 'Junior'
   }
+
+
 ];
 
 const equityAnalysts = [
@@ -150,12 +162,27 @@ const equityAnalysts = [
     name: 'Atharva Bhargude',
     role: 'Equity Analyst',
     year: 'Junior'
+  },{
+    name: 'Michael Reshetnyak',
+    role: 'Equity Analyst',
+    year: 'Senior'
   },
   {
     name: 'John Vrettos',
     role: 'Equity Analyst',
     year: 'Sophomore'
+  },
+  {
+    name: 'Emad Bokhari',
+    role: 'Equity Analyst',
+    year: 'Junior'
+  },
+  {
+    name: 'Evan Patras',
+    role: 'Equity Analyst',
+    year: 'Equity Analyst'
   }
+  
 ];
 
   return (
@@ -417,7 +444,7 @@ const equityAnalysts = [
               <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
                 {/* Macro Analysts */}
                 <div>
-                  <h4 className="text-xl font-bold text-foreground mb-6 text-center lg:text-left">Macro Analysts Team</h4>
+                  <h4 className="text-xl font-bold text-foreground mb-6 text-center lg:text-left">Macro Analyst Team</h4>
                   <div className="space-y-4">
                     {macroAnalysts.map((analyst, index) => (
                       <div key={`macro-${index}`} className="bg-gray-50 border border-gray-100 rounded-lg p-4 hover:shadow-md transition-all duration-300 hover:-translate-y-1">
@@ -440,7 +467,7 @@ const equityAnalysts = [
 
                 {/* Equity Analysts */}
                 <div>
-                  <h4 className="text-xl font-bold text-foreground mb-6 text-center lg:text-left">Equity Analysts Team</h4>
+                  <h4 className="text-xl font-bold text-foreground mb-6 text-center lg:text-left">Equity Analyst Team</h4>
                   <div className="space-y-4">
                     {equityAnalysts.map((analyst, index) => (
                       <div key={`equity-${index}`} className="bg-gray-50 border border-gray-100 rounded-lg p-4 hover:shadow-md transition-all duration-300 hover:-translate-y-1">
