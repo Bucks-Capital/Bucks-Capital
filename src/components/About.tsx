@@ -225,10 +225,6 @@ const equityAnalysts = [
       const children = Array.from(container.children) as HTMLElement[];
       const numCards = children.length;
       
-      // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/74f189f6-03bb-4080-9d31-a84bf6d202fb',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'About.tsx:calculateMaxHorizontalScroll:entry',message:'Calculating max scroll',data:{numCards,viewportWidth:window.innerWidth,scrollWidth:container.scrollWidth},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
-      // #endregion
-      
       if (numCards === 0) return 0;
       
       // Calculate total width by summing actual card widths
@@ -270,10 +266,6 @@ const equityAnalysts = [
       const buffer = (cardWidth * 2) + 200; // 2 full card widths + extra padding for safety
       const finalMaxScroll = maxScroll + buffer;
       
-      // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/74f189f6-03bb-4080-9d31-a84bf6d202fb',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'About.tsx:calculateMaxHorizontalScroll:exit',message:'Max scroll calculated',data:{totalWidth,viewportWidth,contentWidth,expectedTotal,measuredMaxScroll:maxScroll,buffer,finalMaxScroll,cardWidths,scrollWidth:container.scrollWidth},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
-      // #endregion
-      
       return finalMaxScroll;
     };
 
@@ -287,11 +279,6 @@ const equityAnalysts = [
       
       // Calculate the center point of the carousel section
       const sectionCenter = rect.top + (rect.height / 2);
-      const distanceFromCenterRaw = sectionCenter - windowCenter; // Positive = below center, Negative = above center
-      
-      // #region agent log
-      fetch('http://127.0.0.1:7242/ingest/74f189f6-03bb-4080-9d31-a84bf6d202fb',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'About.tsx:checkCarouselActivation',message:'Checking activation',data:{sectionCenter,windowCenter,distanceFromCenter:distanceFromCenterRaw,scrollDelta,rectTop:rect.top,rectBottom:rect.bottom,windowHeight},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})}).catch(()=>{});
-      // #endregion
       
       // Activate when carousel section center is at the viewport center
       // When scrolling down: activate when section center reaches or passes viewport center (so cards are visible)
@@ -327,18 +314,6 @@ const equityAnalysts = [
                         rect.top < windowHeight * 0.9 && 
                         rect.bottom > windowHeight * 0.1;
       }
-      
-      // #region agent log
-      const logData: any = {shouldActivate,windowCenter,sectionCenter,scrollDelta,rectTop:rect.top,rectBottom:rect.bottom};
-      if (scrollDelta !== undefined && scrollDelta > 0) {
-        logData.distanceBelow = sectionCenter - windowCenter;
-      } else if (scrollDelta !== undefined && scrollDelta < 0) {
-        logData.distanceBelow = sectionCenter - windowCenter;
-      } else {
-        logData.distanceFromCenter = Math.abs(sectionCenter - windowCenter);
-      }
-      fetch('http://127.0.0.1:7242/ingest/74f189f6-03bb-4080-9d31-a84bf6d202fb',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'About.tsx:checkCarouselActivation:result',message:'Activation result',data:logData,timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})}).catch(()=>{});
-      // #endregion
       
       return shouldActivate;
     };
@@ -396,16 +371,11 @@ const equityAnalysts = [
         const scrollSpeed = 2;
         
         // Update accumulated scroll based on direction - use ref to persist across renders
-        const prevAccumulated = accumulatedScrollRef.current;
         accumulatedScrollRef.current += scrollDelta * scrollSpeed;
 
         // Calculate how much scroll is needed - ensure enough scroll distance for all cards
         // Use a larger multiplier to ensure we can scroll through all 6 cards
         const scrollNeeded = maxScroll * 3.5; // Increased multiplier even more to ensure full range
-
-        // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/74f189f6-03bb-4080-9d31-a84bf6d202fb',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'About.tsx:handleWheel:beforeCalc',message:'Before scroll calculation',data:{scrollDelta,prevAccumulated,accumulatedScroll:accumulatedScrollRef.current,scrollNeeded,maxScroll,scrollSpeed},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
-        // #endregion
 
         // Update horizontal scroll position
         // Allow going slightly beyond maxScroll to ensure we can see the last card
@@ -414,10 +384,6 @@ const equityAnalysts = [
         // Allow going up to 110% of maxScroll to ensure we can see the last card fully
         const maxAllowedScroll = maxScroll * 1.1;
         newHorizontalScroll = Math.max(0, Math.min(maxAllowedScroll, newHorizontalScroll));
-        
-        // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/74f189f6-03bb-4080-9d31-a84bf6d202fb',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'About.tsx:handleWheel:afterCalc',message:'After scroll calculation',data:{scrollRatio,newHorizontalScroll,maxAllowedScroll,isAtMax:newHorizontalScroll>=maxScroll-1,isAtMaxAllowed:newHorizontalScroll>=maxAllowedScroll-1},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
-        // #endregion
         
         // Update immediately - ensure state updates
         horizontalScrollRef.current = newHorizontalScroll;
@@ -443,18 +409,10 @@ const equityAnalysts = [
         // Check boundaries - release when at end/start and trying to scroll further
         const isAtEnd = newHorizontalScroll >= maxScroll - 2; // Allow small tolerance for floating point
         const isAtStart = newHorizontalScroll <= 2;
-        const accumulatedRatio = accumulatedScrollRef.current / scrollNeeded;
-        
-        // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/74f189f6-03bb-4080-9d31-a84bf6d202fb',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'About.tsx:handleWheel:boundaryCheck',message:'Boundary check',data:{isAtEnd,isAtStart,newHorizontalScroll,maxScroll,maxAllowedScroll,accumulatedScroll:accumulatedScrollRef.current,scrollNeeded,accumulatedRatio,scrollDelta},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
-        // #endregion
         
         // Release immediately when at boundary and trying to scroll further in that direction
         if (isAtEnd && scrollDelta > 0) {
           // Reached end scrolling down - release immediately to allow scrolling past
-          // #region agent log
-          fetch('http://127.0.0.1:7242/ingest/74f189f6-03bb-4080-9d31-a84bf6d202fb',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'About.tsx:handleWheel:releasingEnd',message:'Releasing scroll lock at end',data:{newHorizontalScroll,maxScroll,accumulatedScroll:accumulatedScrollRef.current,scrollNeeded,accumulatedRatio},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
-          // #endregion
           setIsCarouselActive(false);
           isCarouselActiveRef.current = false;
           setLockedScrollPosition(null);
