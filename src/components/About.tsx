@@ -10,6 +10,17 @@ const About: React.FC = () => {
   const [navScrolled, setNavScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isApplicationModalOpen, setIsApplicationModalOpen] = useState(false);
+  const [expandedCardIndex, setExpandedCardIndex] = useState<number | null>(null);
+  const [horizontalScroll, setHorizontalScroll] = useState(0);
+  const [isCarouselActive, setIsCarouselActive] = useState(false);
+  const [lockedScrollPosition, setLockedScrollPosition] = useState<number | null>(null);
+  const teamSectionRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const isCarouselActiveRef = useRef(false);
+  const lockedScrollPositionRef = useRef<number | null>(null);
+  const carouselCompletedRef = useRef(false);
+  const lastReleaseTimeRef = useRef<number>(0);
+  const lastReleaseDirectionRef = useRef<'up' | 'down' | null>(null);
   const navigate = useNavigate();
 
   // Smooth scroll function with 600ms timing
@@ -173,8 +184,354 @@ const equityAnalysts = [
     year: 'Equity Analyst'
   }
   
-];
+  ];
 
+  // Helper function to map team member names to profile images
+  const getProfileImage = (name: string): string => {
+    const nameMap: { [key: string]: string } = {
+      'Zahin Mulji': 'zahin.jpg',
+      'Harrison Cornwell': 'harrison.jpg',
+      'Aadi Anantuni': 'aadi.jpg',
+      'Shreyas Raju': 'shreyas.jpg',
+      'Priyansh Patel': 'priyansh.jpg',
+      'Abhi Medi': 'abhi.jpg'
+    };
+    return nameMap[name] || '';
+  };
+
+  // Filter team members to only include those with profile photos
+  const teamMembersWithPhotos = teamMembers.filter(member => {
+    return getProfileImage(member.name) !== '' && 
+           member.name !== 'Macro Analayst Team' && 
+           member.name !== 'Equity Analayst Team';
+  });
+
+  // Scroll hijacking for carousel - freeze page scroll and convert to horizontal movement
+  const accumulatedScrollRef = useRef(0);
+  
+  useEffect(() => {
+    if (!teamSectionRef.current || !scrollContainerRef.current) return;
+
+    const horizontalScrollRef = { current: 0 };
+
+    const calculateMaxHorizontalScroll = () => {
+      if (!scrollContainerRef.current) return 0;
+      const container = scrollContainerRef.current;
+      
+      // Force layout recalculation to ensure all cards are measured
+      void container.offsetHeight;
+      
+      // Get all child cards
+      const children = Array.from(container.children) as HTMLElement[];
+      const numCards = children.length;
+      
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/74f189f6-03bb-4080-9d31-a84bf6d202fb',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'About.tsx:calculateMaxHorizontalScroll:entry',message:'Calculating max scroll',data:{numCards,viewportWidth:window.innerWidth,scrollWidth:container.scrollWidth},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+      // #endregion
+      
+      if (numCards === 0) return 0;
+      
+      // Calculate total width by summing actual card widths
+      let totalWidth = 0;
+      const cardWidths: number[] = [];
+      children.forEach((child, index) => {
+        // Get the actual rendered width of each card
+        const rect = child.getBoundingClientRect();
+        const cardWidth = rect.width;
+        cardWidths.push(cardWidth);
+        totalWidth += cardWidth;
+        
+        // Add gap after each card except the last
+        if (index < numCards - 1) {
+          const gap = window.innerWidth >= 768 ? 32 : 24; // gap-8 = 32px, gap-6 = 24px
+          totalWidth += gap;
+        }
+      });
+      
+      // Add container padding (px-4 = 16px on each side = 32px total)
+      totalWidth += 32;
+      
+      const viewportWidth = window.innerWidth;
+      
+      // Calculate expected width based on card count and sizes
+      // This is more reliable than getBoundingClientRect() which can be constrained
+      const cardWidth = window.innerWidth >= 768 ? 288 : 256;
+      const gap = window.innerWidth >= 768 ? 32 : 24;
+      const expectedTotal = (numCards * cardWidth) + ((numCards - 1) * gap) + 32; // +32 for padding
+      
+      // Use the maximum of: calculated total, measured total, or scrollWidth
+      // This ensures we account for all cards even if measurements are constrained
+      const contentWidth = Math.max(expectedTotal, totalWidth, container.scrollWidth);
+      let maxScroll = Math.max(0, contentWidth - viewportWidth);
+      
+      // Add buffer to ensure we can scroll past the last card to see it fully
+      // We need enough buffer to scroll past the last card completely
+      // For 6 cards, we need to scroll at least 2 full card widths to see the last card
+      const buffer = (cardWidth * 2) + 200; // 2 full card widths + extra padding for safety
+      const finalMaxScroll = maxScroll + buffer;
+      
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/74f189f6-03bb-4080-9d31-a84bf6d202fb',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'About.tsx:calculateMaxHorizontalScroll:exit',message:'Max scroll calculated',data:{totalWidth,viewportWidth,contentWidth,expectedTotal,measuredMaxScroll:maxScroll,buffer,finalMaxScroll,cardWidths,scrollWidth:container.scrollWidth},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
+      // #endregion
+      
+      return finalMaxScroll;
+    };
+
+    const checkCarouselActivation = (scrollDelta?: number) => {
+      if (!teamSectionRef.current) return false;
+
+      const section = teamSectionRef.current;
+      const rect = section.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+      const windowCenter = windowHeight / 2;
+      
+      // Calculate the center point of the carousel section
+      const sectionCenter = rect.top + (rect.height / 2);
+      const distanceFromCenterRaw = sectionCenter - windowCenter; // Positive = below center, Negative = above center
+      
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/74f189f6-03bb-4080-9d31-a84bf6d202fb',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'About.tsx:checkCarouselActivation',message:'Checking activation',data:{sectionCenter,windowCenter,distanceFromCenter:distanceFromCenterRaw,scrollDelta,rectTop:rect.top,rectBottom:rect.bottom,windowHeight},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})}).catch(()=>{});
+      // #endregion
+      
+      // Activate when carousel section center is at the viewport center
+      // When scrolling down: activate when section center reaches or passes viewport center (so cards are visible)
+      // When scrolling up: activate when section center reaches or passes viewport center (so cards are visible)
+      let shouldActivate = false;
+      
+      if (scrollDelta !== undefined) {
+        if (scrollDelta > 0) {
+          // Scrolling down - activate when section center is slightly below viewport center
+          // Allow up to 80% below center to ensure cards are well visible
+          const distanceBelow = sectionCenter - windowCenter; // Positive when section is below center
+          shouldActivate = distanceBelow >= -180 && distanceBelow <= windowHeight * 0.8 && 
+                          rect.top < windowHeight * 0.9 && 
+                          rect.bottom > windowHeight * 0.1;
+        } else if (scrollDelta < 0) {
+          // Scrolling up - activate when section center is at or below viewport center
+          // Allow up to 80% below center to ensure cards are well visible (same as scrolling down)
+          const distanceBelow = sectionCenter - windowCenter; // Positive when section is below center
+          shouldActivate = distanceBelow >= -180 && distanceBelow <= windowHeight * 0.8 && 
+                          rect.top < windowHeight * 0.9 && 
+                          rect.bottom > windowHeight * 0.1;
+        } else {
+          // No scroll direction - use symmetric activation at center
+          const distanceFromCenter = Math.abs(sectionCenter - windowCenter);
+          shouldActivate = distanceFromCenter < windowHeight * 0.05 && 
+                          rect.top < windowHeight * 0.9 && 
+                          rect.bottom > windowHeight * 0.1;
+        }
+      } else {
+        // No scroll delta - use symmetric activation at center
+        const distanceFromCenter = Math.abs(sectionCenter - windowCenter);
+        shouldActivate = distanceFromCenter < windowHeight * 0.05 && 
+                        rect.top < windowHeight * 0.9 && 
+                        rect.bottom > windowHeight * 0.1;
+      }
+      
+      // #region agent log
+      const logData: any = {shouldActivate,windowCenter,sectionCenter,scrollDelta,rectTop:rect.top,rectBottom:rect.bottom};
+      if (scrollDelta !== undefined && scrollDelta > 0) {
+        logData.distanceBelow = sectionCenter - windowCenter;
+      } else if (scrollDelta !== undefined && scrollDelta < 0) {
+        logData.distanceBelow = sectionCenter - windowCenter;
+      } else {
+        logData.distanceFromCenter = Math.abs(sectionCenter - windowCenter);
+      }
+      fetch('http://127.0.0.1:7242/ingest/74f189f6-03bb-4080-9d31-a84bf6d202fb',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'About.tsx:checkCarouselActivation:result',message:'Activation result',data:logData,timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})}).catch(()=>{});
+      // #endregion
+      
+      return shouldActivate;
+    };
+
+    const handleWheel = (e: WheelEvent) => {
+      // Only process if we're near the carousel section
+      const scrollDelta = e.deltaY;
+      const maxScroll = calculateMaxHorizontalScroll();
+      
+      // If we just released at the end and user is trying to scroll past, don't re-engage
+      if (lastReleaseDirectionRef.current === 'down' && scrollDelta > 0 && !isCarouselActiveRef.current) {
+        // User is scrolling down after releasing at end - allow normal scroll
+        return;
+      }
+      if (lastReleaseDirectionRef.current === 'up' && scrollDelta < 0 && !isCarouselActiveRef.current) {
+        // User is scrolling up after releasing at start - allow normal scroll
+        return;
+      }
+      
+      const shouldBeActive = checkCarouselActivation(scrollDelta);
+
+      // Only hijack if we're in the carousel area AND have cards to scroll
+      if (!shouldBeActive || maxScroll <= 10) {
+        // Not in carousel area or no scroll needed - allow normal scrolling
+        if (isCarouselActiveRef.current) {
+          // Exit carousel mode
+          setIsCarouselActive(false);
+          isCarouselActiveRef.current = false;
+          setLockedScrollPosition(null);
+          lockedScrollPositionRef.current = null;
+        }
+        return; // Allow normal scroll
+      }
+
+      // Enter carousel mode
+      if (!isCarouselActiveRef.current) {
+        setIsCarouselActive(true);
+        isCarouselActiveRef.current = true;
+        const currentScroll = window.scrollY;
+        setLockedScrollPosition(currentScroll);
+        lockedScrollPositionRef.current = currentScroll;
+        lastReleaseDirectionRef.current = null; // Clear release direction when entering carousel
+        // Preserve current horizontal position
+        const currentPos = horizontalScrollRef.current;
+        const scrollNeeded = maxScroll * 3.5; // Match the multiplier used in scroll handling
+        accumulatedScrollRef.current = maxScroll > 0 ? (currentPos / maxScroll) * scrollNeeded : 0;
+      }
+
+      // Handle scroll hijacking when carousel is active
+      if (isCarouselActiveRef.current && lockedScrollPositionRef.current !== null && maxScroll > 0) {
+        // Prevent default scroll behavior ONLY in carousel area
+        e.preventDefault();
+        e.stopPropagation();
+
+        const scrollSpeed = 2;
+        
+        // Update accumulated scroll based on direction - use ref to persist across renders
+        const prevAccumulated = accumulatedScrollRef.current;
+        accumulatedScrollRef.current += scrollDelta * scrollSpeed;
+
+        // Calculate how much scroll is needed - ensure enough scroll distance for all cards
+        // Use a larger multiplier to ensure we can scroll through all 6 cards
+        const scrollNeeded = maxScroll * 3.5; // Increased multiplier even more to ensure full range
+
+        // #region agent log
+        fetch('http://127.0.0.1:7242/ingest/74f189f6-03bb-4080-9d31-a84bf6d202fb',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'About.tsx:handleWheel:beforeCalc',message:'Before scroll calculation',data:{scrollDelta,prevAccumulated,accumulatedScroll:accumulatedScrollRef.current,scrollNeeded,maxScroll,scrollSpeed},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
+        // #endregion
+
+        // Update horizontal scroll position
+        // Allow going slightly beyond maxScroll to ensure we can see the last card
+        const scrollRatio = Math.max(0, Math.min(1, accumulatedScrollRef.current / scrollNeeded));
+        let newHorizontalScroll = scrollRatio * maxScroll;
+        // Allow going up to 110% of maxScroll to ensure we can see the last card fully
+        const maxAllowedScroll = maxScroll * 1.1;
+        newHorizontalScroll = Math.max(0, Math.min(maxAllowedScroll, newHorizontalScroll));
+        
+        // #region agent log
+        fetch('http://127.0.0.1:7242/ingest/74f189f6-03bb-4080-9d31-a84bf6d202fb',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'About.tsx:handleWheel:afterCalc',message:'After scroll calculation',data:{scrollRatio,newHorizontalScroll,maxAllowedScroll,isAtMax:newHorizontalScroll>=maxScroll-1,isAtMaxAllowed:newHorizontalScroll>=maxAllowedScroll-1},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
+        // #endregion
+        
+        // Update immediately - ensure state updates
+        horizontalScrollRef.current = newHorizontalScroll;
+        setHorizontalScroll(prev => {
+          // Force update if value changed significantly
+          if (Math.abs(prev - newHorizontalScroll) > 0.1) {
+            return newHorizontalScroll;
+          }
+          return prev;
+        });
+        
+        // Force a re-render by updating the transform directly on the DOM element
+        if (scrollContainerRef.current) {
+          scrollContainerRef.current.style.transform = `translateX(-${newHorizontalScroll}px)`;
+        }
+
+        // Lock the page scroll position
+        window.scrollTo({
+          top: lockedScrollPositionRef.current,
+          behavior: 'auto'
+        });
+
+        // Check boundaries - release when at end/start and trying to scroll further
+        const isAtEnd = newHorizontalScroll >= maxScroll - 2; // Allow small tolerance for floating point
+        const isAtStart = newHorizontalScroll <= 2;
+        const accumulatedRatio = accumulatedScrollRef.current / scrollNeeded;
+        
+        // #region agent log
+        fetch('http://127.0.0.1:7242/ingest/74f189f6-03bb-4080-9d31-a84bf6d202fb',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'About.tsx:handleWheel:boundaryCheck',message:'Boundary check',data:{isAtEnd,isAtStart,newHorizontalScroll,maxScroll,maxAllowedScroll,accumulatedScroll:accumulatedScrollRef.current,scrollNeeded,accumulatedRatio,scrollDelta},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+        // #endregion
+        
+        // Release immediately when at boundary and trying to scroll further in that direction
+        if (isAtEnd && scrollDelta > 0) {
+          // Reached end scrolling down - release immediately to allow scrolling past
+          // #region agent log
+          fetch('http://127.0.0.1:7242/ingest/74f189f6-03bb-4080-9d31-a84bf6d202fb',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'About.tsx:handleWheel:releasingEnd',message:'Releasing scroll lock at end',data:{newHorizontalScroll,maxScroll,accumulatedScroll:accumulatedScrollRef.current,scrollNeeded,accumulatedRatio},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'D'})}).catch(()=>{});
+          // #endregion
+          setIsCarouselActive(false);
+          isCarouselActiveRef.current = false;
+          setLockedScrollPosition(null);
+          lockedScrollPositionRef.current = null;
+          accumulatedScrollRef.current = scrollNeeded; // Lock to max
+          lastReleaseTimeRef.current = Date.now(); // Record release time for cooldown
+          lastReleaseDirectionRef.current = 'down'; // Record direction
+          return; // Allow scroll to continue down
+        } else if (isAtStart && scrollDelta < 0) {
+          // Reached start scrolling up - release immediately to allow scrolling past
+          setIsCarouselActive(false);
+          isCarouselActiveRef.current = false;
+          setLockedScrollPosition(null);
+          lockedScrollPositionRef.current = null;
+          accumulatedScrollRef.current = 0; // Lock to start
+          lastReleaseTimeRef.current = Date.now(); // Record release time for cooldown
+          lastReleaseDirectionRef.current = 'up'; // Record direction
+          return; // Allow scroll to continue up
+        }
+      }
+    };
+
+    const handleScroll = () => {
+      // If carousel is active, maintain locked position
+      if (isCarouselActiveRef.current && lockedScrollPositionRef.current !== null) {
+        // For scroll events, we don't have scrollDelta, so use undefined (symmetric activation)
+        const shouldBeActive = checkCarouselActivation(undefined);
+        if (shouldBeActive) {
+          window.scrollTo({
+            top: lockedScrollPositionRef.current,
+            behavior: 'auto'
+          });
+        } else {
+          // Exited carousel area - release lock
+          setIsCarouselActive(false);
+          isCarouselActiveRef.current = false;
+          setLockedScrollPosition(null);
+          lockedScrollPositionRef.current = null;
+        }
+      }
+    };
+
+    // Sync horizontalScrollRef with state
+    horizontalScrollRef.current = horizontalScroll;
+
+    // Use wheel event for scroll hijacking - only on carousel section
+    window.addEventListener('wheel', handleWheel, { passive: false });
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    // Recalculate on resize
+    const handleResize = () => {
+      if (isCarouselActiveRef.current && lockedScrollPositionRef.current !== null) {
+        window.scrollTo({
+          top: lockedScrollPositionRef.current,
+          behavior: 'auto'
+        });
+      }
+    };
+    window.addEventListener('resize', handleResize, { passive: true });
+
+    return () => {
+      window.removeEventListener('wheel', handleWheel);
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [horizontalScroll]);
+
+  // Track nav scroll state
+  useEffect(() => {
+    const handleNavScroll = () => {
+      setNavScrolled(window.scrollY > 50);
+    };
+
+    window.addEventListener('scroll', handleNavScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleNavScroll);
+  }, []);
+  
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
             {/* Navigation */}
@@ -369,7 +726,7 @@ const equityAnalysts = [
       </section>
 
         {/* Team Section */}
-        <section id="team" className="py-32 bg-gradient-to-br from-gray-50 to-white">
+        <section id="team" ref={teamSectionRef} className="py-32 bg-gradient-to-br from-gray-50 to-white">
           <div className="container mx-auto px-6">
             <div className="max-w-7xl mx-auto">
               <div className="text-center mb-20">
@@ -383,21 +740,94 @@ const equityAnalysts = [
                 </p>
               </div>
 
-              {/* Team Members */}
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-8 mb-20">
-                {teamMembers.map((member, index) => (
-                  <div key={index} className="bg-gray-50 border border-gray-100 rounded-2xl p-4 md:p-8 hover:shadow-xl transition-all duration-500 hover:-translate-y-2 text-center">
-                    <div className="w-12 h-12 md:w-20 md:h-20 bg-primary/10 rounded-2xl mx-auto mb-4 md:mb-6 flex items-center justify-center">
-                      <span className="text-lg md:text-2xl font-black text-primary">
-                        {member.name.split(' ').map(n => n[0]).join('')}
-                      </span>
-                    </div>
-                    <h3 className="text-sm md:text-xl font-bold text-foreground mb-1 md:mb-2">{member.name}</h3>
-                    <div className="text-xs md:text-base text-primary font-bold mb-1">{member.role}</div>
-                    <div className="text-xs md:text-sm text-foreground/60 font-medium mb-2 md:mb-4">{member.year}</div>
-                    <p className="text-xs md:text-base text-foreground/80 leading-relaxed">{member.description}</p>
-                  </div>
-                ))}
+              {/* Team Members - Horizontal Scrolling */}
+              <div className="mb-20 overflow-hidden relative" style={{ height: '600px', width: '100%' }}>
+                {/* Gradient fade edges for visual indication */}
+                <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-white via-white/80 to-transparent z-10 pointer-events-none"></div>
+                <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-white via-white/80 to-transparent z-10 pointer-events-none"></div>
+                <div 
+                  ref={scrollContainerRef}
+                  className="flex gap-6 md:gap-8 px-4"
+                  style={{ 
+                    transform: `translateX(-${horizontalScroll}px)`,
+                    willChange: 'transform',
+                    transition: isCarouselActive ? 'none' : 'transform 0.1s ease-out',
+                    minWidth: 'max-content'
+                  }}
+                >
+                  {teamMembersWithPhotos.map((member, index) => {
+                    const isExpanded = expandedCardIndex === index;
+                    const imagePath = `/Profile Photos/${getProfileImage(member.name)}`;
+                    
+                    return (
+                      <div
+                        key={index}
+                        onClick={() => setExpandedCardIndex(isExpanded ? null : index)}
+                        className={`bg-white border-2 border-gray-200 rounded-2xl cursor-pointer transition-all duration-500 flex-shrink-0 flex-grow-0 ${
+                          isExpanded 
+                            ? 'w-80 md:w-96 shadow-2xl scale-105 border-primary/30 z-20' 
+                            : 'w-64 md:w-72 hover:shadow-xl hover:scale-105 hover:border-primary/20'
+                        }`}
+                        style={{ 
+                          height: '550px',
+                          flexShrink: 0,
+                          flexGrow: 0
+                        }}
+                      >
+                        {!isExpanded ? (
+                          // Collapsed state - show image
+                          <div className="h-full flex flex-col items-center justify-center p-6">
+                            <div className="w-48 h-48 md:w-56 md:h-56 rounded-2xl overflow-hidden mb-6 shadow-lg">
+                              <img 
+                                src={imagePath} 
+                                alt={member.name}
+                                className="w-full h-full object-cover"
+                                onError={(e) => {
+                                  // Fallback to initials if image fails to load
+                                  const target = e.target as HTMLImageElement;
+                                  target.style.display = 'none';
+                                  const parent = target.parentElement;
+                                  if (parent) {
+                                    parent.className = 'w-48 h-48 md:w-56 md:h-56 bg-primary/10 rounded-2xl flex items-center justify-center mb-6 shadow-lg';
+                                    parent.innerHTML = `<span class="text-4xl md:text-5xl font-black text-primary">${member.name.split(' ').map(n => n[0]).join('')}</span>`;
+                                  }
+                                }}
+                              />
+                            </div>
+                            <h3 className="text-lg md:text-xl font-bold text-foreground text-center">{member.name}</h3>
+                            <div className="text-sm md:text-base text-primary font-bold mt-2 text-center">{member.role}</div>
+                          </div>
+                        ) : (
+                          // Expanded state - show all details
+                          <div className="h-full flex flex-col p-6 md:p-8 overflow-y-auto">
+                            <div className="flex-shrink-0 mb-4">
+                              <div className="w-24 h-24 md:w-32 md:h-32 rounded-xl overflow-hidden mx-auto shadow-lg">
+                                <img 
+                                  src={imagePath} 
+                                  alt={member.name}
+                                  className="w-full h-full object-cover"
+                                  onError={(e) => {
+                                    const target = e.target as HTMLImageElement;
+                                    target.style.display = 'none';
+                                    const parent = target.parentElement;
+                                    if (parent) {
+                                      parent.className = 'w-24 h-24 md:w-32 md:h-32 bg-primary/10 rounded-xl flex items-center justify-center mx-auto shadow-lg';
+                                      parent.innerHTML = `<span class="text-2xl md:text-3xl font-black text-primary">${member.name.split(' ').map(n => n[0]).join('')}</span>`;
+                                    }
+                                  }}
+                                />
+                              </div>
+                            </div>
+                            <h3 className="text-xl md:text-2xl font-bold text-foreground mb-2 text-center">{member.name}</h3>
+                            <div className="text-base md:text-lg text-primary font-bold mb-2 text-center">{member.role}</div>
+                            <div className="text-sm md:text-base text-foreground/60 font-medium mb-4 text-center">{member.year}</div>
+                            <p className="text-sm md:text-base text-foreground/80 leading-relaxed text-center flex-1">{member.description}</p>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
 
               {/* Advisory Board */}
