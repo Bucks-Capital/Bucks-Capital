@@ -134,11 +134,6 @@ const macroAnalysts = [
     year: 'Junior'
   },
   {
-    name: 'Suhas Kukawada',
-    role: 'Macro Analyst',
-    year: 'Sophomore'
-  },
-  {
     name: 'Dan Richmond',
     role: 'Macro Analyst',
     year: 'Junior'
@@ -166,11 +161,6 @@ const equityAnalysts = [
     name: 'Michael Reshetnyak',
     role: 'Equity Analyst',
     year: 'Senior'
-  },
-  {
-    name: 'John Vrettos',
-    role: 'Equity Analyst',
-    year: 'Sophomore'
   },
   {
     name: 'Emad Bokhari',
