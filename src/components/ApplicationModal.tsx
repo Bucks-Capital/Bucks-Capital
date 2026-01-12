@@ -106,33 +106,55 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({ isOpen, onClose }) 
         const base64Content = base64Data.split(',')[1] || base64Data;
         
         // Upload to Vercel Blob Storage
-        const uploadResponse = await fetch('/api/resume-upload', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            filename: `resumes/${Date.now()}_${data.resume.name}`,
-            contentType: data.resume.type,
-            fileData: base64Content
-          })
-        });
+        try {
+          const uploadResponse = await fetch('/api/resume-upload', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              filename: `resumes/${Date.now()}_${data.resume.name}`,
+              contentType: data.resume.type,
+              fileData: base64Content
+            })
+          });
 
-        if (!uploadResponse.ok) {
-          const errorData = await uploadResponse.json().catch(() => ({}));
-          throw new Error(errorData.error || 'Failed to upload resume file');
+          if (!uploadResponse.ok) {
+            const errorData = await uploadResponse.json().catch(() => ({}));
+            console.warn('⚠️ Resume upload failed, storing with base64 data:', errorData);
+            // Fallback: Store as base64 if upload fails (for backward compatibility)
+            resumeData = {
+              name: data.resume.name,
+              type: data.resume.type,
+              size: data.resume.size,
+              lastModified: data.resume.lastModified,
+              data: base64Data, // Fallback to base64 if blob upload fails
+              uploadError: errorData.error || 'Upload failed'
+            };
+          } else {
+            const uploadResult = await uploadResponse.json();
+            
+            resumeData = {
+              name: data.resume.name,
+              type: data.resume.type,
+              size: data.resume.size,
+              lastModified: data.resume.lastModified,
+              url: uploadResult.url, // Store blob URL instead of base64 data
+              pathname: uploadResult.pathname
+            };
+          }
+        } catch (uploadError) {
+          console.warn('⚠️ Resume upload error, storing with base64 data:', uploadError);
+          // Fallback: Store as base64 if upload fails
+          resumeData = {
+            name: data.resume.name,
+            type: data.resume.type,
+            size: data.resume.size,
+            lastModified: data.resume.lastModified,
+            data: base64Data, // Fallback to base64 if blob upload fails
+            uploadError: uploadError instanceof Error ? uploadError.message : 'Upload failed'
+          };
         }
-
-        const uploadResult = await uploadResponse.json();
-        
-        resumeData = {
-          name: data.resume.name,
-          type: data.resume.type,
-          size: data.resume.size,
-          lastModified: data.resume.lastModified,
-          url: uploadResult.url, // Store blob URL instead of base64 data
-          pathname: uploadResult.pathname
-        };
         
         // #region agent log
         fetch('http://127.0.0.1:7242/ingest/74f189f6-03bb-4080-9d31-a84bf6d202fb', {
@@ -251,24 +273,34 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({ isOpen, onClose }) 
         // Safely parse error response - handle cases where response isn't JSON
         let errorData: any = {};
         const contentType = response.headers.get('content-type');
+        const responseText = await response.text(); // Read once
+        
         if (contentType && contentType.includes('application/json')) {
           try {
-            const text = await response.text();
-            if (text) {
-              errorData = JSON.parse(text);
+            if (responseText) {
+              errorData = JSON.parse(responseText);
             }
           } catch (parseError) {
             // If JSON parsing fails, use status text
-            errorData = { error: `Server error (${response.status}): ${response.statusText}` };
+            errorData = { error: `Server error (${response.status}): ${response.statusText}`, details: responseText.substring(0, 200) };
           }
         } else {
           // Non-JSON response (like 404 HTML page)
-          const text = await response.text();
-          errorData = { 
-            error: response.status === 404 
-              ? 'API endpoint not found. The application API routes require Vercel CLI to run in development. Please run "npx vercel dev" instead of "npm run dev", or deploy to Vercel for production use.'
-              : `Server error (${response.status}): ${response.statusText || 'Unknown error'}`
-          };
+          let errorMsg = `Server error (${response.status}): ${response.statusText || 'Unknown error'}`;
+          
+          if (response.status === 404) {
+            errorMsg = 'API endpoint not found. The application API routes require Vercel CLI to run in development. Please run "npx vercel dev" instead of "npm run dev", or deploy to Vercel for production use.';
+          } else if (response.status === 500) {
+            // Try to extract error from HTML if it's an error page
+            const errorMatch = responseText.match(/<pre[^>]*>([^<]+)<\/pre>/i) || responseText.match(/Error: ([^\n]+)/i);
+            if (errorMatch) {
+              errorMsg = `Server error: ${errorMatch[1]}`;
+            } else if (responseText.includes('BLOB_READ_WRITE_TOKEN')) {
+              errorMsg = 'Blob Storage not configured. Please add Vercel Blob Storage to your project in the Vercel Dashboard.';
+            }
+          }
+          
+          errorData = { error: errorMsg, details: responseText.substring(0, 500) };
         }
         
         // #region agent log

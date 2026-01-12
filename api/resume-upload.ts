@@ -7,6 +7,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
+    // Check if Blob Storage is configured
+    if (!process.env.BLOB_READ_WRITE_TOKEN) {
+      console.warn('⚠️ BLOB_READ_WRITE_TOKEN not configured. Blob Storage may not be set up.');
+      return res.status(503).json({
+        error: 'Blob Storage not configured',
+        details: 'Please add Vercel Blob Storage to your project in the Vercel Dashboard',
+      });
+    }
+
     const { filename, contentType, fileData } = req.body;
 
     if (!filename || !fileData) {
@@ -27,9 +36,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     });
   } catch (error) {
     console.error('Error uploading resume:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    
+    // Provide helpful error messages
+    let userMessage = 'Failed to upload resume';
+    if (errorMessage.includes('BLOB_READ_WRITE_TOKEN') || errorMessage.includes('token')) {
+      userMessage = 'Blob Storage not configured. Please add Vercel Blob Storage to your project.';
+    } else if (errorMessage.includes('unauthorized') || errorMessage.includes('permission')) {
+      userMessage = 'Blob Storage permission error. Please check your Vercel configuration.';
+    }
+    
     res.status(500).json({
-      error: 'Failed to upload resume',
-      details: error instanceof Error ? error.message : 'Unknown error',
+      error: userMessage,
+      details: errorMessage,
     });
   }
 }

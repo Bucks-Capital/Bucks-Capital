@@ -156,9 +156,18 @@ async function createApplication(req: VercelRequest, res: VercelResponse) {
       }
     }
     
+    // Log full error for debugging
+    console.error('Full error details:', {
+      message: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+      name: error instanceof Error ? error.name : undefined
+    });
+    
     res.status(500).json({ 
       error: errorMessage,
-      details: error instanceof Error ? error.stack : 'Unknown error'
+      details: error instanceof Error ? error.message : 'Unknown error',
+      // Only include stack in development
+      ...(process.env.NODE_ENV === 'development' && { stack: error instanceof Error ? error.stack : undefined })
     });
   }
 }
