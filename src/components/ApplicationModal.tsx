@@ -76,7 +76,7 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({ isOpen, onClose }) 
     // #endregion
     
     try {
-      // Handle file storage - convert File to base64
+      // Handle file storage - upload to Vercel Blob Storage
       let resumeData = null;
       if (data.resume && data.resume instanceof File) {
         // #region agent log
@@ -85,7 +85,7 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({ isOpen, onClose }) 
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             location: 'ApplicationModal.tsx:82',
-            message: 'Processing file before base64',
+            message: 'Processing file for upload',
             data: {
               fileName: data.resume.name,
               fileType: data.resume.type,
@@ -99,24 +99,52 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({ isOpen, onClose }) 
           })
         }).catch(() => {});
         // #endregion
+        
+        // Convert file to base64 for upload
+        const base64Data = await fileToBase64(data.resume);
+        // Remove data URL prefix (data:application/pdf;base64,)
+        const base64Content = base64Data.split(',')[1] || base64Data;
+        
+        // Upload to Vercel Blob Storage
+        const uploadResponse = await fetch('/api/resume-upload', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            filename: `resumes/${Date.now()}_${data.resume.name}`,
+            contentType: data.resume.type,
+            fileData: base64Content
+          })
+        });
+
+        if (!uploadResponse.ok) {
+          const errorData = await uploadResponse.json().catch(() => ({}));
+          throw new Error(errorData.error || 'Failed to upload resume file');
+        }
+
+        const uploadResult = await uploadResponse.json();
+        
         resumeData = {
           name: data.resume.name,
           type: data.resume.type,
           size: data.resume.size,
           lastModified: data.resume.lastModified,
-          data: await fileToBase64(data.resume)
+          url: uploadResult.url, // Store blob URL instead of base64 data
+          pathname: uploadResult.pathname
         };
+        
         // #region agent log
         fetch('http://127.0.0.1:7242/ingest/74f189f6-03bb-4080-9d31-a84bf6d202fb', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            location: 'ApplicationModal.tsx:92',
-            message: 'File converted to base64',
+            location: 'ApplicationModal.tsx:120',
+            message: 'File uploaded to Blob Storage',
             data: {
               resumeDataName: resumeData.name,
-              resumeDataType: resumeData.type,
-              base64Length: resumeData.data?.length
+              resumeDataUrl: resumeData.url,
+              resumeDataPathname: resumeData.pathname
             },
             timestamp: Date.now(),
             sessionId: 'debug-session',
@@ -322,6 +350,12 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({ isOpen, onClose }) 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto p-0">
+        <DialogHeader className="sr-only">
+          <DialogTitle>Application Form</DialogTitle>
+          <DialogDescription>
+            Fill out the application form to join Bucks Capital
+          </DialogDescription>
+        </DialogHeader>
         <div className="relative">
           {/* Close button */}
           <Button

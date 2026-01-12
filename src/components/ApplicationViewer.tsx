@@ -35,7 +35,9 @@ interface ApplicationData {
     type: string;
     size: number;
     lastModified: number;
-    data: string; // base64 data
+    data?: string; // base64 data (legacy format)
+    url?: string; // blob storage URL (new format)
+    pathname?: string; // blob pathname
   } | null;
   uniqueQuality: string;
   commitmentAgreement: boolean;
@@ -346,19 +348,57 @@ const ApplicationViewer: React.FC<ApplicationViewerProps> = ({ onLogout }) => {
     return new File([byteArray], filename, { type: mimeType });
   };
 
+  const downloadResume = (resumeData: any) => {
+    if (!resumeData) return;
+    
+    // New format: Use blob URL directly
+    if (resumeData.url) {
+      const a = document.createElement('a');
+      a.href = resumeData.url;
+      a.download = resumeData.name;
+      a.target = '_blank';
+      a.click();
+    } 
+    // Legacy format: Convert base64 to blob URL
+    else if (resumeData.data) {
+      const file = base64ToFile(
+        resumeData.data, 
+        resumeData.name, 
+        resumeData.type
+      );
+      const url = URL.createObjectURL(file);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = resumeData.name;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+  };
+
   const openPdfViewer = (resumeData: any) => {
     console.log('openPdfViewer called with:', resumeData);
-    if (resumeData && resumeData.data) {
-      console.log('Converting base64 to file...');
-      const file = base64ToFile(resumeData.data, resumeData.name, resumeData.type);
-      console.log('Created file:', file);
-      const url = URL.createObjectURL(file);
-      console.log('Created URL:', url);
-      setPdfUrl(url);
-      setIsPdfViewerOpen(true);
-      console.log('PDF viewer should be open now');
+    if (resumeData) {
+      // New format: Use blob URL directly
+      if (resumeData.url) {
+        console.log('Using blob URL:', resumeData.url);
+        setPdfUrl(resumeData.url);
+        setIsPdfViewerOpen(true);
+      } 
+      // Legacy format: Convert base64 to blob URL
+      else if (resumeData.data) {
+        console.log('Converting base64 to file...');
+        const file = base64ToFile(resumeData.data, resumeData.name, resumeData.type);
+        console.log('Created file:', file);
+        const url = URL.createObjectURL(file);
+        console.log('Created URL:', url);
+        setPdfUrl(url);
+        setIsPdfViewerOpen(true);
+        console.log('PDF viewer should be open now');
+      } else {
+        console.log('No resume data or URL missing');
+      }
     } else {
-      console.log('No resume data or data missing');
+      console.log('No resume data');
     }
   };
 
@@ -883,20 +923,7 @@ const ApplicationViewer: React.FC<ApplicationViewerProps> = ({ onLogout }) => {
                             variant="outline"
                             size="sm"
                             onClick={() => {
-                              // Create a download link for the file
-                              if (selectedApplication.resume && selectedApplication.resume.data) {
-                                const file = base64ToFile(
-                                  selectedApplication.resume.data, 
-                                  selectedApplication.resume.name, 
-                                  selectedApplication.resume.type
-                                );
-                                const url = URL.createObjectURL(file);
-                                const a = document.createElement('a');
-                                a.href = url;
-                                a.download = selectedApplication.resume.name;
-                                a.click();
-                                URL.revokeObjectURL(url);
-                              }
+                              downloadResume(selectedApplication.resume);
                             }}
                             className="text-xs flex items-center gap-1"
                           >
@@ -954,19 +981,7 @@ const ApplicationViewer: React.FC<ApplicationViewerProps> = ({ onLogout }) => {
                   variant="outline"
                   size="sm"
                   onClick={() => {
-                    if (selectedApplication?.resume && selectedApplication.resume.data) {
-                      const file = base64ToFile(
-                        selectedApplication.resume.data, 
-                        selectedApplication.resume.name, 
-                        selectedApplication.resume.type
-                      );
-                      const url = URL.createObjectURL(file);
-                      const a = document.createElement('a');
-                      a.href = url;
-                      a.download = selectedApplication.resume.name;
-                      a.click();
-                      URL.revokeObjectURL(url);
-                    }
+                    downloadResume(selectedApplication?.resume);
                   }}
                   className="flex items-center gap-1"
                 >
@@ -1007,13 +1022,20 @@ const ApplicationViewer: React.FC<ApplicationViewerProps> = ({ onLogout }) => {
                     </p>
                     <Button
                       onClick={() => {
-                        if (selectedApplication?.resume && selectedApplication.resume.data) {
-                          const file = base64ToFile(
-                            selectedApplication.resume.data, 
-                            selectedApplication.resume.name, 
-                            selectedApplication.resume.type
-                          );
-                          const url = URL.createObjectURL(file);
+                        downloadResume(selectedApplication?.resume);
+                      }}
+                    >
+                      <Download className="h-4 w-4 mr-2" />
+                      Download Resume
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
                           const a = document.createElement('a');
                           a.href = url;
                           a.download = selectedApplication.resume.name;

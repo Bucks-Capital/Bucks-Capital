@@ -82,6 +82,10 @@ async function createApplication(req: VercelRequest, res: VercelResponse) {
         fs.appendFileSync(logPath, logEntry, 'utf8');
       }
       // #endregion
+      
+      // Resume files are now stored in Vercel Blob Storage, so we only store the URL
+      // No need to check size limits since we're not storing base64 data in KV
+      
       try {
         // Store in Vercel KV
         await kv.set(`application:${applicationId}`, application);
@@ -139,9 +143,22 @@ async function createApplication(req: VercelRequest, res: VercelResponse) {
     }
     // #endregion
     console.error('Error creating application:', error);
+    
+    // Provide more detailed error message
+    let errorMessage = 'Internal server error';
+    if (error instanceof Error) {
+      errorMessage = error.message;
+      // Check for common KV errors
+      if (error.message.includes('value too large') || error.message.includes('exceeds maximum')) {
+        errorMessage = 'Resume file is too large. Please upload a smaller file (under 2MB).';
+      } else if (error.message.includes('KV') || error.message.includes('storage')) {
+        errorMessage = 'Storage error. Please try again or contact support.';
+      }
+    }
+    
     res.status(500).json({ 
-      error: 'Internal server error',
-      details: error instanceof Error ? error.message : 'Unknown error'
+      error: errorMessage,
+      details: error instanceof Error ? error.stack : 'Unknown error'
     });
   }
 }
