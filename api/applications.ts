@@ -4,45 +4,81 @@ import { put, del, list } from '@vercel/blob';
 // Fallback in-memory storage for development (not persistent across deployments)
 let fallbackStorage: any[] = [];
 
-// Helper function to get applications list from Blob Storage
-async function getApplicationsList(): Promise<string[]> {
+// Helper function to get all applications directly using list result
+async function getAllApplicationsFromBlob(): Promise<any[]> {
   try {
+    // Single list call to get all blob metadata
     const listResult = await list({ prefix: 'applications/' });
-    return listResult.blobs
-      .filter(blob => blob.pathname.endsWith('.json') && !blob.pathname.includes('index.json'))
-      .map(blob => blob.pathname.replace('applications/', '').replace('.json', ''));
+
+    // Filter for application JSON files
+    const appBlobs = listResult.blobs.filter(blob =>
+      blob.pathname.endsWith('.json') &&
+      !blob.pathname.includes('index.json')
+    );
+
+    console.log(`📋 Found ${appBlobs.length} application blobs`);
+
+    // Fetch all application contents in parallel
+    const fetchPromises = appBlobs.map(async (blob) => {
+      try {
+        // Use downloadUrl if available for better performance/caching, or url
+        const urlToFetch = blob.downloadUrl || blob.url;
+
+        const response = await fetch(urlToFetch);
+        if (!response.ok) {
+          console.warn(`Failed to fetch blob ${blob.pathname}: ${response.status}`);
+          return null;
+        }
+        const appData = await response.json();
+
+        // Ensure ID matches the filename if possible, or matches expected ID format
+        // Extract ID from pathname: applications/app_123.json -> app_123
+        const idFromPath = blob.pathname.replace('applications/', '').replace('.json', '');
+
+        if (appData.id !== idFromPath) {
+          // If mismatch, prefer the ID from the filename as it's the source of truth for the list
+          appData.id = idFromPath;
+        }
+
+        return appData;
+      } catch (e) {
+        console.error(`Error processing blob ${blob.pathname}:`, e);
+        return null;
+      }
+    });
+
+    const results = await Promise.all(fetchPromises);
+
+    // Filter out nulls
+    return results.filter(app => app !== null);
   } catch (error) {
-    console.error('Error getting applications list from Blob:', error);
-    return [];
+    console.error('Error listing applications from Blob:', error);
+    throw error; // Re-throw to be handled by caller
   }
 }
 
-// Helper function to get application from Blob Storage
+// Deprecated: Helper function to get application from Blob Storage
+// Kept for delete/update operations that might need specific blob info
 async function getApplicationFromBlob(applicationId: string): Promise<any | null> {
   try {
     const blobPath = `applications/${applicationId}.json`;
-    
+
     // List blobs with the specific pathname to get the blob info
     const listResult = await list({ prefix: blobPath, limit: 1 });
-    
+
     if (listResult.blobs.length === 0) {
       return null;
     }
-    
+
     const blob = listResult.blobs[0];
-    
-    // Use downloadUrl if available, otherwise use url
-    const blobUrl = blob.downloadUrl || blob.url;
-    
+
     // Fetch the blob content using the public URL
-    const response = await fetch(blobUrl);
+    const response = await fetch(blob.url);
     if (!response.ok) {
-      console.warn(`Failed to fetch blob ${blobPath}: ${response.status} ${response.statusText}`);
       return null;
     }
-    
-    const application = await response.json();
-    return application;
+
+    return await response.json();
   } catch (error) {
     console.error(`Error fetching application ${applicationId} from Blob:`, error);
     return null;
@@ -62,13 +98,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 }
 
 async function createApplication(req: VercelRequest, res: VercelResponse) {
+  try {
     const applicationData = req.body;
-
-
 
     // Validate required fields
     if (!applicationData.name || !applicationData.email) {
-
       return res.status(400).json({ error: 'Missing required fields: name and email are required' });
     }
 
@@ -80,13 +114,9 @@ async function createApplication(req: VercelRequest, res: VercelResponse) {
       submittedAt: new Date().toISOString(),
       status: applicationData.status || 'pending'
     };
-    
-
 
     // Store application in Blob Storage
     if (process.env.BLOB_READ_WRITE_TOKEN) {
-
-      
       try {
         // Store application as JSON file in Blob Storage
         const blobPath = `applications/${applicationId}.json`;
@@ -94,12 +124,9 @@ async function createApplication(req: VercelRequest, res: VercelResponse) {
           access: 'public',
           contentType: 'application/json',
         });
-        
 
-        
         console.log('✅ Application stored in Blob Storage:', blob.url);
       } catch (blobError) {
-
         console.error('Error storing application in Blob:', blobError);
         throw blobError;
       }
@@ -107,7 +134,6 @@ async function createApplication(req: VercelRequest, res: VercelResponse) {
       // Fallback to in-memory storage if Blob Storage not configured
       console.warn('⚠️ BLOB_READ_WRITE_TOKEN not configured, using fallback storage');
       fallbackStorage.push(application);
-
     }
 
     console.log('✅ Application created successfully:', {
@@ -118,9 +144,8 @@ async function createApplication(req: VercelRequest, res: VercelResponse) {
 
     res.status(201).json(application);
   } catch (error) {
-
     console.error('Error creating application:', error);
-    
+
     // Provide more detailed error message
     let errorMessage = 'Internal server error';
     if (error instanceof Error) {
@@ -134,15 +159,15 @@ async function createApplication(req: VercelRequest, res: VercelResponse) {
         errorMessage = 'Storage error. Please try again or contact support.';
       }
     }
-    
+
     // Log full error for debugging
     console.error('Full error details:', {
       message: error instanceof Error ? error.message : String(error),
       stack: error instanceof Error ? error.stack : undefined,
       name: error instanceof Error ? error.name : undefined
     });
-    
-    res.status(500).json({ 
+
+    res.status(500).json({
       error: errorMessage,
       details: error instanceof Error ? error.message : 'Unknown error',
       // Only include stack in development
@@ -158,50 +183,29 @@ async function getApplications(req: VercelRequest, res: VercelResponse) {
     if (process.env.BLOB_READ_WRITE_TOKEN) {
       // Get from Blob Storage
       try {
-        const applicationsList = await getApplicationsList();
-        console.log('📋 Fetching applications from Blob, found:', applicationsList.length);
-        
-        // Fetch all applications in parallel
-        const applicationPromises = applicationsList.map(appId => getApplicationFromBlob(appId));
-        const fetchedApplications = await Promise.all(applicationPromises);
-        
-        // Filter out null results and ensure IDs match
-        applications = fetchedApplications
-          .filter((app, index) => {
-            if (!app) {
-              console.warn(`⚠️ Application ${applicationsList[index]} not found in Blob`);
-              return false;
-            }
-            // Ensure ID matches
-            if (app.id !== applicationsList[index]) {
-              console.warn(`⚠️ ID mismatch: blob has ${applicationsList[index]}, but application.id is ${app.id}`);
-              app.id = applicationsList[index];
-            }
-            return true;
-          });
-        
+        // Use optimized fetching
+        applications = await getAllApplicationsFromBlob();
         console.log(`✅ Loaded ${applications.length} applications from Blob Storage`);
       } catch (blobError) {
         console.error('Error fetching from Blob Storage:', blobError);
-        // Fallback to in-memory storage on error
-        applications = fallbackStorage;
-        console.warn('⚠️ Falling back to in-memory storage');
+        // Do NOT fallback to in-memory storage on error, so users can see the configuration error
+        throw blobError;
       }
     } else {
-      // Fallback to in-memory storage
+      // Fallback to in-memory storage only if token is missing
       console.warn('⚠️ BLOB_READ_WRITE_TOKEN not configured, using fallback storage');
       applications = fallbackStorage;
     }
 
     // Sort by submission date (newest first)
-    applications.sort((a, b) => 
+    applications.sort((a, b) =>
       new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime()
     );
 
     res.status(200).json(applications);
   } catch (error) {
     console.error('Error fetching applications:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: 'Internal server error',
       details: error instanceof Error ? error.message : 'Unknown error'
     });
@@ -221,11 +225,11 @@ async function deleteApplication(req: VercelRequest, res: VercelResponse) {
 
     if (process.env.BLOB_READ_WRITE_TOKEN) {
       console.log('📦 Using Blob Storage for deletion');
-      
+
       try {
         // Delete the application file from Blob Storage
         const blobPath = `applications/${id}.json`;
-        
+
         // First check if it exists
         const existingApp = await getApplicationFromBlob(id);
         if (!existingApp) {
@@ -262,10 +266,9 @@ async function deleteApplication(req: VercelRequest, res: VercelResponse) {
     res.status(200).json({ success: true, id, message: 'Application deleted successfully' });
   } catch (error) {
     console.error('❌ Error deleting application:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: 'Internal server error',
       details: error instanceof Error ? error.message : 'Unknown error'
     });
   }
 }
-
