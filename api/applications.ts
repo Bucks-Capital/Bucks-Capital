@@ -1,16 +1,53 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
-
-// Try to import KV, but don't fail if it's not available
-let kv: any = null;
-try {
-  const kvModule = await import('@vercel/kv');
-  kv = kvModule.kv;
-} catch (error) {
-  console.log('KV not available, using fallback storage');
-}
+import { put, del, list } from '@vercel/blob';
 
 // Fallback in-memory storage for development (not persistent across deployments)
 let fallbackStorage: any[] = [];
+
+// Helper function to get applications list from Blob Storage
+async function getApplicationsList(): Promise<string[]> {
+  try {
+    const listResult = await list({ prefix: 'applications/' });
+    return listResult.blobs
+      .filter(blob => blob.pathname.endsWith('.json') && !blob.pathname.includes('index.json'))
+      .map(blob => blob.pathname.replace('applications/', '').replace('.json', ''));
+  } catch (error) {
+    console.error('Error getting applications list from Blob:', error);
+    return [];
+  }
+}
+
+// Helper function to get application from Blob Storage
+async function getApplicationFromBlob(applicationId: string): Promise<any | null> {
+  try {
+    const blobPath = `applications/${applicationId}.json`;
+    
+    // List blobs with the specific pathname to get the blob info
+    const listResult = await list({ prefix: blobPath, limit: 1 });
+    
+    if (listResult.blobs.length === 0) {
+      return null;
+    }
+    
+    const blob = listResult.blobs[0];
+    
+    // Use downloadUrl if available, otherwise use url
+    const blobUrl = blob.downloadUrl || blob.url;
+    
+    // Fetch the blob content using the public URL
+    const response = await fetch(blobUrl);
+    if (!response.ok) {
+      console.warn(`Failed to fetch blob ${blobPath}: ${response.status} ${response.statusText}`);
+      return null;
+    }
+    
+    const application = await response.json();
+    return application;
+  } catch (error) {
+    console.error(`Error fetching application ${applicationId} from Blob:`, error);
+    return null;
+  }
+}
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method === 'POST') {
@@ -72,55 +109,49 @@ async function createApplication(req: VercelRequest, res: VercelResponse) {
     }
     // #endregion
 
-    // Store application
-    if (kv) {
+    // Store application in Blob Storage
+    if (process.env.BLOB_READ_WRITE_TOKEN) {
       // #region agent log
       if (fs) {
-        const resumeSize = application.resume?.data ? application.resume.data.length : 0;
         const appSize = JSON.stringify(application).length;
-        const logEntry = JSON.stringify({location:'api/applications.ts:75',message:'Before KV storage',data:{hasKv:!!kv,applicationId,resumeSize,appSize,hasResume:!!application.resume},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})+'\n';
+        const logEntry = JSON.stringify({location:'api/applications.ts:75',message:'Before Blob storage',data:{hasBlobToken:!!process.env.BLOB_READ_WRITE_TOKEN,applicationId,appSize,hasResume:!!application.resume},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})+'\n';
         fs.appendFileSync(logPath, logEntry, 'utf8');
       }
       // #endregion
       
-      // Resume files are now stored in Vercel Blob Storage, so we only store the URL
-      // No need to check size limits since we're not storing base64 data in KV
-      
       try {
-        // Store in Vercel KV
-        await kv.set(`application:${applicationId}`, application);
+        // Store application as JSON file in Blob Storage
+        const blobPath = `applications/${applicationId}.json`;
+        const blob = await put(blobPath, JSON.stringify(application), {
+          access: 'public',
+          contentType: 'application/json',
+        });
+        
         // #region agent log
         if (fs) {
-          const logEntry = JSON.stringify({location:'api/applications.ts:82',message:'KV set successful',data:{applicationId},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})+'\n';
+          const logEntry = JSON.stringify({location:'api/applications.ts:90',message:'Blob storage successful',data:{applicationId,blobUrl:blob.url},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})+'\n';
           fs.appendFileSync(logPath, logEntry, 'utf8');
         }
         // #endregion
         
-        // Add to applications list
-        const applicationsList = await kv.get('applications:list') || [];
-        applicationsList.push(applicationId);
-        await kv.set('applications:list', applicationsList);
+        console.log('✅ Application stored in Blob Storage:', blob.url);
+      } catch (blobError) {
         // #region agent log
         if (fs) {
-          const logEntry = JSON.stringify({location:'api/applications.ts:88',message:'Applications list updated',data:{listLength:applicationsList.length},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})+'\n';
+          const logEntry = JSON.stringify({location:'api/applications.ts:98',message:'Blob storage error',data:{errorMessage:blobError instanceof Error?blobError.message:String(blobError),errorStack:blobError instanceof Error?blobError.stack:undefined,errorName:blobError instanceof Error?blobError.name:undefined},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})+'\n';
           fs.appendFileSync(logPath, logEntry, 'utf8');
         }
         // #endregion
-      } catch (kvError) {
-        // #region agent log
-        if (fs) {
-          const logEntry = JSON.stringify({location:'api/applications.ts:92',message:'KV storage error',data:{errorMessage:kvError instanceof Error?kvError.message:String(kvError),errorStack:kvError instanceof Error?kvError.stack:undefined,errorName:kvError instanceof Error?kvError.name:undefined},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})+'\n';
-          fs.appendFileSync(logPath, logEntry, 'utf8');
-        }
-        // #endregion
-        throw kvError;
+        console.error('Error storing application in Blob:', blobError);
+        throw blobError;
       }
     } else {
-      // Fallback to in-memory storage
+      // Fallback to in-memory storage if Blob Storage not configured
+      console.warn('⚠️ BLOB_READ_WRITE_TOKEN not configured, using fallback storage');
       fallbackStorage.push(application);
       // #region agent log
       if (fs) {
-        const logEntry = JSON.stringify({location:'api/applications.ts:100',message:'Using fallback storage',data:{fallbackCount:fallbackStorage.length},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})+'\n';
+        const logEntry = JSON.stringify({location:'api/applications.ts:110',message:'Using fallback storage',data:{fallbackCount:fallbackStorage.length},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})+'\n';
         fs.appendFileSync(logPath, logEntry, 'utf8');
       }
       // #endregion
@@ -148,10 +179,12 @@ async function createApplication(req: VercelRequest, res: VercelResponse) {
     let errorMessage = 'Internal server error';
     if (error instanceof Error) {
       errorMessage = error.message;
-      // Check for common KV errors
-      if (error.message.includes('value too large') || error.message.includes('exceeds maximum')) {
-        errorMessage = 'Resume file is too large. Please upload a smaller file (under 2MB).';
-      } else if (error.message.includes('KV') || error.message.includes('storage')) {
+      // Check for common Blob Storage errors
+      if (error.message.includes('BLOB_READ_WRITE_TOKEN') || error.message.includes('token')) {
+        errorMessage = 'Blob Storage not configured. Please add Vercel Blob Storage to your project.';
+      } else if (error.message.includes('unauthorized') || error.message.includes('permission')) {
+        errorMessage = 'Blob Storage permission error. Please check your Vercel configuration.';
+      } else if (error.message.includes('storage') || error.message.includes('blob')) {
         errorMessage = 'Storage error. Please try again or contact support.';
       }
     }
@@ -176,29 +209,41 @@ async function getApplications(req: VercelRequest, res: VercelResponse) {
   try {
     let applications: any[] = [];
 
-    if (kv) {
-      // Get from Vercel KV
-      const applicationsList = await kv.get('applications:list') || [];
-      console.log('📋 Fetching applications, list contains:', applicationsList);
-      
-      for (const appId of applicationsList) {
-        const application = await kv.get(`application:${appId}`);
-        if (application) {
-          // Ensure the ID in the application object matches the stored key
-          if (application.id !== appId) {
-            console.warn(`⚠️ ID mismatch: stored key has ${appId}, but application.id is ${application.id}`);
-            // Use the ID from the stored key to ensure consistency
-            application.id = appId;
-          }
-          applications.push(application);
-        } else {
-          console.warn(`⚠️ Application ${appId} in list but not found in KV`);
-        }
+    if (process.env.BLOB_READ_WRITE_TOKEN) {
+      // Get from Blob Storage
+      try {
+        const applicationsList = await getApplicationsList();
+        console.log('📋 Fetching applications from Blob, found:', applicationsList.length);
+        
+        // Fetch all applications in parallel
+        const applicationPromises = applicationsList.map(appId => getApplicationFromBlob(appId));
+        const fetchedApplications = await Promise.all(applicationPromises);
+        
+        // Filter out null results and ensure IDs match
+        applications = fetchedApplications
+          .filter((app, index) => {
+            if (!app) {
+              console.warn(`⚠️ Application ${applicationsList[index]} not found in Blob`);
+              return false;
+            }
+            // Ensure ID matches
+            if (app.id !== applicationsList[index]) {
+              console.warn(`⚠️ ID mismatch: blob has ${applicationsList[index]}, but application.id is ${app.id}`);
+              app.id = applicationsList[index];
+            }
+            return true;
+          });
+        
+        console.log(`✅ Loaded ${applications.length} applications from Blob Storage`);
+      } catch (blobError) {
+        console.error('Error fetching from Blob Storage:', blobError);
+        // Fallback to in-memory storage on error
+        applications = fallbackStorage;
+        console.warn('⚠️ Falling back to in-memory storage');
       }
-      
-      console.log(`✅ Loaded ${applications.length} applications from KV`);
     } else {
       // Fallback to in-memory storage
+      console.warn('⚠️ BLOB_READ_WRITE_TOKEN not configured, using fallback storage');
       applications = fallbackStorage;
     }
 
@@ -228,115 +273,35 @@ async function deleteApplication(req: VercelRequest, res: VercelResponse) {
       return res.status(400).json({ error: 'Missing application ID' });
     }
 
-    if (kv) {
-      console.log('📦 Using Vercel KV for deletion');
+    if (process.env.BLOB_READ_WRITE_TOKEN) {
+      console.log('📦 Using Blob Storage for deletion');
       
-      // Try to find the application - handle both old and new ID formats
-      let existingApp = null;
-      let actualKey = null;
-      
-      // First, try with the ID as-is
-      existingApp = await kv.get(`application:${id}`);
-      if (existingApp) {
-        actualKey = `application:${id}`;
-        console.log('✅ Found application with key:', actualKey);
-      } else {
-        // Try with app_ prefix (new format)
-        const newFormatId = id.startsWith('app_') ? id : `app_${id}`;
-        existingApp = await kv.get(`application:${newFormatId}`);
-        if (existingApp) {
-          actualKey = `application:${newFormatId}`;
-          console.log('✅ Found application with new format key:', actualKey);
-        } else {
-          // Try to find by searching through all applications
-          console.log('⚠️ Application not found with direct key, searching in list...');
-          const applicationsList = await kv.get('applications:list') || [];
-          console.log('📋 Applications list:', applicationsList);
-          
-          // Find matching ID in the list (handle both formats)
-          const matchingId = applicationsList.find((appId: string) => 
-            appId === id || appId === `app_${id}` || appId.endsWith(`_${id}`) || appId.includes(id)
-          );
-          
-          if (matchingId) {
-            console.log('✅ Found matching ID in list:', matchingId);
-            actualKey = `application:${matchingId}`;
-            existingApp = await kv.get(actualKey);
+      try {
+        // Delete the application file from Blob Storage
+        const blobPath = `applications/${id}.json`;
+        
+        // First check if it exists
+        const existingApp = await getApplicationFromBlob(id);
+        if (!existingApp) {
+          // Try with app_ prefix if not found
+          const appIdWithPrefix = id.startsWith('app_') ? id : `app_${id}`;
+          const altApp = await getApplicationFromBlob(appIdWithPrefix);
+          if (altApp) {
+            // Delete the alternate path
+            await del(`applications/${appIdWithPrefix}.json`);
+            console.log(`✅ Deleted application: ${appIdWithPrefix}`);
+          } else {
+            console.warn(`⚠️ Application ${id} not found in Blob Storage`);
+            return res.status(404).json({ error: 'Application not found' });
           }
+        } else {
+          // Delete the blob
+          await del(blobPath);
+          console.log(`✅ Deleted application from Blob Storage: ${blobPath}`);
         }
-      }
-      
-      // Remove from applications list FIRST (before deleting the key)
-      // This ensures we clean up the list even if the key deletion fails
-      const applicationsList = await kv.get('applications:list') || [];
-      console.log('📋 Current applications list before deletion:', applicationsList);
-      
-      // Find all possible matching IDs in the list
-      const idsToRemove: string[] = [];
-      applicationsList.forEach((appId: string) => {
-        const matches = appId === id || 
-                       appId === `app_${id}` || 
-                       appId.endsWith(`_${id}`) ||
-                       (id.startsWith('app_') && appId === id) ||
-                       (!id.startsWith('app_') && appId === `app_${id}`) ||
-                       appId.includes(id);
-        if (matches) {
-          idsToRemove.push(appId);
-          console.log(`🗑️ Will remove ${appId} from list (matched ${id})`);
-        }
-      });
-      
-      // Remove all matching IDs from the list
-      const updatedList = applicationsList.filter((appId: string) => !idsToRemove.includes(appId));
-      console.log('📋 Updated applications list after filtering:', updatedList);
-      await kv.set('applications:list', updatedList);
-      console.log('✅ Updated applications list in KV');
-      
-      // Now delete all matching keys
-      let deletedCount = 0;
-      for (const idToDelete of idsToRemove.length > 0 ? idsToRemove : [id, `app_${id}`]) {
-        const keyToDelete = `application:${idToDelete}`;
-        const appToDelete = await kv.get(keyToDelete);
-        if (appToDelete) {
-          console.log(`🗑️ Deleting key: ${keyToDelete}`);
-          await kv.del(keyToDelete);
-          deletedCount++;
-          console.log(`✅ Deleted key: ${keyToDelete}`);
-        }
-      }
-      
-      // Also try deleting with the original ID format
-      if (!existingApp) {
-        const originalKey = `application:${id}`;
-        const originalApp = await kv.get(originalKey);
-        if (originalApp) {
-          console.log(`🗑️ Found and deleting with original key: ${originalKey}`);
-          await kv.del(originalKey);
-          deletedCount++;
-        }
-      } else if (actualKey) {
-        await kv.del(actualKey);
-        deletedCount++;
-      }
-      
-      console.log(`✅ Deleted ${deletedCount} key(s) from KV`);
-      
-      // Verify deletion by checking if any matching keys still exist
-      const verifyKeys = idsToRemove.length > 0 ? idsToRemove.map(id => `application:${id}`) : [`application:${id}`, `application:app_${id}`];
-      let stillExists = false;
-      for (const verifyKey of verifyKeys) {
-        const verifyApp = await kv.get(verifyKey);
-        if (verifyApp) {
-          console.error(`❌ Application still exists at key: ${verifyKey}`);
-          stillExists = true;
-        }
-      }
-      
-      if (stillExists) {
-        console.error('❌ Some applications still exist after deletion attempt');
-        // Don't return error - we've removed from list, which is the main thing
-      } else {
-        console.log('✅ Verified: All matching applications deleted from KV');
+      } catch (blobError) {
+        console.error('❌ Error deleting from Blob Storage:', blobError);
+        throw blobError;
       }
     } else {
       console.log('💾 Using fallback in-memory storage for deletion');
