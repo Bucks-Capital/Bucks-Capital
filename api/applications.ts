@@ -62,34 +62,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 }
 
 async function createApplication(req: VercelRequest, res: VercelResponse) {
-  // #region agent log
-  const fs = await import('fs').catch(() => null);
-  const logPath = 'c:\\Users\\shrey\\OneDrive\\Desktop\\Bucks-Capital\\.cursor\\debug.log';
-  // #endregion
-  try {
-    // #region agent log
-    if (fs) {
-      const logEntry = JSON.stringify({location:'api/applications.ts:27',message:'API received request',data:{method:req.method,headers:Object.keys(req.headers).reduce((acc,key)=>{acc[key]=String(req.headers[key]).substring(0,200);return acc;},{}),bodyKeys:Object.keys(req.body||{}),bodyTypes:Object.keys(req.body||{}).reduce((acc,key)=>{const val=req.body[key];acc[key]={type:typeof val,isNull:val===null,isUndefined:val===undefined,value:typeof val==='string'?val.substring(0,100):typeof val==='object'&&val!==null?`[Object:${Object.keys(val).join(',')}]`:String(val),length:typeof val==='string'?val.length:undefined},{}),contentType:req.headers['content-type']},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})+'\n';
-      fs.appendFileSync(logPath, logEntry, 'utf8');
-    }
-    // #endregion
     const applicationData = req.body;
 
-    // #region agent log
-    if (fs) {
-      const logEntry = JSON.stringify({location:'api/applications.ts:32',message:'Validating required fields',data:{hasName:!!applicationData.name,nameType:typeof applicationData.name,nameValue:applicationData.name?String(applicationData.name).substring(0,50):undefined,hasEmail:!!applicationData.email,emailType:typeof applicationData.email,emailValue:applicationData.email?String(applicationData.email).substring(0,50):undefined},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})+'\n';
-      fs.appendFileSync(logPath, logEntry, 'utf8');
-    }
-    // #endregion
+
 
     // Validate required fields
     if (!applicationData.name || !applicationData.email) {
-      // #region agent log
-      if (fs) {
-        const logEntry = JSON.stringify({location:'api/applications.ts:35',message:'Validation failed - missing fields',data:{missingName:!applicationData.name,missingEmail:!applicationData.email},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})+'\n';
-        fs.appendFileSync(logPath, logEntry, 'utf8');
-      }
-      // #endregion
+
       return res.status(400).json({ error: 'Missing required fields: name and email are required' });
     }
 
@@ -102,22 +81,11 @@ async function createApplication(req: VercelRequest, res: VercelResponse) {
       status: applicationData.status || 'pending'
     };
     
-    // #region agent log
-    if (fs) {
-      const logEntry = JSON.stringify({location:'api/applications.ts:43',message:'Application created successfully',data:{applicationId,hasName:!!application.name,hasEmail:!!application.email,allFields:Object.keys(application)},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})+'\n';
-      fs.appendFileSync(logPath, logEntry, 'utf8');
-    }
-    // #endregion
+
 
     // Store application in Blob Storage
     if (process.env.BLOB_READ_WRITE_TOKEN) {
-      // #region agent log
-      if (fs) {
-        const appSize = JSON.stringify(application).length;
-        const logEntry = JSON.stringify({location:'api/applications.ts:75',message:'Before Blob storage',data:{hasBlobToken:!!process.env.BLOB_READ_WRITE_TOKEN,applicationId,appSize,hasResume:!!application.resume},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})+'\n';
-        fs.appendFileSync(logPath, logEntry, 'utf8');
-      }
-      // #endregion
+
       
       try {
         // Store application as JSON file in Blob Storage
@@ -127,21 +95,11 @@ async function createApplication(req: VercelRequest, res: VercelResponse) {
           contentType: 'application/json',
         });
         
-        // #region agent log
-        if (fs) {
-          const logEntry = JSON.stringify({location:'api/applications.ts:90',message:'Blob storage successful',data:{applicationId,blobUrl:blob.url},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})+'\n';
-          fs.appendFileSync(logPath, logEntry, 'utf8');
-        }
-        // #endregion
+
         
         console.log('✅ Application stored in Blob Storage:', blob.url);
       } catch (blobError) {
-        // #region agent log
-        if (fs) {
-          const logEntry = JSON.stringify({location:'api/applications.ts:98',message:'Blob storage error',data:{errorMessage:blobError instanceof Error?blobError.message:String(blobError),errorStack:blobError instanceof Error?blobError.stack:undefined,errorName:blobError instanceof Error?blobError.name:undefined},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})+'\n';
-          fs.appendFileSync(logPath, logEntry, 'utf8');
-        }
-        // #endregion
+
         console.error('Error storing application in Blob:', blobError);
         throw blobError;
       }
@@ -149,12 +107,7 @@ async function createApplication(req: VercelRequest, res: VercelResponse) {
       // Fallback to in-memory storage if Blob Storage not configured
       console.warn('⚠️ BLOB_READ_WRITE_TOKEN not configured, using fallback storage');
       fallbackStorage.push(application);
-      // #region agent log
-      if (fs) {
-        const logEntry = JSON.stringify({location:'api/applications.ts:110',message:'Using fallback storage',data:{fallbackCount:fallbackStorage.length},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})+'\n';
-        fs.appendFileSync(logPath, logEntry, 'utf8');
-      }
-      // #endregion
+
     }
 
     console.log('✅ Application created successfully:', {
@@ -165,14 +118,7 @@ async function createApplication(req: VercelRequest, res: VercelResponse) {
 
     res.status(201).json(application);
   } catch (error) {
-    // #region agent log
-    const fs = await import('fs').catch(() => null);
-    const logPath = 'c:\\Users\\shrey\\OneDrive\\Desktop\\Bucks-Capital\\.cursor\\debug.log';
-    if (fs) {
-      const logEntry = JSON.stringify({location:'api/applications.ts:66',message:'Error in createApplication',data:{errorMessage:error instanceof Error?error.message:String(error),errorStack:error instanceof Error?error.stack:undefined,errorName:error instanceof Error?error.name:undefined},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})+'\n';
-      fs.appendFileSync(logPath, logEntry, 'utf8');
-    }
-    // #endregion
+
     console.error('Error creating application:', error);
     
     // Provide more detailed error message
