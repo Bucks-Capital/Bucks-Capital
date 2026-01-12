@@ -22,7 +22,7 @@ async function getAllApplicationsFromBlob(): Promise<any[]> {
     const fetchPromises = appBlobs.map(async (blob) => {
       try {
         // Use downloadUrl if available for better performance/caching, or url
-        const urlToFetch = blob.downloadUrl || blob.url;
+        const urlToFetch = (blob as any).downloadUrl || blob.url;
 
         const response = await fetch(urlToFetch);
         if (!response.ok) {
@@ -230,24 +230,42 @@ async function deleteApplication(req: VercelRequest, res: VercelResponse) {
         // Delete the application file from Blob Storage
         const blobPath = `applications/${id}.json`;
 
-        // First check if it exists
+        // First check if it exists to get the URL
         const existingApp = await getApplicationFromBlob(id);
+
         if (!existingApp) {
-          // Try with app_ prefix if not found
+          // Try with app_ prefix if not found (legacy support)
           const appIdWithPrefix = id.startsWith('app_') ? id : `app_${id}`;
           const altApp = await getApplicationFromBlob(appIdWithPrefix);
+
           if (altApp) {
-            // Delete the alternate path
-            await del(`applications/${appIdWithPrefix}.json`);
-            console.log(`✅ Deleted application: ${appIdWithPrefix}`);
+            // We need to re-fetch the blob to getting the URL for deletion
+            // getApplicationFromBlob returns the JSON content, not the blob object with URL.
+            // We need to list again to get the URL.
+            const listResult = await list({ prefix: `applications/${appIdWithPrefix}.json`, limit: 1 });
+            if (listResult.blobs.length > 0) {
+              await del(listResult.blobs[0].url);
+              console.log(`✅ Deleted application: ${appIdWithPrefix}`);
+            } else {
+              console.warn(`⚠️ Application ${id} found structurally but blob missing for deletion`);
+            }
           } else {
             console.warn(`⚠️ Application ${id} not found in Blob Storage`);
             return res.status(404).json({ error: 'Application not found' });
           }
         } else {
-          // Delete the blob
-          await del(blobPath);
-          console.log(`✅ Deleted application from Blob Storage: ${blobPath}`);
+          // We found the app, but getApplicationFromBlob returns the data, not the blob object.
+          // We need the URL to delete it reliably.
+          const listResult = await list({ prefix: blobPath, limit: 1 });
+          if (listResult.blobs.length > 0) {
+            await del(listResult.blobs[0].url);
+            console.log(`✅ Deleted application from Blob Storage: ${blobPath}`);
+          } else {
+            // Should not happen if existingApp was found, unless race condition
+            console.warn(`⚠️ Blob not found for deletion details: ${blobPath}`);
+            // Try deleting by path as fallback
+            await del(blobPath);
+          }
         }
       } catch (blobError) {
         console.error('❌ Error deleting from Blob Storage:', blobError);

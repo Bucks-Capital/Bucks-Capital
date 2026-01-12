@@ -82,7 +82,7 @@ const ApplicationViewer: React.FC<ApplicationViewerProps> = ({ onLogout }) => {
       if (!Array.isArray(localApps) || localApps.length === 0) return;
 
       console.log(`🔄 Migrating ${localApps.length} applications from localStorage to API...`);
-      
+
       // Migrate each application to the API
       for (const app of localApps) {
         try {
@@ -123,7 +123,7 @@ const ApplicationViewer: React.FC<ApplicationViewerProps> = ({ onLogout }) => {
   const loadApplications = async () => {
     setIsLoading(true);
     setError(null);
-    
+
     try {
       console.log('📥 Loading applications from database...');
       const response = await fetch('/api/applications', {
@@ -132,11 +132,11 @@ const ApplicationViewer: React.FC<ApplicationViewerProps> = ({ onLogout }) => {
           'Cache-Control': 'no-cache',
         }
       });
-      
+
       // Check if response is actually JSON
       const contentType = response.headers.get('content-type');
       const isJson = contentType && contentType.includes('application/json');
-      
+
       if (response.ok) {
         if (isJson) {
           try {
@@ -144,7 +144,7 @@ const ApplicationViewer: React.FC<ApplicationViewerProps> = ({ onLogout }) => {
             console.log(`📥 Loaded ${data?.length || 0} applications from database`);
             console.log('📋 Application IDs:', data?.map((app: any) => app.id) || []);
             setApplications(data || []);
-            
+
             // If API returns empty but localStorage has data, try to migrate
             if (data.length === 0) {
               const stored = localStorage.getItem('bucksCapitalApplications');
@@ -175,7 +175,7 @@ const ApplicationViewer: React.FC<ApplicationViewerProps> = ({ onLogout }) => {
           // Response is not JSON, might be HTML error page
           const text = await response.text();
           console.error('Non-JSON response received:', text.substring(0, 200));
-          
+
           // Check if it's an HTML error page
           if (text.trim().startsWith('<!DOCTYPE') || text.trim().startsWith('<html')) {
             throw new Error('API endpoint returned HTML instead of JSON. The /api/applications endpoint may not be deployed or configured correctly. Please check your Vercel deployment.');
@@ -205,7 +205,7 @@ const ApplicationViewer: React.FC<ApplicationViewerProps> = ({ onLogout }) => {
       console.error('Error loading applications:', error);
       const errorMessage = error instanceof Error ? error.message : 'Failed to load applications';
       setError(errorMessage);
-      
+
       // Fallback to localStorage for backward compatibility
       const stored = localStorage.getItem('bucksCapitalApplications');
       if (stored) {
@@ -226,7 +226,7 @@ const ApplicationViewer: React.FC<ApplicationViewerProps> = ({ onLogout }) => {
 
   const sortApplications = (apps: ApplicationData[], sortOption: SortOption): ApplicationData[] => {
     const sorted = [...apps];
-    
+
     switch (sortOption) {
       case 'newest':
         return sorted.sort((a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime());
@@ -274,7 +274,7 @@ const ApplicationViewer: React.FC<ApplicationViewerProps> = ({ onLogout }) => {
     try {
       const deleteUrl = `/api/applications?id=${encodeURIComponent(applicationToDelete)}`;
       console.log('📡 Delete URL:', deleteUrl);
-      
+
       const response = await fetch(deleteUrl, {
         method: 'DELETE',
         headers: {
@@ -288,7 +288,7 @@ const ApplicationViewer: React.FC<ApplicationViewerProps> = ({ onLogout }) => {
       if (response.ok) {
         const result = await response.json();
         console.log('✅ Delete successful:', result);
-        
+
         // Immediately update UI by removing the deleted application from state
         // This provides instant feedback while we reload from database
         const beforeCount = applications.length;
@@ -296,16 +296,16 @@ const ApplicationViewer: React.FC<ApplicationViewerProps> = ({ onLogout }) => {
         const afterCount = updatedApps.length;
         setApplications(updatedApps);
         console.log(`🔄 Updated UI: ${beforeCount} -> ${afterCount} applications (removed ${applicationToDelete})`);
-        
+
         // Close modal if the deleted application was selected
         if (selectedApplication?.id === applicationToDelete) {
           setIsModalOpen(false);
           setSelectedApplication(null);
         }
-        
+
         setDeleteDialogOpen(false);
         setApplicationToDelete(null);
-        
+
         // Small delay before reload to ensure database operation completes
         setTimeout(async () => {
           console.log('🔄 Reloading applications from database...');
@@ -350,7 +350,7 @@ const ApplicationViewer: React.FC<ApplicationViewerProps> = ({ onLogout }) => {
 
   const downloadResume = (resumeData: any) => {
     if (!resumeData) return;
-    
+
     // New format: Use blob URL directly
     if (resumeData.url) {
       const a = document.createElement('a');
@@ -358,12 +358,12 @@ const ApplicationViewer: React.FC<ApplicationViewerProps> = ({ onLogout }) => {
       a.download = resumeData.name;
       a.target = '_blank';
       a.click();
-    } 
+    }
     // Legacy format: Convert base64 to blob URL
     else if (resumeData.data) {
       const file = base64ToFile(
-        resumeData.data, 
-        resumeData.name, 
+        resumeData.data,
+        resumeData.name,
         resumeData.type
       );
       const url = URL.createObjectURL(file);
@@ -383,7 +383,7 @@ const ApplicationViewer: React.FC<ApplicationViewerProps> = ({ onLogout }) => {
         console.log('Using blob URL:', resumeData.url);
         setPdfUrl(resumeData.url);
         setIsPdfViewerOpen(true);
-      } 
+      }
       // Legacy format: Convert base64 to blob URL
       else if (resumeData.data) {
         console.log('Converting base64 to file...');
@@ -416,25 +416,25 @@ const ApplicationViewer: React.FC<ApplicationViewerProps> = ({ onLogout }) => {
 
   const clearAllApplications = async () => {
     console.log('🗑️ Attempting to clear all applications:', applications.length);
-    
+
     try {
       // Delete each application via API
       const deletePromises = applications.map(async (app) => {
         try {
           console.log('🗑️ Deleting application:', app.id);
-          const response = await fetch(`/api/applications?id=${encodeURIComponent(app.id)}`, { 
+          const response = await fetch(`/api/applications?id=${encodeURIComponent(app.id)}`, {
             method: 'DELETE',
             headers: {
               'Content-Type': 'application/json',
             }
           });
-          
+
           if (!response.ok) {
             const errorText = await response.text();
             console.error(`❌ Failed to delete ${app.id}:`, response.status, errorText);
             return { success: false, id: app.id, error: response.statusText };
           }
-          
+
           const result = await response.json();
           console.log('✅ Deleted application:', app.id, result);
           return { success: true, id: app.id };
@@ -443,20 +443,20 @@ const ApplicationViewer: React.FC<ApplicationViewerProps> = ({ onLogout }) => {
           return { success: false, id: app.id, error: error instanceof Error ? error.message : 'Unknown error' };
         }
       });
-      
+
       const results = await Promise.all(deletePromises);
-      
+
       // Check if any deletions failed
       const failures = results.filter(r => !r.success);
       const successes = results.filter(r => r.success);
-      
+
       console.log(`✅ Deleted ${successes.length} applications, ${failures.length} failed`);
-      
+
       if (failures.length > 0) {
         console.warn('⚠️ Some applications failed to delete:', failures);
         alert(`${successes.length} applications deleted, but ${failures.length} failed to delete. Please refresh and try again.`);
       }
-      
+
       // Immediately clear UI state
       setApplications([]);
       setSelectedApplication(null);
@@ -466,12 +466,12 @@ const ApplicationViewer: React.FC<ApplicationViewerProps> = ({ onLogout }) => {
         URL.revokeObjectURL(pdfUrl);
         setPdfUrl(null);
       }
-      
+
       // Also clear localStorage for backward compatibility
       localStorage.removeItem('bucksCapitalApplications');
-      
+
       setClearAllDialogOpen(false);
-      
+
       // Reload from database to ensure consistency (in background)
       // This ensures we have the latest data, but UI is already cleared
       loadApplications().catch(error => {
@@ -487,15 +487,19 @@ const ApplicationViewer: React.FC<ApplicationViewerProps> = ({ onLogout }) => {
 
   const exportApplications = () => {
     const csvContent = [
-      ['Name', 'Email', 'Grade', 'High School', 'Position', 'Submitted At', 'Status'],
+      ['Name', 'Email', 'Grade', 'High School', 'Position', 'Experience', 'Why Join (Unique Quality)', 'Availability', 'Submitted At', 'Status'],
       ...applications.map(app => [
-        app.name,
-        app.email,
-        app.grade,
-        app.highSchoolName,
-        app.availablePositions,
-        new Date(app.submittedAt).toLocaleDateString(),
-        app.status
+        // Escape quotes to handle CSV format correctly
+        `"${(app.name || '').replace(/"/g, '""')}"`,
+        `"${(app.email || '').replace(/"/g, '""')}"`,
+        `"${(app.grade || '').replace(/"/g, '""')}"`,
+        `"${(app.highSchoolName || '').replace(/"/g, '""')}"`,
+        `"${(app.availablePositions || '').replace(/"/g, '""')}"`,
+        `"${(app.businessFinanceExperience || '').replace(/"/g, '""')}"`,
+        `"${(app.uniqueQuality || '').replace(/"/g, '""')}"`,
+        `"${(app.commitmentAgreement ? 'Yes' : 'No')}"`,
+        `"${new Date(app.submittedAt).toLocaleDateString()} ${new Date(app.submittedAt).toLocaleTimeString()}"`,
+        `"${(app.status || '').replace(/"/g, '""')}"`
       ])
     ].map(row => row.join(',')).join('\n');
 
@@ -545,7 +549,7 @@ const ApplicationViewer: React.FC<ApplicationViewerProps> = ({ onLogout }) => {
             <p className="text-sm sm:text-base text-foreground/80 text-red-600">Error: {error}</p>
           </div>
           <div className="flex gap-2">
-            <Button 
+            <Button
               onClick={loadApplications}
               variant="outline"
               size="sm"
@@ -554,7 +558,7 @@ const ApplicationViewer: React.FC<ApplicationViewerProps> = ({ onLogout }) => {
               Retry
             </Button>
             {onLogout && (
-              <Button 
+              <Button
                 onClick={onLogout}
                 variant="outline"
                 size="sm"
@@ -592,7 +596,7 @@ const ApplicationViewer: React.FC<ApplicationViewerProps> = ({ onLogout }) => {
           </div>
           <div className="flex gap-2">
             {onLogout && (
-              <Button 
+              <Button
                 onClick={onLogout}
                 variant="outline"
                 size="sm"
@@ -614,7 +618,7 @@ const ApplicationViewer: React.FC<ApplicationViewerProps> = ({ onLogout }) => {
           </p>
         </Card>
         <div className="flex justify-center mt-6">
-          <Button 
+          <Button
             onClick={() => {
               console.log('Home button clicked');
               navigate('/');
@@ -636,7 +640,7 @@ const ApplicationViewer: React.FC<ApplicationViewerProps> = ({ onLogout }) => {
       {/* Header Section - Mobile Responsive */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
         <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
-          <Button 
+          <Button
             onClick={() => {
               console.log('Home button clicked');
               navigate('/');
@@ -687,7 +691,7 @@ const ApplicationViewer: React.FC<ApplicationViewerProps> = ({ onLogout }) => {
 
         {/* Action Buttons - Mobile Responsive */}
         <div className="flex flex-wrap gap-2 w-full sm:w-auto">
-          <Button 
+          <Button
             onClick={loadApplications}
             variant="outline"
             size="sm"
@@ -699,7 +703,7 @@ const ApplicationViewer: React.FC<ApplicationViewerProps> = ({ onLogout }) => {
             <span className="hidden sm:inline">Refresh</span>
           </Button>
           {onLogout && (
-            <Button 
+            <Button
               onClick={onLogout}
               variant="outline"
               size="sm"
@@ -709,8 +713,8 @@ const ApplicationViewer: React.FC<ApplicationViewerProps> = ({ onLogout }) => {
               <span className="hidden sm:inline">Logout</span>
             </Button>
           )}
-          <Button 
-            onClick={exportApplications} 
+          <Button
+            onClick={exportApplications}
             className="flex items-center gap-2 flex-1 sm:flex-initial"
             disabled={applications.length === 0}
           >
@@ -718,7 +722,7 @@ const ApplicationViewer: React.FC<ApplicationViewerProps> = ({ onLogout }) => {
             <span className="hidden sm:inline">Export CSV</span>
             <span className="sm:hidden">Export</span>
           </Button>
-          <Button 
+          <Button
             onClick={handleClearAllClick}
             variant="destructive"
             className="flex items-center gap-2 flex-1 sm:flex-initial"
@@ -846,27 +850,27 @@ const ApplicationViewer: React.FC<ApplicationViewerProps> = ({ onLogout }) => {
       {selectedApplication && (
         <div className={`fixed inset-0 bg-black/50 flex items-center justify-center p-2 sm:p-4 z-50 ${isModalOpen ? 'block' : 'hidden'}`}>
           <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto m-2 sm:m-4">
-              <div className="p-4 sm:p-6 border-b">
-                <div className="flex justify-between items-start gap-4">
-                  <div className="flex-1 min-w-0">
-                    <h2 className="text-xl sm:text-2xl font-bold text-foreground mb-2 truncate">
-                      {selectedApplication.name}
-                    </h2>
-                    <Badge className={getStatusColor(selectedApplication.status)}>
-                      {selectedApplication.status}
-                    </Badge>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setIsModalOpen(false)}
-                    className="flex-shrink-0"
-                  >
-                    ×
-                  </Button>
+            <div className="p-4 sm:p-6 border-b">
+              <div className="flex justify-between items-start gap-4">
+                <div className="flex-1 min-w-0">
+                  <h2 className="text-xl sm:text-2xl font-bold text-foreground mb-2 truncate">
+                    {selectedApplication.name}
+                  </h2>
+                  <Badge className={getStatusColor(selectedApplication.status)}>
+                    {selectedApplication.status}
+                  </Badge>
                 </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setIsModalOpen(false)}
+                  className="flex-shrink-0"
+                >
+                  ×
+                </Button>
               </div>
-            
+            </div>
+
             <div className="p-4 sm:p-6 space-y-6">
               {/* Personal Information */}
               <div>
