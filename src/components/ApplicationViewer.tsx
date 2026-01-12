@@ -1029,8 +1029,8 @@ const ApplicationViewer: React.FC<ApplicationViewerProps> = ({ onLogout }) => {
                       Download Resume
                     </Button>
                   </div>
-                )}
-              </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
