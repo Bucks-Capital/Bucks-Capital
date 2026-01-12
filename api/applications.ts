@@ -25,11 +25,34 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 }
 
 async function createApplication(req: VercelRequest, res: VercelResponse) {
+  // #region agent log
+  const fs = await import('fs').catch(() => null);
+  const logPath = 'c:\\Users\\shrey\\OneDrive\\Desktop\\Bucks-Capital\\.cursor\\debug.log';
+  // #endregion
   try {
+    // #region agent log
+    if (fs) {
+      const logEntry = JSON.stringify({location:'api/applications.ts:27',message:'API received request',data:{method:req.method,headers:Object.keys(req.headers).reduce((acc,key)=>{acc[key]=String(req.headers[key]).substring(0,200);return acc;},{}),bodyKeys:Object.keys(req.body||{}),bodyTypes:Object.keys(req.body||{}).reduce((acc,key)=>{const val=req.body[key];acc[key]={type:typeof val,isNull:val===null,isUndefined:val===undefined,value:typeof val==='string'?val.substring(0,100):typeof val==='object'&&val!==null?`[Object:${Object.keys(val).join(',')}]`:String(val),length:typeof val==='string'?val.length:undefined},{}),contentType:req.headers['content-type']},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})+'\n';
+      fs.appendFileSync(logPath, logEntry, 'utf8');
+    }
+    // #endregion
     const applicationData = req.body;
+
+    // #region agent log
+    if (fs) {
+      const logEntry = JSON.stringify({location:'api/applications.ts:32',message:'Validating required fields',data:{hasName:!!applicationData.name,nameType:typeof applicationData.name,nameValue:applicationData.name?String(applicationData.name).substring(0,50):undefined,hasEmail:!!applicationData.email,emailType:typeof applicationData.email,emailValue:applicationData.email?String(applicationData.email).substring(0,50):undefined},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})+'\n';
+      fs.appendFileSync(logPath, logEntry, 'utf8');
+    }
+    // #endregion
 
     // Validate required fields
     if (!applicationData.name || !applicationData.email) {
+      // #region agent log
+      if (fs) {
+        const logEntry = JSON.stringify({location:'api/applications.ts:35',message:'Validation failed - missing fields',data:{missingName:!applicationData.name,missingEmail:!applicationData.email},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})+'\n';
+        fs.appendFileSync(logPath, logEntry, 'utf8');
+      }
+      // #endregion
       return res.status(400).json({ error: 'Missing required fields: name and email are required' });
     }
 
@@ -41,19 +64,62 @@ async function createApplication(req: VercelRequest, res: VercelResponse) {
       submittedAt: new Date().toISOString(),
       status: applicationData.status || 'pending'
     };
+    
+    // #region agent log
+    if (fs) {
+      const logEntry = JSON.stringify({location:'api/applications.ts:43',message:'Application created successfully',data:{applicationId,hasName:!!application.name,hasEmail:!!application.email,allFields:Object.keys(application)},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})+'\n';
+      fs.appendFileSync(logPath, logEntry, 'utf8');
+    }
+    // #endregion
 
     // Store application
     if (kv) {
-      // Store in Vercel KV
-      await kv.set(`application:${applicationId}`, application);
-      
-      // Add to applications list
-      const applicationsList = await kv.get('applications:list') || [];
-      applicationsList.push(applicationId);
-      await kv.set('applications:list', applicationsList);
+      // #region agent log
+      if (fs) {
+        const resumeSize = application.resume?.data ? application.resume.data.length : 0;
+        const appSize = JSON.stringify(application).length;
+        const logEntry = JSON.stringify({location:'api/applications.ts:75',message:'Before KV storage',data:{hasKv:!!kv,applicationId,resumeSize,appSize,hasResume:!!application.resume},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})+'\n';
+        fs.appendFileSync(logPath, logEntry, 'utf8');
+      }
+      // #endregion
+      try {
+        // Store in Vercel KV
+        await kv.set(`application:${applicationId}`, application);
+        // #region agent log
+        if (fs) {
+          const logEntry = JSON.stringify({location:'api/applications.ts:82',message:'KV set successful',data:{applicationId},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})+'\n';
+          fs.appendFileSync(logPath, logEntry, 'utf8');
+        }
+        // #endregion
+        
+        // Add to applications list
+        const applicationsList = await kv.get('applications:list') || [];
+        applicationsList.push(applicationId);
+        await kv.set('applications:list', applicationsList);
+        // #region agent log
+        if (fs) {
+          const logEntry = JSON.stringify({location:'api/applications.ts:88',message:'Applications list updated',data:{listLength:applicationsList.length},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})+'\n';
+          fs.appendFileSync(logPath, logEntry, 'utf8');
+        }
+        // #endregion
+      } catch (kvError) {
+        // #region agent log
+        if (fs) {
+          const logEntry = JSON.stringify({location:'api/applications.ts:92',message:'KV storage error',data:{errorMessage:kvError instanceof Error?kvError.message:String(kvError),errorStack:kvError instanceof Error?kvError.stack:undefined,errorName:kvError instanceof Error?kvError.name:undefined},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})+'\n';
+          fs.appendFileSync(logPath, logEntry, 'utf8');
+        }
+        // #endregion
+        throw kvError;
+      }
     } else {
       // Fallback to in-memory storage
       fallbackStorage.push(application);
+      // #region agent log
+      if (fs) {
+        const logEntry = JSON.stringify({location:'api/applications.ts:100',message:'Using fallback storage',data:{fallbackCount:fallbackStorage.length},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})+'\n';
+        fs.appendFileSync(logPath, logEntry, 'utf8');
+      }
+      // #endregion
     }
 
     console.log('✅ Application created successfully:', {
@@ -64,6 +130,14 @@ async function createApplication(req: VercelRequest, res: VercelResponse) {
 
     res.status(201).json(application);
   } catch (error) {
+    // #region agent log
+    const fs = await import('fs').catch(() => null);
+    const logPath = 'c:\\Users\\shrey\\OneDrive\\Desktop\\Bucks-Capital\\.cursor\\debug.log';
+    if (fs) {
+      const logEntry = JSON.stringify({location:'api/applications.ts:66',message:'Error in createApplication',data:{errorMessage:error instanceof Error?error.message:String(error),errorStack:error instanceof Error?error.stack:undefined,errorName:error instanceof Error?error.name:undefined},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})+'\n';
+      fs.appendFileSync(logPath, logEntry, 'utf8');
+    }
+    // #endregion
     console.error('Error creating application:', error);
     res.status(500).json({ 
       error: 'Internal server error',

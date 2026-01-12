@@ -47,10 +47,58 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({ isOpen, onClose }) 
   const handleSubmit = async (data: any) => {
     setIsSubmitting(true);
     
+    // #region agent log
+    const logData = Object.keys(data).reduce((acc: any, key: string) => {
+      const val = data[key];
+      acc[key] = {
+        type: typeof val,
+        isFile: val instanceof File,
+        isNull: val === null,
+        isUndefined: val === undefined,
+        value: val instanceof File ? `[File:${val.name}]` : String(val).substring(0, 100),
+        length: typeof val === 'string' ? val.length : undefined
+      };
+      return acc;
+    }, {});
+    fetch('http://127.0.0.1:7242/ingest/74f189f6-03bb-4080-9d31-a84bf6d202fb', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        location: 'ApplicationModal.tsx:47',
+        message: 'handleSubmit entry - raw form data',
+        data: { rawData: logData },
+        timestamp: Date.now(),
+        sessionId: 'debug-session',
+        runId: 'run1',
+        hypothesisId: 'B'
+      })
+    }).catch(() => {});
+    // #endregion
+    
     try {
       // Handle file storage - convert File to base64
       let resumeData = null;
       if (data.resume && data.resume instanceof File) {
+        // #region agent log
+        fetch('http://127.0.0.1:7242/ingest/74f189f6-03bb-4080-9d31-a84bf6d202fb', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            location: 'ApplicationModal.tsx:82',
+            message: 'Processing file before base64',
+            data: {
+              fileName: data.resume.name,
+              fileType: data.resume.type,
+              fileSize: data.resume.size,
+              isFile: data.resume instanceof File
+            },
+            timestamp: Date.now(),
+            sessionId: 'debug-session',
+            runId: 'run1',
+            hypothesisId: 'D'
+          })
+        }).catch(() => {});
+        // #endregion
         resumeData = {
           name: data.resume.name,
           type: data.resume.type,
@@ -58,6 +106,25 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({ isOpen, onClose }) 
           lastModified: data.resume.lastModified,
           data: await fileToBase64(data.resume)
         };
+        // #region agent log
+        fetch('http://127.0.0.1:7242/ingest/74f189f6-03bb-4080-9d31-a84bf6d202fb', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            location: 'ApplicationModal.tsx:92',
+            message: 'File converted to base64',
+            data: {
+              resumeDataName: resumeData.name,
+              resumeDataType: resumeData.type,
+              base64Length: resumeData.data?.length
+            },
+            timestamp: Date.now(),
+            sessionId: 'debug-session',
+            runId: 'run1',
+            hypothesisId: 'D'
+          })
+        }).catch(() => {});
+        // #endregion
       }
       
       // Prepare application data for API
@@ -74,6 +141,33 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({ isOpen, onClose }) 
         status: 'pending'
       };
 
+      // #region agent log
+      const payloadLogData = Object.keys(applicationPayload).reduce((acc: any, key: string) => {
+        const val = applicationPayload[key];
+        acc[key] = {
+          type: typeof val,
+          isNull: val === null,
+          isUndefined: val === undefined,
+          value: typeof val === 'string' ? val.substring(0, 100) : typeof val === 'object' && val !== null ? `[Object:${Object.keys(val).join(',')}]` : String(val),
+          length: typeof val === 'string' ? val.length : undefined
+        };
+        return acc;
+      }, {});
+      fetch('http://127.0.0.1:7242/ingest/74f189f6-03bb-4080-9d31-a84bf6d202fb', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          location: 'ApplicationModal.tsx:111',
+          message: 'Payload before API call',
+          data: { payload: payloadLogData },
+          timestamp: Date.now(),
+          sessionId: 'debug-session',
+          runId: 'run1',
+          hypothesisId: 'B'
+        })
+      }).catch(() => {});
+      // #endregion
+
       // Send to API endpoint
       const response = await fetch('/api/applications', {
         method: 'POST',
@@ -83,12 +177,107 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({ isOpen, onClose }) 
         body: JSON.stringify(applicationPayload)
       });
 
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/74f189f6-03bb-4080-9d31-a84bf6d202fb', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          location: 'ApplicationModal.tsx:125',
+          message: 'API response received',
+          data: {
+            status: response.status,
+            statusText: response.statusText,
+            ok: response.ok,
+            headers: Object.fromEntries(response.headers.entries())
+          },
+          timestamp: Date.now(),
+          sessionId: 'debug-session',
+          runId: 'run1',
+          hypothesisId: 'B'
+        })
+      }).catch(() => {});
+      // #endregion
+
       if (!response.ok) {
-        const errorData = await response.json();
+        // #region agent log
+        fetch('http://127.0.0.1:7242/ingest/74f189f6-03bb-4080-9d31-a84bf6d202fb', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            location: 'ApplicationModal.tsx:201',
+            message: 'API error response received',
+            data: { 
+              status: response.status, 
+              statusText: response.statusText,
+              contentType: response.headers.get('content-type'),
+              url: response.url
+            },
+            timestamp: Date.now(),
+            sessionId: 'debug-session',
+            runId: 'run1',
+            hypothesisId: 'B'
+          })
+        }).catch(() => {});
+        // #endregion
+        
+        // Safely parse error response - handle cases where response isn't JSON
+        let errorData: any = {};
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+          try {
+            const text = await response.text();
+            if (text) {
+              errorData = JSON.parse(text);
+            }
+          } catch (parseError) {
+            // If JSON parsing fails, use status text
+            errorData = { error: `Server error (${response.status}): ${response.statusText}` };
+          }
+        } else {
+          // Non-JSON response (like 404 HTML page)
+          const text = await response.text();
+          errorData = { 
+            error: response.status === 404 
+              ? 'API endpoint not found. The application API routes require Vercel CLI to run in development. Please run "npx vercel dev" instead of "npm run dev", or deploy to Vercel for production use.'
+              : `Server error (${response.status}): ${response.statusText || 'Unknown error'}`
+          };
+        }
+        
+        // #region agent log
+        fetch('http://127.0.0.1:7242/ingest/74f189f6-03bb-4080-9d31-a84bf6d202fb', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            location: 'ApplicationModal.tsx:230',
+            message: 'Parsed error data',
+            data: { errorData, status: response.status },
+            timestamp: Date.now(),
+            sessionId: 'debug-session',
+            runId: 'run1',
+            hypothesisId: 'B'
+          })
+        }).catch(() => {});
+        // #endregion
+        
         throw new Error(errorData.error || 'Failed to submit application');
       }
 
       const submittedApplication = await response.json();
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/74f189f6-03bb-4080-9d31-a84bf6d202fb', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          location: 'ApplicationModal.tsx:210',
+          message: 'Application submitted successfully',
+          data: { applicationId: submittedApplication.id },
+          timestamp: Date.now(),
+          sessionId: 'debug-session',
+          runId: 'run1',
+          hypothesisId: 'B'
+        })
+      }).catch(() => {});
+      // #endregion
       console.log('✅ Application submitted successfully:', submittedApplication);
       
       setIsSubmitted(true);
@@ -99,6 +288,25 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({ isOpen, onClose }) 
       }, 3000);
       
     } catch (error) {
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/74f189f6-03bb-4080-9d31-a84bf6d202fb', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          location: 'ApplicationModal.tsx:246',
+          message: 'Error caught in handleSubmit',
+          data: {
+            errorMessage: error instanceof Error ? error.message : String(error),
+            errorStack: error instanceof Error ? error.stack : undefined,
+            errorName: error instanceof Error ? error.name : undefined
+          },
+          timestamp: Date.now(),
+          sessionId: 'debug-session',
+          runId: 'run1',
+          hypothesisId: 'B'
+        })
+      }).catch(() => {});
+      // #endregion
       console.error('Error submitting application:', error);
       alert(`There was an error submitting your application: ${error instanceof Error ? error.message : 'Please try again.'}`);
     } finally {

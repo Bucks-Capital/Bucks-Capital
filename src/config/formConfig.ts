@@ -151,18 +151,37 @@ export const generateFormSchema = () => {
       switch (field.type) {
         case 'email':
           fieldSchema = field.required 
-            ? z.string().email('Please enter a valid email address')
-            : z.string().email('Please enter a valid email address').optional();
+            ? z.string().trim().email('Please enter a valid email address')
+            : z.string().trim().email('Please enter a valid email address').optional();
+          break;
+        case 'select':
+          if (field.options && field.options.length > 0) {
+            // Validate that the value is one of the allowed options (case-insensitive, trimmed)
+            fieldSchema = field.required
+              ? z.string().trim().refine(
+                  (val) => field.options!.some(opt => opt.trim().toLowerCase() === val.trim().toLowerCase()),
+                  { message: `Please select a valid ${field.label.toLowerCase()}` }
+                )
+              : z.string().trim().refine(
+                  (val) => !val || field.options!.some(opt => opt.trim().toLowerCase() === val.trim().toLowerCase()),
+                  { message: `Please select a valid ${field.label.toLowerCase()}` }
+                ).optional();
+          } else {
+            // Fallback if no options provided
+            fieldSchema = field.required
+              ? z.string().trim().min(1, `${field.label} is required.`)
+              : z.string().trim().optional();
+          }
           break;
         case 'number':
           fieldSchema = field.required
-            ? z.string().min(1, `${field.label} is required.`)
-            : z.string().optional();
+            ? z.string().trim().min(1, `${field.label} is required.`)
+            : z.string().trim().optional();
           break;
         case 'textarea':
           fieldSchema = field.required
             ? z.string().trim().min(field.validation?.minLength || 1, `${field.label} is required.`)
-            : z.string().optional();
+            : z.string().trim().optional();
           break;
         case 'file':
           fieldSchema = field.required
@@ -177,7 +196,7 @@ export const generateFormSchema = () => {
         default:
           fieldSchema = field.required
             ? z.string().trim().min(field.validation?.minLength || 1, `${field.label} is required.`)
-            : z.string().optional();
+            : z.string().trim().optional();
       }
       
       schemaFields[field.id] = fieldSchema;

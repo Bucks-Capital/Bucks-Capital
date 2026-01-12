@@ -67,6 +67,34 @@ const DynamicApplicationForm: React.FC<DynamicApplicationFormProps> = ({ onSubmi
   });
 
   const handleSubmit = (data: FormData) => {
+    // #region agent log
+    const formLogData = Object.keys(data).reduce((acc: any, key: string) => {
+      const val = data[key];
+      acc[key] = {
+        type: typeof val,
+        isFile: val instanceof File,
+        isNull: val === null,
+        isUndefined: val === undefined,
+        value: val instanceof File ? `[File:${val.name}]` : String(val).substring(0, 100),
+        length: typeof val === 'string' ? val.length : undefined,
+        charCodes: typeof val === 'string' ? Array.from(val.substring(0, 20)).map(c => c.charCodeAt(0)) : undefined
+      };
+      return acc;
+    }, {});
+    fetch('http://127.0.0.1:7242/ingest/74f189f6-03bb-4080-9d31-a84bf6d202fb', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        location: 'DynamicApplicationForm.tsx:69',
+        message: 'Form submit - raw data before processing',
+        data: { formData: formLogData },
+        timestamp: Date.now(),
+        sessionId: 'debug-session',
+        runId: 'run1',
+        hypothesisId: 'A'
+      })
+    }).catch(() => {});
+    // #endregion
     onSubmit(data);
   };
 
@@ -197,7 +225,36 @@ const DynamicApplicationForm: React.FC<DynamicApplicationFormProps> = ({ onSubmi
 
       <Card className="p-8 shadow-lg">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
+          <form onSubmit={form.handleSubmit(handleSubmit, (errors) => {
+            // #region agent log
+            const errorLogData = Object.keys(errors).reduce((acc: any, key: string) => {
+              const error = errors[key];
+              acc[key] = {
+                message: error?.message,
+                type: error?.type,
+                value: error?.ref?.value,
+                valueType: typeof error?.ref?.value,
+                valueLength: typeof error?.ref?.value === 'string' ? error?.ref?.value.length : undefined,
+                charCodes: typeof error?.ref?.value === 'string' ? Array.from(error.ref.value.substring(0, 50)).map((c: string) => c.charCodeAt(0)) : undefined
+              };
+              return acc;
+            }, {});
+            console.error('Form validation errors:', errorLogData);
+            fetch('http://127.0.0.1:7242/ingest/74f189f6-03bb-4080-9d31-a84bf6d202fb', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                location: 'DynamicApplicationForm.tsx:230',
+                message: 'Form validation errors',
+                data: { errors: errorLogData, allErrors: errors },
+                timestamp: Date.now(),
+                sessionId: 'debug-session',
+                runId: 'run1',
+                hypothesisId: 'A'
+              })
+            }).catch(() => {});
+            // #endregion
+          })} className="space-y-8">
             {formSections.map((section) => {
               const IconComponent = iconMap[section.icon || 'User'];
               
