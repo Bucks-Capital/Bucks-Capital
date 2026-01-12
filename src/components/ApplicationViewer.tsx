@@ -1035,26 +1035,6 @@ const ApplicationViewer: React.FC<ApplicationViewerProps> = ({ onLogout }) => {
           </div>
         </div>
       )}
-
-                          const a = document.createElement('a');
-                          a.href = url;
-                          a.download = selectedApplication.resume.name;
-                          a.click();
-                          URL.revokeObjectURL(url);
-                        }
-                      }}
-                      className="flex items-center gap-2"
-                    >
-                      <Download className="h-4 w-4" />
-                      Download to View
-                    </Button>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
