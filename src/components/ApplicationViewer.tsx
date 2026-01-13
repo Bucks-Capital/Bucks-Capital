@@ -487,7 +487,7 @@ const ApplicationViewer: React.FC<ApplicationViewerProps> = ({ onLogout }) => {
 
   const exportApplications = () => {
     const csvContent = [
-      ['Name', 'Email', 'Grade', 'High School', 'Position', 'Experience', 'Why Join (Unique Quality)', 'Availability', 'Submitted At', 'Status'],
+      ['Name', 'Email', 'Grade', 'High School', 'Position', 'Experience', 'Why Join (Unique Quality)', 'Availability', 'Resume Link', 'Submitted At', 'Status'],
       ...applications.map(app => [
         // Escape quotes to handle CSV format correctly
         `"${(app.name || '').replace(/"/g, '""')}"`,
@@ -498,6 +498,7 @@ const ApplicationViewer: React.FC<ApplicationViewerProps> = ({ onLogout }) => {
         `"${(app.businessFinanceExperience || '').replace(/"/g, '""')}"`,
         `"${(app.uniqueQuality || '').replace(/"/g, '""')}"`,
         `"${(app.commitmentAgreement ? 'Yes' : 'No')}"`,
+        `"${(app.resume?.url || '').replace(/"/g, '""')}"`,
         `"${new Date(app.submittedAt).toLocaleDateString()} ${new Date(app.submittedAt).toLocaleTimeString()}"`,
         `"${(app.status || '').replace(/"/g, '""')}"`
       ])
