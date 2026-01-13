@@ -227,39 +227,37 @@ async function deleteApplication(req: VercelRequest, res: VercelResponse) {
       console.log('📦 Using Blob Storage for deletion');
 
       try {
-        // Construct potential blob paths
-        // 1. Exact match: applications/{id}.json
-        // 2. With prefix (if not present): applications/app_{id}.json
-        const candidates = [`applications/${id}.json`];
-        if (!id.startsWith('app_')) {
-          candidates.push(`applications/app_${id}.json`);
-        }
+        // Strategy: List ALL applications to find the matching ID.
+        // This avoids issues with exact path construction guesses and matches how the UI lists them.
+        console.log(`🔍 Scanning all applications to find ID: ${id}`);
+        // Limit to 1000 is default for Vercel Blob list, should be enough for now. 
+        // Pagination would be needed if this scales beyond 1000 active applications.
+        const listResult = await list({ prefix: 'applications/', limit: 1000 });
 
-        let deleted = false;
+        const blobToDelete = listResult.blobs.find(blob => {
+          // Normalize path to ID for comparison
+          // matches logic in getAllApplicationsFromBlob
+          const blobId = blob.pathname
+            .replace('applications/', '')
+            .replace('.json', '');
 
-        // Try each candidate path
-        for (const blobPath of candidates) {
-          // List to check existence and get URL (avoid fetching content which might fail)
-          const listResult = await list({ prefix: blobPath, limit: 1 });
+          return blobId === id;
+        });
 
-          if (listResult.blobs.length > 0) {
-            const blobUrl = listResult.blobs[0].url;
-            console.log(`✅ Found blob to delete at ${blobPath}: ${blobUrl}`);
+        if (blobToDelete) {
+          console.log(`✅ Found blob to delete: ${blobToDelete.pathname} (${blobToDelete.url})`);
+          await del(blobToDelete.url);
+          console.log(`✅ Deleted blob successfully`);
+        } else {
+          console.warn(`⚠️ Application ${id} not found in Blob Storage listing (${listResult.blobs.length} blobs scanned)`);
 
-            await del(blobUrl);
-            console.log(`✅ Deleted blob: ${blobUrl}`);
-            deleted = true;
-            break; // Stop after successful deletion
-          }
-        }
+          // Debug: print some IDs found to help diagnose why it's missing
+          const foundIds = listResult.blobs.slice(0, 5).map(b => b.pathname);
+          console.log('Sample of found paths:', foundIds);
 
-        if (!deleted) {
-          console.warn(`⚠️ Application ${id} not found in Blob Storage (checked: ${candidates.join(', ')})`);
-          // Even if not found in blob, we return success so the UI can update if it was a phantom entry
-          // But to be proper HTTP, 404 is correct. 
-          // However, the user complained about "application not found" preventing deletion.
-          // If it's not in the blob, it's effectively deleted. 
-          // But keeping 404 allows debugging. 
+          // If not found in blob, checking fallback storage is handled below, 
+          // but since this block is strictly for BLOB_READ_WRITE_TOKEN being true,
+          // we should probably 404.
           return res.status(404).json({ error: 'Application not found' });
         }
       } catch (blobError) {
