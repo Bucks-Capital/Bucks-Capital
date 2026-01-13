@@ -27,6 +27,10 @@ const CBWestWebsite: React.FC = () => {
     donations: 0
   });
 
+  // Custom cursor state
+  const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
+  const [isHoveringHero, setIsHoveringHero] = useState(false);
+
   {/*useEffect(() => {
     document.documentElement.classList.add('dark');
   }, []); */}
@@ -99,14 +103,14 @@ const CBWestWebsite: React.FC = () => {
 
 
 
-    // Scrolls to Join Us Section From Any Page
+  // Scrolls to Join Us Section From Any Page
   const location2 = useLocation();
 
   useEffect(() => {
     if (location.hash === "#join-us") {
       // Delay until after DOM render so positions are correct
       setTimeout(() => {
-      smoothScrollTo("join-us");
+        smoothScrollTo("join-us");
       }, 50);
     }
   }, [location]);
@@ -275,54 +279,54 @@ const CBWestWebsite: React.FC = () => {
     role: 'Chief Marketing Officer',
     description: 'Background in fundamental analysis wit skills in portfolio strategy, marketing, and digital creation.',
     year: 'Senior'
-  } , {
+  }, {
     name: 'Abhi Medi',
     role: 'Head of Macro',
     description: 'Finance focused student with macroeconomics interest.',
     year: 'Junior'
-  } , {
+  }, {
     name: 'Position Available',
     role: 'Head of Equity',
     description: 'Apply Now!',
     year: 'TBD+'
-  } , {
+  }, {
     name: 'Macro Analayst Team',
     role: 'Macro Analyst',
     description: 'Apply Now!',
     year: 'Mixed'
-  } , {
+  }, {
     name: 'Equity Analayst Team',
     role: 'Equity Analyst',
     description: 'Apply Now!',
     year: 'Mixed'
   }
-];
-const advisoryBoard = [{
-  name: 'Nicholas Allgyer',
-  role: 'Economics Teacher @ CB West',
-} , {
-  name: 'Brian Pultro',
-  role: 'Pultro Financial Management',
-} , {
-  name: 'Imaan Mulji',
-  role: 'Custodian @ Bucks Capital',
-} , {
-  name: 'Martin Meo',
-  role: 'Business Teacher @ CB West',
-} , {
-  name: 'Dan Pfieffer',
-  role: 'Financial Services Representative/Advisor ',
-} , {
-  name: 'Frank Pustay',
-  role: 'House Principal @ CB West',
-} , {
-  name: 'Trevor Fennimore',
-  role: 'Custodian @ Bucks Capital',
-} , {
-  name: 'Chris Meister',
-  role: 'Senior VP @ Univest',
-} , 
-];
+  ];
+  const advisoryBoard = [{
+    name: 'Nicholas Allgyer',
+    role: 'Economics Teacher @ CB West',
+  }, {
+    name: 'Brian Pultro',
+    role: 'Pultro Financial Management',
+  }, {
+    name: 'Imaan Mulji',
+    role: 'Custodian @ Bucks Capital',
+  }, {
+    name: 'Martin Meo',
+    role: 'Business Teacher @ CB West',
+  }, {
+    name: 'Dan Pfieffer',
+    role: 'Financial Services Representative/Advisor ',
+  }, {
+    name: 'Frank Pustay',
+    role: 'House Principal @ CB West',
+  }, {
+    name: 'Trevor Fennimore',
+    role: 'Custodian @ Bucks Capital',
+  }, {
+    name: 'Chris Meister',
+    role: 'Senior VP @ Univest',
+  },
+  ];
   const portfolioCompanies = [{
     name: 'TBD',
     sector: 'Technology',
@@ -355,19 +359,18 @@ const advisoryBoard = [{
     return: '+0.0%'
   }];
 
-  
+
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
       {/* Navigation */}
-      <nav className={`fixed top-0 left-0 right-0 z-50 h-20 w-full transition-all duration-500 ${
-        navScrolled 
-          ? 'bg-white/95 shadow-lg border-b border-gray-200' 
-          : 'bg-white/90 backdrop-blur-lg border-b border-gray-100'
-      }`}
-      style={{
-        backdropFilter: navScrolled ? 'none' : 'blur(20px)',
-      }}>
+      <nav className={`fixed top-0 left-0 right-0 z-50 h-20 w-full transition-all duration-500 ${navScrolled
+        ? 'bg-white/95 shadow-lg border-b border-gray-200'
+        : 'bg-white/90 backdrop-blur-lg border-b border-gray-100'
+        }`}
+        style={{
+          backdropFilter: navScrolled ? 'none' : 'blur(20px)',
+        }}>
         <div className="h-full px-8 flex items-center justify-between max-w-screen-2xl mx-auto">
           {/* Left: Logo */}
           <button
@@ -400,7 +403,7 @@ const advisoryBoard = [{
               About
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
             </button>
-            
+
             <Link to={{ pathname: "/about", hash: "#join-us" }}>
               <button className="text-foreground hover:text-primary transition-colors duration-300 text-base font-semibold uppercase tracking-wide relative group">
                 Join Us
@@ -414,7 +417,7 @@ const advisoryBoard = [{
               Donors
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
             </button>
-            <Button 
+            <Button
               onClick={() => navigate('/donation')}
               className="bg-primary hover:bg-primary-dark text-primary-foreground font-bold px-8 py-3 rounded-full transition-all duration-300 hover:shadow-lg text-base"
             >
@@ -434,96 +437,112 @@ const advisoryBoard = [{
         </div>
 
         {/* Mobile menu */}
-        <div className={`md:hidden bg-white border-t border-gray-200 transition-all duration-300 ease-in-out overflow-hidden ${
-          mobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
-        }`}>
+        <div className={`md:hidden bg-white border-t border-gray-200 transition-all duration-300 ease-in-out overflow-hidden ${mobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+          }`}>
           <div className="px-6 py-4 space-y-1">
+            <button
+              onClick={() => {
+                navigate('/');
+                setMobileMenuOpen(false);
+                setTimeout(() => {
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }, 100);
+              }}
+              className="block w-full text-left text-foreground hover:text-primary transition-colors duration-300 text-sm font-semibold py-3"
+            >
+              Home
+            </button>
+            <button
+              onClick={() => {
+                navigate('/about');
+                setMobileMenuOpen(false);
+              }}
+              className="block w-full text-left text-foreground hover:text-primary transition-colors duration-300 text-sm font-semibold py-3"
+            >
+              About
+            </button>
+            <Link to={{ pathname: "/about", hash: "#join-us" }}>
               <button
-                onClick={() => {
-                  navigate('/');
-                  setMobileMenuOpen(false);
-                  setTimeout(() => {
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                  }, 100);
-                }}
+                onClick={() => setMobileMenuOpen(false)}
                 className="block w-full text-left text-foreground hover:text-primary transition-colors duration-300 text-sm font-semibold py-3"
               >
-                Home
+                Join Us
               </button>
-              <button
-                onClick={() => {
-                  navigate('/about');
-                  setMobileMenuOpen(false);
-                }}
-                className="block w-full text-left text-foreground hover:text-primary transition-colors duration-300 text-sm font-semibold py-3"
-              >
-                About
-              </button>
-              <Link to={{ pathname: "/about", hash: "#join-us" }}>
-                <button
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="block w-full text-left text-foreground hover:text-primary transition-colors duration-300 text-sm font-semibold py-3"
-                >
-                  Join Us
-                </button>
-              </Link>
-              <button
-                onClick={() => {
-                  navigate('/donors');
-                  setMobileMenuOpen(false);
-                }}
-                className="block w-full text-left text-foreground hover:text-primary transition-colors duration-300 text-sm font-semibold py-3"
-              >
-                Donors
-              </button>
-              <button
-                onClick={() => {
-                  navigate('/donation');
-                  setMobileMenuOpen(false);
-                }}
-                className="w-full bg-primary text-primary-foreground font-semibold px-4 py-3 transition-all duration-300 text-center text-sm mt-4 rounded-full"
-              >
-                Donate
-              </button>
+            </Link>
+            <button
+              onClick={() => {
+                navigate('/donors');
+                setMobileMenuOpen(false);
+              }}
+              className="block w-full text-left text-foreground hover:text-primary transition-colors duration-300 text-sm font-semibold py-3"
+            >
+              Donors
+            </button>
+            <button
+              onClick={() => {
+                navigate('/donation');
+                setMobileMenuOpen(false);
+              }}
+              className="w-full bg-primary text-primary-foreground font-semibold px-4 py-3 transition-all duration-300 text-center text-sm mt-4 rounded-full"
+            >
+              Donate
+            </button>
           </div>
         </div>
       </nav>
-   
+
       {/* Hero Section */}
-      <section ref={heroRef} className="h-screen bg-cover bg-center bg-no-repeat flex items-center justify-center relative overflow-hidden" style={{
-      backgroundImage: "url('/forestBG.jpg')", 
-      transform: !window.matchMedia('(prefers-reduced-motion: reduce)').matches ? `translateY(${scrollY * 0.2}px)` : undefined
-    }}>
+      <section
+        ref={heroRef}
+        className={`h-screen bg-cover bg-center bg-no-repeat flex items-center justify-center relative overflow-hidden ${isHoveringHero ? 'cursor-none' : ''}`}
+        style={{
+          backgroundImage: "url('/forestBG.jpg')",
+          transform: !window.matchMedia('(prefers-reduced-motion: reduce)').matches ? `translateY(${scrollY * 0.2}px)` : undefined
+        }}
+        onMouseEnter={() => setIsHoveringHero(true)}
+        onMouseLeave={() => setIsHoveringHero(false)}
+        onMouseMove={(e) => setCursorPosition({ x: e.clientX, y: e.clientY })}
+      >
+        {/* Custom Cursor */}
+        {isHoveringHero && (
+          <div
+            className="fixed pointer-events-none z-50 w-12 h-12 rounded-full border-2 border-white bg-white/10 backdrop-blur-sm transform -translate-x-1/2 -translate-y-1/2 transition-transform duration-75 ease-out"
+            style={{
+              left: cursorPosition.x,
+              top: cursorPosition.y
+            }}
+          />
+        )}
         {/* Professional gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-br from-black/60 via-black/40 to-black/50"></div>
-        
-          <div className="absolute top-1/2 left-0 right-0 z-20 text-center px-6 max-w-6xl mx-auto transform -translate-y-1/2">
-            <div className="mb-12 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-              <img src="/image0.png" alt="Bucks Capital Logo" className="w-96 sm:w-[28rem] md:w-[32rem] lg:w-[36rem] h-auto object-contain mx-auto mb-4 md:mb-8 drop-shadow-2xl"/>
-            </div>
-            
-            <div className="max-w-4xl mx-auto mb-16 animate-fade-in-up text-center" style={{ animationDelay: '0.4s' }}>
-              <h1 className="text-2xl md:text-3xl font-semibold text-white -mb-8 leading-tight inter-font ml-3">
-                Real Capital. Real Analysis. Real Impact.
-              </h1>
-            </div>
-            
-            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
-              <Button 
-                onClick={() => navigate('/about')} 
-                className="bg-primary hover:bg-primary-dark text-primary-foreground font-semibold px-12 py-5 rounded-full transition-all duration-300 hover:shadow-xl text-xl"
-              >
-                About Us
-              </Button>
-              <Button 
-                onClick={() => navigate('/donation')} 
-                variant="outline"
-                className="border-2 border-white text-white hover:bg-white hover:text-slate-800 font-semibold px-12 py-5 rounded-full transition-all duration-300 text-xl bg-white/10 backdrop-blur-sm"
-              >
-                Donate
-              </Button>
-            </div>
+
+        <div className="absolute top-1/2 left-0 right-0 z-20 text-center px-6 max-w-6xl mx-auto transform -translate-y-1/2">
+          <div className="mb-12 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+            <img src="/image0.png" alt="Bucks Capital Logo" className="w-96 sm:w-[28rem] md:w-[32rem] lg:w-[36rem] h-auto object-contain mx-auto mb-4 md:mb-8 drop-shadow-2xl" />
           </div>
+
+          <div className="max-w-4xl mx-auto mb-16 animate-fade-in-up text-center" style={{ animationDelay: '0.4s' }}>
+            <h1 className="text-2xl md:text-3xl font-semibold text-white -mb-8 leading-tight inter-font ml-3">
+              Real Capital. Real Analysis. Real Impact.
+            </h1>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
+            <Button
+              onClick={() => navigate('/about')}
+              className="bg-primary hover:bg-primary-dark text-primary-foreground font-semibold px-12 py-5 rounded-full transition-all duration-300 hover:shadow-xl text-xl cursor-none"
+            >
+              About Us
+            </Button>
+            <Button
+              onClick={() => navigate('/donation')}
+              variant="outline"
+              className="border-2 border-white text-white hover:bg-white hover:text-slate-800 font-semibold px-12 py-5 rounded-full transition-all duration-300 text-xl bg-white/10 backdrop-blur-sm cursor-none"
+            >
+              Donate
+            </Button>
+          </div>
+        </div>
 
         {/* Professional scroll indicator */}
         <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
@@ -722,7 +741,7 @@ const advisoryBoard = [{
         </div>
       </section>
         */}
-      
+
 
 
       {/* Market Performance Section */}
@@ -735,11 +754,11 @@ const advisoryBoard = [{
               </h2>
               <div className="w-24 h-1 bg-primary mx-auto mb-8"></div>
               <p className="text-base sm:text-lg md:text-xl text-foreground/80 leading-relaxed max-w-4xl mx-auto font-medium px-4">
-                Track real-time market performance and understand the financial landscape 
+                Track real-time market performance and understand the financial landscape
                 that shapes our investment decisions.
               </p>
             </div>
-            
+
             <div className="animate-fade-in-up">
               <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
                 <div className="w-full h-96">
@@ -781,7 +800,7 @@ const advisoryBoard = [{
                 </p>
                 <div className="w-16 h-1 bg-primary"></div>
               </div>
-              
+
               <div className={`transition-all duration-1000 ${visibleElements.has('footer') ? 'animate-stagger-fade-in' : 'opacity-0 translate-y-8'}`} style={{ animationDelay: '0.2s' }}>
                 <h3 className="text-lg font-bold text-gray-900 mb-6 uppercase tracking-wide">Contact</h3>
                 <div className="space-y-4">
@@ -794,7 +813,7 @@ const advisoryBoard = [{
                   </p>
                 </div>
               </div>
-              
+
               <div className={`transition-all duration-1000 ${visibleElements.has('footer') ? 'animate-stagger-fade-in' : 'opacity-0 translate-y-8'}`} style={{ animationDelay: '0.4s' }}>
                 <h3 className="text-lg font-bold text-gray-900 mb-6 uppercase tracking-wide">Mission</h3>
                 <p className="text-gray-600 font-medium">
@@ -802,7 +821,7 @@ const advisoryBoard = [{
                 </p>
               </div>
             </div>
-            
+
             <div className={`pt-8 border-t border-gray-200 transition-all duration-1000 ${visibleElements.has('footer') ? 'animate-fade-in-up' : 'opacity-0 translate-y-8'}`} style={{ animationDelay: '0.6s' }}>
               <div className="flex flex-col md:flex-row justify-between items-center">
                 <p className="text-gray-500 font-medium mb-4 md:mb-0">
@@ -812,7 +831,7 @@ const advisoryBoard = [{
                   <a href="mailto:info@buckscapital.org" className="text-gray-500 hover:text-gray-900 transition-colors duration-300 font-medium">
                     Contact
                   </a>
-                  <button 
+                  <button
                     onClick={() => setIsApplicationModalOpen(true)}
                     className="text-gray-500 hover:text-gray-900 transition-colors duration-300 font-medium"
                   >
@@ -826,9 +845,9 @@ const advisoryBoard = [{
       </footer>
 
       {/* Application Modal */}
-      <ApplicationModal 
-        isOpen={isApplicationModalOpen} 
-        onClose={() => setIsApplicationModalOpen(false)} 
+      <ApplicationModal
+        isOpen={isApplicationModalOpen}
+        onClose={() => setIsApplicationModalOpen(false)}
       />
     </div>
   );
