@@ -649,34 +649,120 @@ const About: React.FC = () => {
               </div>
             </div>
 
-            <div className="grid lg:grid-cols-3 gap-16">
-              {[{
-                icon: GraduationCap,
-                title: 'Financial Literacy',
-                description: 'Learn fundamental investment principles, market analysis, and portfolio management strategies through hands-on experience with real capital.',
-                number: '01'
-              }, {
-                icon: Target,
-                title: 'Real Impact',
-                description: 'Manage $4,000 worth of real capital and gain hands-on investing experience. Profits are donated. Learn skills that go beyond classroom simulations.',
-                number: '02'
-              }, {
-                icon: Users,
-                title: 'Professional Mentorship',
-                description: 'Work alongside an advisory board of finance professionals who provide guidance and insight into the finance industry.',
-                number: '03'
-              }].map((feature, index) => <div key={index} className="group relative">
-                <div className="bg-gray-50 border border-gray-100 rounded-2xl p-8 hover:shadow-xl transition-all duration-500 hover:-translate-y-2">
-                  <div className="flex items-center justify-between mb-6">
-                    <div className="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center group-hover:bg-primary/20 transition-colors duration-300">
-                      <feature.icon className="h-8 w-8 text-primary" />
+            <div className="grid lg:grid-cols-3 gap-6">
+              {/* Financial Literacy Card */}
+              <div className="group relative overflow-hidden bg-zinc-950 rounded-3xl border border-zinc-800 p-8 hover:border-primary/50 transition-all duration-500">
+                <div className="relative z-10 h-full flex flex-col justify-between min-h-[400px]">
+                  <div>
+                    <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                      <GraduationCap className="h-7 w-7 text-primary" />
                     </div>
-                    <span className="text-4xl font-black text-primary/20">{feature.number}</span>
+                    <h3 className="text-2xl font-bold text-white mb-4">Financial Literacy</h3>
+                    <p className="text-zinc-400 leading-relaxed text-lg">
+                      Learn fundamental investment principles, market analysis, and portfolio management strategies through hands-on experience.
+                    </p>
                   </div>
-                  <h3 className="text-2xl font-bold text-foreground mb-4">{feature.title}</h3>
-                  <p className="text-foreground/80 leading-relaxed font-medium text-lg">{feature.description}</p>
+
+                  {/* Chart Visual */}
+                  <div className="mt-8 relative h-32 w-full bg-gradient-to-t from-primary/5 to-transparent rounded-xl border border-white/5 overflow-hidden group-hover:border-primary/20 transition-colors duration-500">
+                    <div className="absolute bottom-0 left-0 right-0 h-full flex items-end justify-around px-4 pb-2">
+                      {[40, 65, 55, 80, 70, 90, 85].map((height, i) => (
+                        <div
+                          key={i}
+                          className="w-2 bg-primary/40 rounded-t-sm transition-all duration-700 group-hover:bg-primary"
+                          style={{
+                            height: `${height}%`,
+                            transitionDelay: `${i * 50}ms`
+                          }}
+                        />
+                      ))}
+                    </div>
+                    {/* Line Overlay */}
+                    <svg className="absolute inset-0 w-full h-full pointer-events-none" preserveAspectRatio="none">
+                      <path d="M0,100 L40,60 L80,70 L120,45 L160,55 L200,35 L240,40" fill="none" stroke="currentColor" className="text-primary opacity-50" strokeWidth="2" vectorEffect="non-scaling-stroke" />
+                    </svg>
+                    <div className="absolute top-4 left-4 bg-zinc-900/80 backdrop-blur-sm px-3 py-1 rounded-lg border border-white/10">
+                      <span className="text-xs font-mono text-primary">+24.8%</span>
+                    </div>
+                  </div>
                 </div>
-              </div>)}
+              </div>
+
+              {/* Real Impact Card */}
+              <div className="group relative overflow-hidden bg-zinc-950 rounded-3xl border border-zinc-800 p-8 hover:border-primary/50 transition-all duration-500">
+                <div className="relative z-10 h-full flex flex-col justify-between min-h-[400px]">
+                  <div>
+                    <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                      <Target className="h-7 w-7 text-primary" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-white mb-4">Real Impact</h3>
+                    <p className="text-zinc-400 leading-relaxed text-lg">
+                      Manage $4,000 worth of real capital. Profits are donated to community causes. Gain skills beyond classroom simulations.
+                    </p>
+                  </div>
+
+                  {/* Chip/Card Visual */}
+                  <div className="mt-8 relative h-32 flex items-center justify-center">
+                    <div className="absolute inset-x-8 h-24 bg-gradient-to-br from-zinc-800 to-zinc-900 rounded-xl border border-white/5 shadow-2xl transform group-hover:-translate-y-2 transition-transform duration-500 flex flex-col justify-between p-4">
+                      <div className="flex justify-between items-start">
+                        <div className="w-8 h-5 bg-yellow-500/20 rounded flex items-center justify-center border border-yellow-500/30">
+                          <div className="w-4 h-3 border border-yellow-500/50 rounded-sm"></div>
+                        </div>
+                        <Crown className="text-white/20 h-5 w-5" />
+                      </div>
+                      <div className="space-y-1">
+                        <div className="w-12 h-1 bg-white/10 rounded-full"></div>
+                        <div className="w-8 h-1 bg-white/10 rounded-full"></div>
+                      </div>
+                    </div>
+                    {/* Floating Coin */}
+                    <div className="absolute right-4 top-0 bg-zinc-900 rounded-full p-2 border border-zinc-700 shadow-xl animate-float group-hover:text-primary transition-colors">
+                      <DollarSign className="w-5 h-5 text-white" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Mentorship Card */}
+              <div className="group relative overflow-hidden bg-zinc-950 rounded-3xl border border-zinc-800 p-8 hover:border-primary/50 transition-all duration-500">
+                <div className="relative z-10 h-full flex flex-col justify-between min-h-[400px]">
+                  <div>
+                    <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                      <Users className="h-7 w-7 text-primary" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-white mb-4">Professional Mentorship</h3>
+                    <p className="text-zinc-400 leading-relaxed text-lg">
+                      Work alongside an advisory board of finance professionals who provide guidance, career insight, and industry connections.
+                    </p>
+                  </div>
+
+                  {/* Network Visual */}
+                  <div className="mt-8 relative h-32 w-full bg-zinc-900/30 rounded-xl border border-white/5 overflow-hidden">
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="relative w-full h-full">
+                        {/* Nodes */}
+                        <div className="absolute top-1/4 left-1/4 w-3 h-3 bg-primary rounded-full shadow-[0_0_10px_rgba(34,197,94,0.5)]"></div>
+                        <div className="absolute top-1/2 right-1/4 w-4 h-4 bg-white rounded-full shadow-lg"></div>
+                        <div className="absolute bottom-1/3 left-1/2 w-2 h-2 bg-zinc-500 rounded-full"></div>
+                        {/* Connecting Lines */}
+                        <svg className="absolute inset-0 w-full h-full pointer-events-none">
+                          <line x1="25%" y1="25%" x2="75%" y2="50%" stroke="currentColor" className="text-primary/20" strokeWidth="1" />
+                          <line x1="25%" y1="25%" x2="50%" y2="66%" stroke="currentColor" className="text-white/10" strokeWidth="1" />
+                          <line x1="75%" y1="50%" x2="50%" y2="66%" stroke="currentColor" className="text-white/10" strokeWidth="1" />
+                        </svg>
+                        {/* Floating Badge */}
+                        <div className="absolute bottom-2 right-4 flex items-center gap-2 bg-zinc-800 px-3 py-1.5 rounded-full border border-zinc-700 shadow-lg transform group-hover:scale-105 transition-transform">
+                          <div className="flex -space-x-2">
+                            <div className="w-5 h-5 rounded-full bg-zinc-600 border border-zinc-800"></div>
+                            <div className="w-5 h-5 rounded-full bg-zinc-500 border border-zinc-800"></div>
+                          </div>
+                          <span className="text-[10px] font-bold text-white">Advisors</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -720,9 +806,9 @@ const About: React.FC = () => {
                     <div
                       key={index}
                       onClick={() => setExpandedCardIndex(isExpanded ? null : index)}
-                      className={`bg-white border-2 border-gray-200 rounded-2xl cursor-pointer transition-all duration-500 flex-shrink-0 flex-grow-0 ${isExpanded
-                        ? 'w-80 md:w-96 shadow-2xl scale-105 border-primary/30 z-20'
-                        : 'w-64 md:w-72 hover:shadow-xl hover:scale-105 hover:border-primary/20'
+                      className={`bg-zinc-950 border border-zinc-800 rounded-3xl cursor-pointer transition-all duration-500 flex-shrink-0 flex-grow-0 overflow-hidden group ${isExpanded
+                        ? 'w-80 md:w-96 shadow-2xl scale-105 border-primary/50 z-20'
+                        : 'w-64 md:w-72 hover:shadow-xl hover:scale-105 hover:border-primary/30'
                         }`}
                       style={{
                         height: '550px',
@@ -732,8 +818,9 @@ const About: React.FC = () => {
                     >
                       {!isExpanded ? (
                         // Collapsed state - show image
-                        <div className="h-full flex flex-col items-center justify-center p-6">
-                          <div className="w-48 h-48 md:w-56 md:h-56 rounded-2xl overflow-hidden mb-6 shadow-lg">
+                        <div className="h-full flex flex-col items-center justify-center p-6 relative">
+                          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-zinc-950/50 pointer-events-none" />
+                          <div className="w-48 h-48 md:w-56 md:h-56 rounded-2xl overflow-hidden mb-8 shadow-2xl ring-1 ring-white/10 group-hover:ring-primary/30 transition-all duration-500 relative z-10">
                             <img
                               src={imagePath}
                               alt={member.name}
@@ -744,20 +831,20 @@ const About: React.FC = () => {
                                 target.style.display = 'none';
                                 const parent = target.parentElement;
                                 if (parent) {
-                                  parent.className = 'w-48 h-48 md:w-56 md:h-56 bg-primary/10 rounded-2xl flex items-center justify-center mb-6 shadow-lg';
-                                  parent.innerHTML = `<span class="text-4xl md:text-5xl font-black text-primary">${member.name.split(' ').map(n => n[0]).join('')}</span>`;
+                                  parent.className = 'w-48 h-48 md:w-56 md:h-56 bg-zinc-900 rounded-2xl flex items-center justify-center mb-8 shadow-2xl ring-1 ring-white/10';
+                                  parent.innerHTML = `<span class="text-4xl md:text-5xl font-black text-zinc-700 select-none">${member.name.split(' ').map(n => n[0]).join('')}</span>`;
                                 }
                               }}
                             />
                           </div>
-                          <h3 className="text-lg md:text-xl font-bold text-foreground text-center">{member.name}</h3>
-                          <div className="text-sm md:text-base text-primary font-bold mt-2 text-center">{member.role}</div>
+                          <h3 className="text-xl md:text-2xl font-bold text-white text-center mb-2 z-10">{member.name}</h3>
+                          <div className="text-sm md:text-base text-primary font-bold text-center z-10">{member.role}</div>
                         </div>
                       ) : (
                         // Expanded state - show all details
-                        <div className="h-full flex flex-col p-6 md:p-8 overflow-y-auto">
-                          <div className="flex-shrink-0 mb-4">
-                            <div className="w-24 h-24 md:w-32 md:h-32 rounded-xl overflow-hidden mx-auto shadow-lg">
+                        <div className="h-full flex flex-col p-6 md:p-8 overflow-y-auto custom-scrollbar">
+                          <div className="flex-shrink-0 mb-6">
+                            <div className="w-24 h-24 md:w-32 md:h-32 rounded-2xl overflow-hidden mx-auto shadow-xl ring-1 ring-white/10">
                               <img
                                 src={imagePath}
                                 alt={member.name}
@@ -767,17 +854,18 @@ const About: React.FC = () => {
                                   target.style.display = 'none';
                                   const parent = target.parentElement;
                                   if (parent) {
-                                    parent.className = 'w-24 h-24 md:w-32 md:h-32 bg-primary/10 rounded-xl flex items-center justify-center mx-auto shadow-lg';
-                                    parent.innerHTML = `<span class="text-2xl md:text-3xl font-black text-primary">${member.name.split(' ').map(n => n[0]).join('')}</span>`;
+                                    parent.className = 'w-24 h-24 md:w-32 md:h-32 bg-zinc-900 rounded-2xl flex items-center justify-center mx-auto shadow-xl ring-1 ring-white/10';
+                                    parent.innerHTML = `<span class="text-2xl md:text-3xl font-black text-zinc-700 select-none">${member.name.split(' ').map(n => n[0]).join('')}</span>`;
                                   }
                                 }}
                               />
                             </div>
                           </div>
-                          <h3 className="text-xl md:text-2xl font-bold text-foreground mb-2 text-center">{member.name}</h3>
-                          <div className="text-base md:text-lg text-primary font-bold mb-2 text-center">{member.role}</div>
-                          <div className="text-sm md:text-base text-foreground/60 font-medium mb-4 text-center">{member.year}</div>
-                          <p className="text-sm md:text-base text-foreground/80 leading-relaxed text-center flex-1">{member.description}</p>
+                          <h3 className="text-2xl md:text-3xl font-bold text-white mb-2 text-center">{member.name}</h3>
+                          <div className="text-base md:text-lg text-primary font-bold mb-3 text-center">{member.role}</div>
+                          <div className="text-sm md:text-base text-zinc-500 font-medium mb-6 text-center">{member.year}</div>
+                          <div className="w-full h-px bg-zinc-800 mb-6"></div>
+                          <p className="text-sm md:text-base text-zinc-400 leading-relaxed text-center flex-1">{member.description}</p>
                         </div>
                       )}
                     </div>
@@ -797,11 +885,12 @@ const About: React.FC = () => {
               </p>
             </div>
 
-            <div className="grid md:grid-cols-4 gap-6">
+            <div className="flex flex-wrap justify-center gap-6">
               {advisoryBoard.map((member, index) => (
-                <div key={`advisory-${index}`} className="bg-gray-50 border border-gray-100 rounded-xl p-6 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 text-center">
-                  <h4 className="text-lg font-bold text-foreground mb-2">{member.name}</h4>
-                  <div className="text-primary font-semibold text-sm">{member.role}</div>
+                <div key={`advisory-${index}`} className="w-full sm:w-72 group relative bg-zinc-950 border border-zinc-800 rounded-xl p-6 hover:shadow-[0_0_20px_rgba(16,185,129,0.15)] hover:border-emerald-500/30 transition-all duration-300 hover:-translate-y-1 text-center overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <h4 className="relative z-10 text-lg font-bold text-white mb-2 group-hover:text-emerald-400 transition-colors">{member.name}</h4>
+                  <div className="relative z-10 text-zinc-400 font-semibold text-sm">{member.role}</div>
                 </div>
               ))}
             </div>
@@ -823,17 +912,18 @@ const About: React.FC = () => {
                 <h4 className="text-xl font-bold text-foreground mb-6 text-center lg:text-left">Macro Analyst Team</h4>
                 <div className="space-y-4">
                   {macroAnalysts.map((analyst, index) => (
-                    <div key={`macro-${index}`} className="bg-gray-50 border border-gray-100 rounded-lg p-4 hover:shadow-md transition-all duration-300 hover:-translate-y-1">
-                      <div className="flex items-center">
-                        <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
-                          <span className="text-sm font-bold text-primary">
+                    <div key={`macro-${index}`} className="group relative bg-zinc-950 border border-zinc-800 rounded-xl p-4 hover:shadow-[0_0_15px_rgba(16,185,129,0.1)] hover:border-emerald-500/30 transition-all duration-300 hover:-translate-y-1 overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                      <div className="relative z-10 flex items-center">
+                        <div className="w-10 h-10 bg-emerald-500/10 rounded-lg flex items-center justify-center mr-4 flex-shrink-0 border border-emerald-500/20 group-hover:border-emerald-500/50 transition-colors">
+                          <span className="text-sm font-bold text-emerald-500">
                             {analyst.name.split(' ').map(n => n[0]).join('')}
                           </span>
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h5 className="text-base font-bold text-foreground">{analyst.name}</h5>
-                          <div className="text-primary font-semibold text-sm">{analyst.role}</div>
-                          <div className="text-xs text-foreground/60 font-medium">{analyst.year}</div>
+                          <h5 className="text-base font-bold text-white group-hover:text-emerald-400 transition-colors">{analyst.name}</h5>
+                          <div className="text-zinc-400 font-semibold text-sm">{analyst.role}</div>
+                          <div className="text-xs text-zinc-600 font-medium">{analyst.year}</div>
                         </div>
                       </div>
                     </div>
@@ -846,17 +936,18 @@ const About: React.FC = () => {
                 <h4 className="text-xl font-bold text-foreground mb-6 text-center lg:text-left">Equity Analyst Team</h4>
                 <div className="space-y-4">
                   {equityAnalysts.map((analyst, index) => (
-                    <div key={`equity-${index}`} className="bg-gray-50 border border-gray-100 rounded-lg p-4 hover:shadow-md transition-all duration-300 hover:-translate-y-1">
-                      <div className="flex items-center">
-                        <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
-                          <span className="text-sm font-bold text-primary">
+                    <div key={`equity-${index}`} className="group relative bg-zinc-950 border border-zinc-800 rounded-xl p-4 hover:shadow-[0_0_15px_rgba(16,185,129,0.1)] hover:border-emerald-500/30 transition-all duration-300 hover:-translate-y-1 overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                      <div className="relative z-10 flex items-center">
+                        <div className="w-10 h-10 bg-emerald-500/10 rounded-lg flex items-center justify-center mr-4 flex-shrink-0 border border-emerald-500/20 group-hover:border-emerald-500/50 transition-colors">
+                          <span className="text-sm font-bold text-emerald-500">
                             {analyst.name.split(' ').map(n => n[0]).join('')}
                           </span>
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h5 className="text-base font-bold text-foreground">{analyst.name}</h5>
-                          <div className="text-primary font-semibold text-sm">{analyst.role}</div>
-                          <div className="text-xs text-foreground/60 font-medium">{analyst.year}</div>
+                          <h5 className="text-base font-bold text-white group-hover:text-emerald-400 transition-colors">{analyst.name}</h5>
+                          <div className="text-zinc-400 font-semibold text-sm">{analyst.role}</div>
+                          <div className="text-xs text-zinc-600 font-medium">{analyst.year}</div>
                         </div>
                       </div>
                     </div>
@@ -884,52 +975,131 @@ const About: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 mb-20 px-4">
-              <div className="bg-gray-50 rounded-2xl p-6 sm:p-8 lg:p-10 shadow-lg border border-gray-100 hover:-translate-y-2 transition-all duration-300 hover:shadow-xl">
-                <div className="flex items-center mb-8">
-                  <div className="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center mr-4 sm:mr-6 flex-shrink-0">
+              {/* What You'll Learn Card */}
+              <div className="group relative overflow-hidden bg-zinc-950 rounded-[2.5rem] p-10 lg:p-12 shadow-2xl border border-zinc-800 hover:border-zinc-700 transition-all duration-500">
+                <div className="relative z-10">
+                  <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-8 border border-primary/20">
                     <BookOpen className="h-8 w-8 text-primary" />
                   </div>
-                  <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground flex-1 min-w-0">What You'll Learn</h3>
+                  <h3 className="text-3xl font-bold text-white mb-8 leading-tight">What You'll Learn</h3>
+
+                  <ul className="space-y-4 relative z-20">
+                    {[
+                      'Financial modeling & valuation',
+                      'Portfolio management strategies',
+                      'Market research & analysis',
+                      'Risk assessment techniques'
+                    ].map((item, index) => (
+                      <li key={index} className="flex items-center text-zinc-300">
+                        <div className="w-1.5 h-1.5 bg-primary rounded-full mr-3"></div>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <ul className="space-y-6">
-                  {[
-                    'Financial modeling & valuation',
-                    'Portfolio management strategies',
-                    'Market research & analysis',
-                    'Risk assessment techniques'
-                  ].map((item, index) => (
-                    <li key={index} className="flex items-start">
-                      <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center mr-4 mt-0.5 flex-shrink-0">
-                        <div className="w-2 h-2 bg-white rounded-full"></div>
+
+                {/* Floating UI Visuals */}
+                <div className="absolute right-0 bottom-0 w-3/4 h-3/4 pointer-events-none opacity-20 group-hover:opacity-30 transition-opacity duration-500">
+                  {/* Abstract Chart Card */}
+                  <div className="absolute bottom-12 right-12 w-64 h-40 bg-zinc-900 rounded-2xl border border-zinc-800 p-4 transform rotate-[-6deg] translate-x-12 translate-y-12 shadow-2xl">
+                    <div className="flex justify-between items-center mb-4">
+                      <div className="w-8 h-8 rounded-full bg-zinc-800"></div>
+                      <ArrowRight className="w-4 h-4 text-zinc-600" />
+                    </div>
+                    <div className="space-y-2">
+                      <div className="h-2 w-24 bg-zinc-800 rounded-full"></div>
+                      <div className="h-2 w-16 bg-zinc-800 rounded-full"></div>
+                    </div>
+                    <div className="mt-8 flex items-end gap-1 h-12">
+                      {[40, 70, 50, 80, 60, 90].map((h, i) => (
+                        <div key={i} className="flex-1 bg-primary/20 rounded-t-sm" style={{ height: `${h}%` }}></div>
+                      ))}
+                    </div>
+                  </div>
+                  {/* Balance Card */}
+                  <div className="absolute bottom-32 right-32 w-48 h-24 bg-zinc-900 rounded-xl border border-zinc-800 p-4 transform rotate-[12deg] shadow-xl backdrop-blur-sm">
+                    <div className="text-xs text-zinc-500 mb-1">Total Assets</div>
+                    <div className="text-xl font-mono text-primary font-bold">+$4,250.00</div>
+                    <div className="mt-2 flex gap-2">
+                      <div className="h-1.5 w-full bg-zinc-800 rounded-full overflow-hidden">
+                        <div className="h-full w-2/3 bg-primary"></div>
                       </div>
-                      <span className="text-base sm:text-lg font-medium text-foreground/80">{item}</span>
-                    </li>
-                  ))}
-                </ul>
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              <div className="bg-gray-50 rounded-2xl p-6 sm:p-8 lg:p-10 shadow-lg border border-gray-100 hover:-translate-y-2 transition-all duration-300 hover:shadow-xl">
-                <div className="flex items-center mb-8">
-                  <div className="w-16 h-16 bg-primary/10 rounded-xl flex items-center justify-center mr-4 sm:mr-6 flex-shrink-0">
-                    <Briefcase className="h-8 w-8 text-primary" />
+              {/* Requirements Card */}
+              <div className="group relative overflow-hidden bg-gradient-to-br from-emerald-900 to-teal-950 rounded-[2.5rem] p-10 lg:p-12 shadow-2xl transition-all duration-500">
+                <div className="relative z-10">
+                  <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mb-8 backdrop-blur-md border border-white/20">
+                    <Briefcase className="h-8 w-8 text-white" />
                   </div>
-                  <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground flex-1 min-w-0">Requirements</h3>
+                  <h3 className="text-3xl font-bold text-white mb-8 leading-tight">Requirements</h3>
+
+                  <ul className="space-y-4 relative z-20">
+                    {[
+                      'Current Central Bucks student',
+                      '3.0+ GPA requirement',
+                      'Interest in finance/business',
+                      'Commitment to weekly meetings'
+                    ].map((item, index) => (
+                      <li key={index} className="flex items-center text-emerald-100">
+                        <div className="w-1.5 h-1.5 bg-white rounded-full mr-3"></div>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <ul className="space-y-6">
-                  {[
-                    'Current Central Bucks student',
-                    '3.0+ GPA requirement',
-                    'Interest in finance/business',
-                    'Commitment to weekly meetings'
-                  ].map((item, index) => (
-                    <li key={index} className="flex items-start">
-                      <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center mr-4 mt-0.5 flex-shrink-0">
-                        <div className="w-2 h-2 bg-white rounded-full"></div>
+
+                {/* Abstract Visuals */}
+                <div className="absolute inset-0 pointer-events-none">
+                  {/* Gradient Blobs */}
+                  <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-500/20 rounded-full blur-3xl transform translate-x-1/2 -translate-y-1/2"></div>
+                  <div className="absolute bottom-0 left-0 w-64 h-64 bg-teal-500/20 rounded-full blur-3xl transform -translate-x-1/2 translate-y-1/2"></div>
+
+                  {/* Phone Mockup Visual */}
+                  <div className="absolute -bottom-12 -right-12 w-80 h-[500px] bg-zinc-950 rounded-[3rem] border-8 border-zinc-900 shadow-2xl transform rotate-[-12deg] overflow-hidden">
+                    {/* Screen Content */}
+                    <div className="w-full h-full bg-zinc-900 p-6 relative">
+                      {/* Header */}
+                      <div className="flex justify-between items-center mb-8">
+                        <Menu className="w-5 h-5 text-zinc-600" />
+                        <div className="w-8 h-8 rounded-full bg-emerald-500/20 border border-emerald-500/50"></div>
                       </div>
-                      <span className="text-base sm:text-lg font-medium text-foreground/80">{item}</span>
-                    </li>
-                  ))}
-                </ul>
+                      {/* Balance */}
+                      <div className="mb-8">
+                        <div className="text-zinc-500 text-xs mb-1">Commitment Score</div>
+                        <div className="text-3xl font-bold text-white">100<span className="text-emerald-500 text-lg">.0%</span></div>
+                      </div>
+                      {/* List Items */}
+                      <div className="space-y-3">
+                        <div className="bg-zinc-800 p-3 rounded-xl flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center">
+                            <GraduationCap className="w-4 h-4 text-emerald-500" />
+                          </div>
+                          <div>
+                            <div className="text-white text-sm font-medium">GPA Verified</div>
+                            <div className="text-emerald-500 text-xs">3.8 Average</div>
+                          </div>
+                        </div>
+                        <div className="bg-zinc-800 p-3 rounded-xl flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center">
+                            <Users className="w-4 h-4 text-blue-500" />
+                          </div>
+                          <div>
+                            <div className="text-white text-sm font-medium">Attendance</div>
+                            <div className="text-zinc-400 text-xs">Weekly Check-in</div>
+                          </div>
+                        </div>
+                      </div>
+                      {/* Bottom nav */}
+                      <div className="absolute bottom-0 left-0 right-0 h-16 bg-zinc-950/50 backdrop-blur-md flex justify-around items-center px-4">
+                        <div className="w-8 h-8 rounded-full bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.5)]"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 
