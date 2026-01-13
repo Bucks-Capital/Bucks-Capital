@@ -59,9 +59,9 @@ export default {
 					foreground: 'hsl(var(--card-foreground))'
 				},
 				moss: {
-					DEFAULT: 'hsl(var(--moss-green))',
-					light: 'hsl(var(--moss-green-light))',
-					dark: 'hsl(var(--moss-green-dark))'
+					DEFAULT: 'hsl(143 56% 20%)',
+					light: 'hsl(143 56% 35%)',
+					dark: 'hsl(143 56% 15%)'
 				},
 				gray: {
 					DEFAULT: 'hsl(var(--gray))',

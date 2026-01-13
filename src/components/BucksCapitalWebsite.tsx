@@ -419,7 +419,7 @@ const CBWestWebsite: React.FC = () => {
             </button>
             <Button
               onClick={() => navigate('/donation')}
-              className="bg-primary hover:bg-primary-dark text-primary-foreground font-bold px-8 py-3 rounded-full transition-all duration-300 hover:shadow-lg text-base"
+              className="bg-primary hover:bg-white hover:text-primary border border-primary text-primary-foreground font-bold px-8 py-3 rounded-full transition-all duration-300 hover:shadow-lg text-base"
             >
               Donate
             </Button>
@@ -537,7 +537,7 @@ const CBWestWebsite: React.FC = () => {
             <Button
               onClick={() => navigate('/donation')}
               variant="outline"
-              className="border-2 border-white text-white hover:bg-white hover:text-slate-800 font-semibold px-12 py-5 rounded-full transition-all duration-300 text-xl bg-white/10 backdrop-blur-sm cursor-none"
+              className="border-2 border-white text-white hover:bg-white hover:text-primary font-semibold px-12 py-5 rounded-full transition-all duration-300 text-xl bg-white/10 backdrop-blur-sm cursor-none"
             >
               Donate
             </Button>
@@ -763,7 +763,7 @@ const CBWestWebsite: React.FC = () => {
               <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
                 <div className="w-full h-96">
                   <iframe
-                    src="https://www.tradingview.com/embed-widget/hotlists/?locale=en#%7B%22colorTheme%22%3A%22light%22%2C%22dateRange%22%3A%2212M%22%2C%22exchange%22%3A%22US%22%2C%22showChart%22%3Atrue%2C%22width%22%3A%22100%25%22%2C%22height%22%3A%22400%22%2C%22isTransparent%22%3Afalse%2C%22showSymbolLogo%22%3Afalse%2C%22showFloatingTooltip%22%3Afalse%2C%22plotLineColorGrowing%22%3A%22rgba(26%2C%2077%2C%2046%2C%201)%22%2C%22plotLineColorFalling%22%3A%22rgba(26%2C%2077%2C%2046%2C%201)%22%2C%22gridLineColor%22%3A%22rgba(240%2C%20243%2C%20250%2C%200)%22%2C%22scaleFontColor%22%3A%22%230F0F0F%22%2C%22belowLineFillColorGrowing%22%3A%22rgba(26%2C%2077%2C%2046%2C%200.12)%22%2C%22belowLineFillColorFalling%22%3A%22rgba(26%2C%2077%2C%2046%2C%200.12)%22%2C%22belowLineFillColorGrowingBottom%22%3A%22rgba(41%2C%2098%2C%20255%2C%200)%22%2C%22belowLineFillColorFallingBottom%22%3A%22rgba(41%2C%2098%2C%20255%2C%200)%22%2C%22symbolActiveColor%22%3A%22rgba(26%2C%2077%2C%2046%2C%200.12)%22%7D"
+                    src="https://www.tradingview.com/embed-widget/hotlists/?locale=en#%7B%22colorTheme%22%3A%22light%22%2C%22dateRange%22%3A%2212M%22%2C%22exchange%22%3A%22US%22%2C%22showChart%22%3Atrue%2C%22width%22%3A%22100%25%22%2C%22height%22%3A%22400%22%2C%22isTransparent%22%3Afalse%2C%22showSymbolLogo%22%3Afalse%2C%22showFloatingTooltip%22%3Afalse%2C%22plotLineColorGrowing%22%3A%22rgba(22%2C%2079%2C%2044%2C%201)%22%2C%22plotLineColorFalling%22%3A%22rgba(22%2C%2079%2C%2044%2C%201)%22%2C%22gridLineColor%22%3A%22rgba(240%2C%20243%2C%20250%2C%200)%22%2C%22scaleFontColor%22%3A%22%230F0F0F%22%2C%22belowLineFillColorGrowing%22%3A%22rgba(22%2C%2079%2C%2044%2C%200.12)%22%2C%22belowLineFillColorFalling%22%3A%22rgba(22%2C%2079%2C%2044%2C%200.12)%22%2C%22belowLineFillColorGrowingBottom%22%3A%22rgba(41%2C%2098%2C%20255%2C%200)%22%2C%22belowLineFillColorFallingBottom%22%3A%22rgba(41%2C%2098%2C%20255%2C%200)%22%2C%22symbolActiveColor%22%3A%22rgba(22%2C%2079%2C%2044%2C%200.12)%22%7D"
                     style={{
                       width: '100%',
                       height: '100%',
@@ -805,7 +805,6 @@ const CBWestWebsite: React.FC = () => {
                 <h3 className="text-lg font-bold text-gray-900 mb-6 uppercase tracking-wide">Contact</h3>
                 <div className="space-y-4">
                   <p className="text-gray-600 font-medium">
-                    Central Bucks High School West<br />
                     Doylestown, PA 18901
                   </p>
                   <p className="text-gray-600 font-medium">

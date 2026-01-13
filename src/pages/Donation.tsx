@@ -68,16 +68,15 @@ const Donation: React.FC = () => {
   return (
     <div className="min-h-screen bg-white">
       {/* Navigation */}
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        navScrolled 
-          ? 'bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-200' 
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${navScrolled
+          ? 'bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-200'
           : 'bg-transparent'
-      }`}>
+        }`}>
         <div className="container mx-auto px-6">
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
             <div className="flex items-center">
-              <button 
+              <button
                 onClick={() => {
                   navigate('/');
                   setTimeout(() => {
@@ -93,7 +92,7 @@ const Donation: React.FC = () => {
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-8">
-              <button 
+              <button
                 onClick={() => {
                   navigate('/');
                   setTimeout(() => {
@@ -105,7 +104,7 @@ const Donation: React.FC = () => {
                 Home
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
               </button>
-              
+
               <button
                 onClick={() => navigate('/about')}
                 className="text-foreground hover:text-primary transition-colors duration-300 text-base font-semibold uppercase tracking-wide relative group"
@@ -113,14 +112,14 @@ const Donation: React.FC = () => {
                 About
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
               </button>
-              
+
               <Link to={{ pathname: "/about", hash: "#join-us" }}>
                 <button className="text-foreground hover:text-primary transition-colors duration-300 text-base font-semibold uppercase tracking-wide relative group">
                   Join Us
                   <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
                 </button>
               </Link>
-              
+
               <button
                 onClick={() => navigate('/donors')}
                 className="text-foreground hover:text-primary transition-colors duration-300 text-base font-semibold uppercase tracking-wide relative group"
@@ -128,8 +127,8 @@ const Donation: React.FC = () => {
                 Donors
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
               </button>
-              
-              <Button className="bg-primary hover:bg-primary-dark text-primary-foreground font-bold px-8 py-3 rounded-full transition-all duration-300 hover:shadow-lg text-base">
+
+              <Button className="bg-primary hover:bg-white hover:text-primary border border-primary text-primary-foreground font-bold px-8 py-3 rounded-full transition-all duration-300 hover:shadow-lg text-base">
                 Donate
               </Button>
             </div>
@@ -146,9 +145,8 @@ const Donation: React.FC = () => {
           </div>
 
           {/* Mobile menu */}
-          <div className={`md:hidden transition-all duration-300 ease-in-out overflow-hidden relative z-50 ${
-            mobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
-          }`}>
+          <div className={`md:hidden transition-all duration-300 ease-in-out overflow-hidden relative z-50 ${mobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+            }`}>
             <div className="py-4 space-y-1 bg-white border-t border-gray-200">
               <button
                 onClick={() => {
@@ -208,11 +206,11 @@ const Donation: React.FC = () => {
               </h1>
               <div className="w-24 h-1 bg-primary mx-auto mb-8"></div>
               <p className="text-xl text-gray-700 leading-relaxed mb-16 font-medium max-w-3xl mx-auto">
-                Help us provide more students with real-world investment experience and financial education. 
+                Help us provide more students with real-world investment experience and financial education.
                 Your support directly impacts the next generation of financial leaders.
               </p>
             </div>
-            
+
             <div className="bg-gray-50 rounded-2xl p-12 border border-gray-200 animate-scale-in" style={{ animationDelay: '0.2s' }}>
               <div className="mb-8">
                 <h2 className="text-2xl font-bold text-gray-900 mb-4">Make a Difference</h2>
@@ -220,9 +218,9 @@ const Donation: React.FC = () => {
                   Every donation helps us expand our program and reach more students.
                 </p>
               </div>
-              
+
               <a href="https://donate.stripe.com/fZueVe4B0bm37NPaZ55wI00">
-                <Button className="bg-primary hover:bg-primary-dark text-primary-foreground font-bold px-12 py-4 rounded-full transition-all duration-300 hover:shadow-xl text-lg">
+                <Button className="bg-primary hover:bg-white hover:text-primary border-2 border-primary text-primary-foreground font-bold px-12 py-4 rounded-full transition-all duration-300 hover:shadow-xl text-lg">
                   Make a Donation
                 </Button>
               </a>
@@ -246,12 +244,12 @@ const Donation: React.FC = () => {
                 </p>
                 <div className="w-16 h-1 bg-primary"></div>
               </div>
-              
+
               <div>
                 <h3 className="text-lg font-bold text-gray-900 mb-6">Quick Links</h3>
                 <ul className="space-y-3">
                   <li>
-                    <button 
+                    <button
                       onClick={() => navigate('/')}
                       className="text-gray-600 hover:text-gray-900 transition-colors duration-300 font-medium"
                     >
@@ -259,7 +257,7 @@ const Donation: React.FC = () => {
                     </button>
                   </li>
                   <li>
-                    <button 
+                    <button
                       onClick={() => navigate('/about')}
                       className="text-gray-600 hover:text-gray-900 transition-colors duration-300 font-medium"
                     >
@@ -267,7 +265,7 @@ const Donation: React.FC = () => {
                     </button>
                   </li>
                   <li>
-                    <button 
+                    <button
                       onClick={() => navigate('/donors')}
                       className="text-gray-600 hover:text-gray-900 transition-colors duration-300 font-medium"
                     >
@@ -276,7 +274,7 @@ const Donation: React.FC = () => {
                   </li>
                 </ul>
               </div>
-              
+
               <div>
                 <h3 className="text-lg font-bold text-gray-900 mb-6">Contact</h3>
                 <ul className="space-y-3">
@@ -286,7 +284,7 @@ const Donation: React.FC = () => {
                     </a>
                   </li>
                   <li>
-                    <button 
+                    <button
                       onClick={() => setIsApplicationModalOpen(true)}
                       className="text-gray-600 hover:text-gray-900 transition-colors duration-300 font-medium"
                     >
@@ -296,7 +294,7 @@ const Donation: React.FC = () => {
                 </ul>
               </div>
             </div>
-            
+
             <div className={`pt-8 border-t border-gray-200 transition-all duration-1000 ${visibleElements.has('footer') ? 'animate-fade-in-up' : 'opacity-0 translate-y-8'}`} style={{ animationDelay: '0.2s' }}>
               <div className="flex flex-col md:flex-row justify-between items-center">
                 <p className="text-gray-500 font-medium mb-4 md:mb-0">
@@ -306,7 +304,7 @@ const Donation: React.FC = () => {
                   <a href="mailto:info@buckscapital.org" className="text-gray-500 hover:text-gray-900 transition-colors duration-300 font-medium">
                     Contact
                   </a>
-                  <button 
+                  <button
                     onClick={() => setIsApplicationModalOpen(true)}
                     className="text-gray-500 hover:text-gray-900 transition-colors duration-300 font-medium"
                   >
@@ -320,9 +318,9 @@ const Donation: React.FC = () => {
       </footer>
 
       {/* Application Modal */}
-      <ApplicationModal 
-        isOpen={isApplicationModalOpen} 
-        onClose={() => setIsApplicationModalOpen(false)} 
+      <ApplicationModal
+        isOpen={isApplicationModalOpen}
+        onClose={() => setIsApplicationModalOpen(false)}
       />
     </div>
   );

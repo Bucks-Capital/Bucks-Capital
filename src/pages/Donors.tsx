@@ -1,7 +1,7 @@
-import Donor from '@/components/Donor';
+import Donors from '@/components/Donor';
 
-const Donors = () => {
-  return <Donor />;
+const DonorsPage = () => {
+  return <Donors />;
 };
 
-export default Donors;
+export default DonorsPage;

@@ -550,7 +550,7 @@ const About: React.FC = () => {
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
             </button>
             <Link to={{ pathname: "/", hash: "#donate" }}>
-              <Button className="bg-primary hover:bg-primary-dark text-primary-foreground font-bold px-8 py-3 rounded-full transition-all duration-300 hover:shadow-lg text-base">
+              <Button className="bg-primary hover:bg-white hover:text-primary border border-primary text-primary-foreground font-bold px-8 py-3 rounded-full transition-all duration-300 hover:shadow-lg text-base">
                 Donate
               </Button>
             </Link>
@@ -615,7 +615,7 @@ const About: React.FC = () => {
                 smoothScrollTo('donate');
                 setMobileMenuOpen(false);
               }}
-              className="w-full bg-primary text-primary-foreground font-semibold px-4 py-3 transition-all duration-300 text-center text-sm mt-4 rounded-full"
+              className="w-full bg-primary hover:bg-white hover:text-primary border border-primary text-primary-foreground font-semibold px-4 py-3 transition-all duration-300 text-center text-sm mt-4 rounded-full"
             >
               Donate
             </button>
@@ -1142,7 +1142,6 @@ const About: React.FC = () => {
                 <h3 className="text-lg font-bold text-gray-900 mb-6 uppercase tracking-wide">Contact</h3>
                 <div className="space-y-4">
                   <p className="text-gray-600 font-medium">
-                    Central Bucks High School West<br />
                     Doylestown, PA 18901
                   </p>
                   <p className="text-gray-600 font-medium">
